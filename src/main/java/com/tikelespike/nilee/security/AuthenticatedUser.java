@@ -20,6 +20,7 @@ public class AuthenticatedUser {
         this.authenticationContext = authenticationContext;
     }
 
+    @Transactional
     public Optional<User> get() {
         return authenticationContext.getAuthenticatedUser(UserDetails.class)
                 .map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
