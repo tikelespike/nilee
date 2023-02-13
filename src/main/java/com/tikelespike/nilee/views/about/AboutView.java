@@ -1,5 +1,8 @@
 package com.tikelespike.nilee.views.about;
 
+import com.tikelespike.nilee.data.entity.User;
+import com.tikelespike.nilee.data.service.UserService;
+import com.tikelespike.nilee.security.AuthenticatedUser;
 import com.tikelespike.nilee.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -18,11 +21,14 @@ public class AboutView extends HorizontalLayout {
     private TextField name;
     private Button sayHello;
 
-    public AboutView() {
+    public AboutView(UserService userService, AuthenticatedUser authenticatedUser) {
         name = new TextField("Your name");
         sayHello = new Button("Say hello");
         sayHello.addClickListener(e -> {
             Notification.show("Hello " + name.getValue());
+            User currentUser = authenticatedUser.get().get();
+            currentUser.setName(name.getValue());
+            userService.update(currentUser);
         });
         sayHello.addClickShortcut(Key.ENTER);
 
