@@ -14,12 +14,14 @@ services:
     volumes:
         - db_data:/var/lib/postgresql/data
 
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
+# For debugging, we will only use docker for the database
+
+#  app:
+#    build: .
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
 
 volumes:
     db_data:
