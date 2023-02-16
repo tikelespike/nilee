@@ -5,14 +5,7 @@ import com.tikelespike.nilee.data.Role;
 import org.hibernate.annotations.Type;
 
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "application_user")
@@ -28,6 +21,9 @@ public class User extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    private Set<PlayerCharacter> characters;
 
     public String getUsername() {
         return username;
@@ -58,6 +54,10 @@ public class User extends AbstractEntity {
     }
     public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public Set<PlayerCharacter> getCharacters() {
+        return characters;
     }
 
 }
