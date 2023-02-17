@@ -16,6 +16,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouteParam;
+import com.vaadin.flow.router.RouteParameters;
 
 import javax.annotation.security.PermitAll;
 
@@ -69,9 +71,8 @@ public class CharacterSelectionView extends VerticalLayout {
     private Button createOpenCharacterButton(PlayerCharacter pc) {
         Button openButton = new Button(AppStrings.OPEN_CHARACTER_CTA);
         ComponentEventListener<ClickEvent<Button>> navigateToCharacterSheet = e -> {
-            openButton.getUI().ifPresent(ui -> ui.navigate(AboutView.class).ifPresent(aboutView -> {
-                aboutView.setPlayerCharacter(pc);
-            }));
+            RouteParameters params = new RouteParameters(new RouteParam("id", pc.getId().toString()));
+            openButton.getUI().ifPresent(ui -> ui.navigate(AboutView.class, pc.getId()));
         };
         openButton.addClickListener(navigateToCharacterSheet);
         return openButton;
