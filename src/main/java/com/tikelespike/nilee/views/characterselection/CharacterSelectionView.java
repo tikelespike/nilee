@@ -1,14 +1,19 @@
 package com.tikelespike.nilee.views.characterselection;
 
+import com.tikelespike.nilee.AppStrings;
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
+import com.tikelespike.nilee.views.about.AboutView;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.listbox.ListBox;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -22,12 +27,15 @@ public class CharacterSelectionView extends VerticalLayout {
     private TextField newCharacterName;
     private Button addCharacterButton;
 
-    private ListBox<String> characterListBox;
+    private Grid<PlayerCharacter> characterGrid;
 
-    private User currentUser;
+    private final User currentUser;
 
 
     public CharacterSelectionView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService, UserService userService ) {
+        if (authenticatedUser.get().isEmpty()) {
+            throw new IllegalStateException("User not authenticated");
+        }
         currentUser = authenticatedUser.get().get();
 
         initComponents(playerCharacterService, userService);
@@ -36,7 +44,7 @@ public class CharacterSelectionView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         add("Character Selection");
-        add(characterListBox, newCharacterName, addCharacterButton);
+        add(characterGrid, newCharacterName, addCharacterButton);
     }
 
     private void initComponents(PlayerCharacterService playerCharacterService, UserService userService) {
@@ -50,13 +58,26 @@ public class CharacterSelectionView extends VerticalLayout {
             currentUser.getCharacters().add(newCharacter);
             playerCharacterService.update(newCharacter);
             userService.update(currentUser);
-            updateListBox();
+            updateCharacterGrid();
         });
-        characterListBox = new ListBox<>();
-        updateListBox();
+        characterGrid = new Grid<>(PlayerCharacter.class, false);
+        characterGrid.addColumn(PlayerCharacter::getName).setHeader("Name");
+        characterGrid.addColumn(new ComponentRenderer<>(this::createOpenCharacterButton)).setHeader(AppStrings.OPEN_CHARACTER_HEADER);
+        updateCharacterGrid();
     }
 
-    private void updateListBox() {
-        characterListBox.setItems(currentUser.getCharacters().stream().map(PlayerCharacter::getName));
+    private Button createOpenCharacterButton(PlayerCharacter pc) {
+        Button openButton = new Button(AppStrings.OPEN_CHARACTER_CTA);
+        ComponentEventListener<ClickEvent<Button>> navigateToCharacterSheet = e -> {
+            openButton.getUI().ifPresent(ui -> ui.navigate(AboutView.class).ifPresent(aboutView -> {
+                aboutView.setPlayerCharacter(pc);
+            }));
+        };
+        openButton.addClickListener(navigateToCharacterSheet);
+        return openButton;
+    }
+
+    private void updateCharacterGrid() {
+        characterGrid.setItems(currentUser.getCharacters());
     }
 }
