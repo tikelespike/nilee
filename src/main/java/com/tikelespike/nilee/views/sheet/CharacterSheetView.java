@@ -1,26 +1,21 @@
-package com.tikelespike.nilee.views.about;
+package com.tikelespike.nilee.views.sheet;
 
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.tikelespike.nilee.views.MainLayout;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+import javax.annotation.security.PermitAll;
 import java.util.Optional;
 
-@PageTitle("About")
-@Route(value = "about", layout = MainLayout.class)
-@AnonymousAllowed
-public class AboutView extends HorizontalLayout implements HasUrlParameter<Long> {
+@Route(value = "sheet")
+@PermitAll
+public class CharacterSheetView extends HorizontalLayout implements HasUrlParameter<Long>, HasDynamicTitle {
 
     private final Label characterNameLabel;
 
@@ -29,7 +24,7 @@ public class AboutView extends HorizontalLayout implements HasUrlParameter<Long>
 
     private PlayerCharacter pc;
 
-    public AboutView(UserService userService, AuthenticatedUser authenticatedUser, PlayerCharacterService characterService) {
+    public CharacterSheetView(UserService userService, AuthenticatedUser authenticatedUser, PlayerCharacterService characterService) {
         this.characterService = characterService;
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not authenticated"));
         characterNameLabel = new Label("No character selected");
@@ -63,5 +58,10 @@ public class AboutView extends HorizontalLayout implements HasUrlParameter<Long>
 
     public PlayerCharacter getPlayerCharacter() {
         return pc;
+    }
+
+    @Override
+    public String getPageTitle() {
+        return pc == null ? "My Characters" : pc.getName() + " - Character Sheet";
     }
 }

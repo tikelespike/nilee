@@ -1,21 +1,15 @@
-package com.tikelespike.nilee.views;
+package com.tikelespike.nilee.views.mainmenu;
 
 import com.tikelespike.nilee.components.appnav.AppNav;
 import com.tikelespike.nilee.components.appnav.AppNavItem;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.tikelespike.nilee.views.about.AboutView;
-import com.tikelespike.nilee.views.helloworld.HelloWorldView;
+import com.tikelespike.nilee.views.sheet.CharacterSheetView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -23,6 +17,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
@@ -70,12 +65,12 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        if (accessChecker.hasAccess(HelloWorldView.class)) {
-            nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, "la la-list"));
+        if (accessChecker.hasAccess(CharacterSelectionView.class)) {
+            nav.addItem(new AppNavItem("My Characters", CharacterSelectionView.class, "la la-globe"));
 
         }
         if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem("About", AboutView.class, "la la-globe"));
+            nav.addItem(new AppNavItem("About", AboutView.class, "la la-list"));
 
         }
 
@@ -91,7 +86,7 @@ public class MainLayout extends AppLayout {
 
             Avatar avatar = new Avatar(user.getName());
             StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(user.getProfilePicture()));
+                () -> new ByteArrayInputStream(user.getProfilePicture()));
             avatar.setImageResource(resource);
             avatar.setThemeName("xsmall");
             avatar.getElement().setAttribute("tabindex", "-1");
