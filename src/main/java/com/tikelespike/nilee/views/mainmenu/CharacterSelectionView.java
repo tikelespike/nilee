@@ -27,8 +27,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.security.PermitAll;
-import java.util.ArrayList;
-import java.util.List;
 
 @PageTitle("My Characters")
 @Route(value = "characters", layout = MainLayout.class)
@@ -45,10 +43,7 @@ public class CharacterSelectionView extends VerticalLayout {
 
 
     public CharacterSelectionView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService, UserService userService) {
-        if (authenticatedUser.get().isEmpty()) {
-            throw new IllegalStateException("User not authenticated");
-        }
-        this.currentUser = authenticatedUser.get().get();
+        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
 

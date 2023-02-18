@@ -21,6 +21,8 @@ public class PlayerCharacter extends AbstractEntity {
 
     private String name;
     private int dex;
+    private int hitPoints = 10;
+    private int maxHitPoints = 10;
 
     public String getName() {
         return name;
@@ -52,5 +54,21 @@ public class PlayerCharacter extends AbstractEntity {
 
     public int getAC() {
         return 10 + dex;
+    }
+
+    public int getMaxHitPoints() {
+        return maxHitPoints;
+    }
+
+    public void setMaxHitPoints(int maxHitPoints) {
+        this.maxHitPoints = maxHitPoints;
+    }
+
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    public void setHitPoints(int hitPoints) {
+        this.hitPoints = hitPoints;
     }
 }
