@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Bean;
 @Theme(value = "nilee", variant = Lumo.DARK)
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
-@PWA(name = "Nilee Character Sheet", shortName = "Nilee")
+@PWA(name = "Nilee Character Sheet", shortName = "Nilee", backgroundColor = "--lumo-base-color", themeColor = "--lumo-base-color")
 @Meta(name="viewport", content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi")
 public class Application implements AppShellConfigurator {
 
