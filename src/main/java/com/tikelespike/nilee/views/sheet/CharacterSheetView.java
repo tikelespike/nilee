@@ -8,6 +8,7 @@ import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
 import com.tikelespike.nilee.views.mainmenu.CharacterSelectionView;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.notification.Notification;
@@ -34,6 +35,10 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
         // initialization happens in setParameter based on the given character
         add(AppStrings.CHARACTER_NOT_FOUND);
+
+        // prevent scrolling down so the header disappears
+        getStyle().set("position", "sticky");
+        getStyle().set("top", "0");
     }
 
 
@@ -64,6 +69,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         header.setWidthFull();
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);
         header.setAlignItems(Alignment.CENTER);
+        // set the style of the header so it always stays at the top of the page
+        header.getStyle().set("position", "sticky");
+        header.getStyle().set("top", "0");
 
         Button backButton = new Button("Back to overview");
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterSelectionView.class)));
