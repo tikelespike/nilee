@@ -7,13 +7,18 @@ import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
 import com.tikelespike.nilee.views.mainmenu.CharacterSelectionView;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.router.*;
 
 import javax.annotation.security.PermitAll;
@@ -56,15 +61,21 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private void init() {
         removeAll();
         setPadding(true);
-        HorizontalLayout header = createHeader();
+        Component header = createHeader();
         add(header);
 
-        Hr divider = new Hr();
-        divider.getStyle().set("margin-top", "0");
-        add(divider);
+//        Hr divider = new Hr();
+//        divider.getStyle().set("margin-top", "0");
+//        add(divider);
+
+        Text placeholderText = new Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.".repeat(20));
+        Scroller tab1Placeholder = new Scroller(placeholderText);
+        TabSheet tabSheet = new TabSheet();
+        tabSheet.add("Tab 1", tab1Placeholder);
+        add(tabSheet);
     }
 
-    private HorizontalLayout createHeader() {
+    private Component createHeader() {
         HorizontalLayout header = new HorizontalLayout();
         header.setWidthFull();
         header.setJustifyContentMode(JustifyContentMode.BETWEEN);
@@ -72,6 +83,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         // set the style of the header so it always stays at the top of the page
         header.getStyle().set("position", "sticky");
         header.getStyle().set("top", "0");
+        header.getStyle().set("z-index", "99");
+        header.getStyle().set("background-color", "var(--lumo-base-color)");
 
         Button backButton = new Button("Back to overview");
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterSelectionView.class)));
