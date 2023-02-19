@@ -1,7 +1,6 @@
 package com.tikelespike.nilee.data.service;
 
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
-import com.tikelespike.nilee.data.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,7 @@ public class PlayerCharacterService {
 
     private final PlayerCharacterRepository repository;
 
-    public PlayerCharacterService(PlayerCharacterRepository repository) {
+    public PlayerCharacterService(PlayerCharacterRepository repository, UserService userService) {
         this.repository = repository;
     }
 
@@ -22,6 +21,7 @@ public class PlayerCharacterService {
         return repository.findById(id);
     }
 
+    @Transactional
     public PlayerCharacter update(PlayerCharacter entity) {
         return repository.save(entity);
     }

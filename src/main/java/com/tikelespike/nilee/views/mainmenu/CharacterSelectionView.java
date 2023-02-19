@@ -37,9 +37,9 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private final Grid<PlayerCharacter> characterGrid;
 
-    private final User currentUser;
     private final UserService userService;
     private final PlayerCharacterService characterService;
+    private User currentUser;
 
 
     public CharacterSelectionView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService, UserService userService) {
@@ -91,8 +91,7 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private void addPC(PlayerCharacter character) {
         characterService.update(character);
-        currentUser.getCharacters().add(character);
-        userService.update(currentUser);
+        updateUserInfo();
         updateCharacterGrid();
     }
 
@@ -141,9 +140,8 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private void deletePC(PlayerCharacter pc) {
         ensureSanity(pc);
-        currentUser.getCharacters().remove(pc);
-        userService.update(currentUser);
         characterService.delete(pc.getId());
+        updateUserInfo(); // since the user object will now have the character removed too
         updateCharacterGrid();
     }
 
@@ -164,5 +162,9 @@ public class CharacterSelectionView extends VerticalLayout {
             Notification.show(AppStrings.CHARACTER_NOT_FOUND);
             throw new IllegalStateException("Invalid character (null, not found, or not owned by current user)");
         }
+    }
+
+    private void updateUserInfo() {
+        currentUser = userService.get(currentUser.getId()).orElseThrow(() -> new IllegalStateException("User not found"));
     }
 }
