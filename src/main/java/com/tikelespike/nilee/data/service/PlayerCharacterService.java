@@ -9,11 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PlayerCharacterService {
 
     private final PlayerCharacterRepository repository;
 
-    public PlayerCharacterService(PlayerCharacterRepository repository, UserService userService) {
+    public PlayerCharacterService(PlayerCharacterRepository repository) {
         this.repository = repository;
     }
 
@@ -21,7 +22,6 @@ public class PlayerCharacterService {
         return repository.findById(id);
     }
 
-    @Transactional
     public PlayerCharacter update(PlayerCharacter entity) {
         return repository.save(entity);
     }

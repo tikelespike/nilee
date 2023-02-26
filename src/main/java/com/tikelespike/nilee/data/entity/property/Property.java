@@ -1,47 +1,47 @@
 package com.tikelespike.nilee.data.entity.property;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import com.tikelespike.nilee.data.entity.AbstractEntity;
+import com.tikelespike.nilee.data.entity.GameEntity;
 
-public class Property<T> {
+import javax.persistence.*;
+import java.util.*;
 
-    private final List<PropertyBaseSupplier<T>> baseValueSuppliers = new ArrayList<>();
+@Entity
+public class Property<T> extends AbstractEntity {
 
-    private final List<PropertyModifier<T>> modifiers = new ArrayList<>();
-    private Function<List<T>, T> baseValueSelector = (baseValues) -> baseValues.get(0);
+    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
+    private final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
 
-    public Property(T baseValue) {
-        setBaseValue(baseValue);
-    }
+    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
+    private final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
 
-    public Property(T baseValue, String description) {
-        setBaseValue(baseValue, description);
+    @OneToOne(targetEntity = GameEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL) // fix for now, should this be lazy?
+    private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+
+    public Property() {
+
     }
 
     public Property(PropertyBaseSupplier<T> baseValueSupplier) {
         this.baseValueSuppliers.add(baseValueSupplier);
     }
 
+
     public T getValue() {
-        T baseValue = getBaseValue();
-        for (PropertyModifier<T> modifier : modifiers) {
-            baseValue = modifier.apply(baseValue);
+        T value = getBaseValue();
+        for (PropertyModifier<T> modifier : getModifiers()) {
+            value = modifier.apply(value);
         }
-        return baseValue;
+        return value;
     }
 
     public T getBaseValue() {
-        return baseValueSelector.apply(baseValueSuppliers.stream().map(PropertyBaseSupplier::getBaseValue).toList());
+        return baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
     }
 
-    public void setBaseValue(T baseValue) {
-        setBaseValue(baseValue, "(default)");
-    }
 
-    public void setBaseValue(T baseValue, String description) {
-        this.baseValueSuppliers.clear();
-        this.baseValueSuppliers.add(new ConstantBaseValue<T>(baseValue, description));
+    public Set<PropertyModifier<T>> getModifiers() {
+        return new LinkedHashSet<>(modifiers);
     }
 
     public void addModifier(PropertyModifier<T> modifier) {
@@ -56,27 +56,25 @@ public class Property<T> {
         modifiers.clear();
     }
 
-    public List<PropertyModifier<T>> getModifiers() {
-        return List.copyOf(modifiers);
+
+    public Set<PropertyBaseSupplier<T>> getBaseValueSuppliers() {
+        return new LinkedHashSet<>(baseValueSuppliers);
     }
 
-    public void addBaseValueSource(PropertyBaseSupplier<T> baseValueSupplier) {
+    public void addBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
         baseValueSuppliers.add(baseValueSupplier);
     }
 
-    public void removeBaseValueSource(PropertyBaseSupplier<T> baseValueSupplier) {
+    public void removeBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
         baseValueSuppliers.remove(baseValueSupplier);
     }
 
-    public List<PropertyBaseSupplier<T>> getBaseValueSuppliers() {
-        return List.copyOf(baseValueSuppliers);
-    }
 
-    public void setBaseValueSelector(Function<List<T>, T> baseValueSelector) {
+    public void setBaseValueSelector(ValueSelector<T> baseValueSelector) {
         this.baseValueSelector = baseValueSelector;
     }
 
-    public Function<List<T>, T> getBaseValueSelector() {
+    public ValueSelector<T> getBaseValueSelector() {
         return baseValueSelector;
     }
 }

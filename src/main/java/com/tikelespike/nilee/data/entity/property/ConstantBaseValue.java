@@ -1,27 +1,44 @@
 package com.tikelespike.nilee.data.entity.property;
 
-public class ConstantBaseValue<T> implements PropertyBaseSupplier<T> {
+import com.tikelespike.nilee.data.entity.GameEntity;
 
-    private final T baseValue;
-    private final String sourceName;
+import javax.persistence.Entity;
 
-    public ConstantBaseValue(T baseValue, String sourceName) {
+@Entity
+public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplier<Integer> {
+
+    private int baseValue;
+    private String sourceName;
+
+    public ConstantBaseValue() {
+        this(0, "(default)");
+    }
+
+    public ConstantBaseValue(int baseValue, String sourceName) {
         this.baseValue = baseValue;
         this.sourceName = sourceName;
     }
 
     @Override
-    public T getBaseValue() {
+    public Integer getBaseValue() {
         return baseValue;
+    }
+
+    public void setBaseValue(int baseValue) {
+        this.baseValue = baseValue;
     }
 
     @Override
     public String getAbstractDescription() {
-        return baseValue.toString();
+        return baseValue + "";
     }
 
     @Override
     public String getSourceName() {
         return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 }
