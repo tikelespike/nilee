@@ -2,10 +2,9 @@ package com.tikelespike.nilee.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tikelespike.nilee.data.Role;
-import org.hibernate.annotations.Type;
 
-import java.util.Set;
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "application_user")

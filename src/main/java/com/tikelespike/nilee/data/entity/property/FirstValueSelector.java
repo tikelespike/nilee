@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * A {@link ValueSelector} that always returns the first value in the list, if present.
  *
+ * @param <T> the type of the values to select from
  */
 @Entity
 public class FirstValueSelector<T> extends GameEntity implements ValueSelector<T> {

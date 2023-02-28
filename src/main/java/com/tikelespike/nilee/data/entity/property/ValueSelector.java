@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * A strategy for selecting a value from a list of values, like always returning the first value, selecting the
+ * highest or lowest value, and so on.
  *
+ * @param <T> the type of the values to select from
  */
 public interface ValueSelector<T> {
 
