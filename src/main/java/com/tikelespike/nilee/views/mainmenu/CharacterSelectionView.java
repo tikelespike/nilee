@@ -6,7 +6,7 @@ import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.tikelespike.nilee.views.sheet.CharacterSheetView;
+import com.tikelespike.nilee.views.character.CharacterSheetView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;

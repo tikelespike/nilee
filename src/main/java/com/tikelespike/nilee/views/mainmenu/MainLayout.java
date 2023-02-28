@@ -4,7 +4,6 @@ import com.tikelespike.nilee.components.appnav.AppNav;
 import com.tikelespike.nilee.components.appnav.AppNavItem;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.tikelespike.nilee.views.sheet.CharacterSheetView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -103,9 +102,7 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("align-items", "center");
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
-            userName.getSubMenu().addItem("Sign out", e -> {
-                authenticatedUser.logout();
-            });
+            userName.getSubMenu().addItem("Sign out", e -> authenticatedUser.logout());
 
             layout.add(userMenu);
         } else {
