@@ -53,9 +53,11 @@ public class Property<T> extends AbstractEntity {
 
 
     /**
-     * Calculates the value of this property by applying all modifiers to the base value.
+     * Calculates the value of this property by selecting a base value and applying all modifiers.
+     * There has to be at least one base value supplier added before calling this method.
      *
      * @return the effective value of this property
+     * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getValue() {
         T value = getBaseValue();
@@ -68,12 +70,20 @@ public class Property<T> extends AbstractEntity {
     /**
      * Calculates the base value of this property by selecting from the base value suppliers using the base value
      * selection strategy. Base value suppliers are added using {@link #addBaseValueSupplier(PropertyBaseSupplier)}.
+     * There has to be at least
+     * one base value supplier added before calling this method.
      * The selection strategy can be set using {@link #setBaseValueSelector(ValueSelector)}.
      *
      * @return the base value of this property, as selected by the base value selector
+     * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getBaseValue() {
-        return baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+        if (getBaseValueSuppliers().isEmpty())
+            throw new IllegalStateException("No base value suppliers has been defined for this property");
+        Optional<T> opt =
+            baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+        //noinspection OptionalGetWithoutIsPresent - optional may only be empty if the list is empty
+        return opt.get();
     }
 
 
