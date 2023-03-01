@@ -1,12 +1,9 @@
 package com.tikelespike.nilee.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tikelespike.nilee.data.entity.property.SDCIWCAttributes;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,10 +16,16 @@ public class PlayerCharacter extends AbstractEntity {
     @JsonIgnoreProperties({"characters"})
     private User owner;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private SDCIWCAttributes sdciwc;
+
     private String name;
-    private int dex;
     private int hitPoints = 10;
     private int maxHitPoints = 10;
+
+    public PlayerCharacter() {
+        sdciwc = new SDCIWCAttributes();
+    }
 
     public String getName() {
         return name;
@@ -32,12 +35,8 @@ public class PlayerCharacter extends AbstractEntity {
         this.name = name;
     }
 
-    public int getDex() {
-        return dex;
-    }
-
-    public void setDex(int dex) {
-        this.dex = dex;
+    public SDCIWCAttributes getSdciwc() {
+        return sdciwc;
     }
 
     public void setOwner(User owner) {
@@ -48,13 +47,6 @@ public class PlayerCharacter extends AbstractEntity {
         return owner;
     }
 
-    public int getDexMod() {
-        return (dex - 10) / 2;
-    }
-
-    public int getAC() {
-        return 10 + dex;
-    }
 
     public int getMaxHitPoints() {
         return maxHitPoints;

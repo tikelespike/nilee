@@ -84,7 +84,6 @@ public class CharacterSelectionView extends VerticalLayout {
     private PlayerCharacter createNewCharacter(String name) {
         PlayerCharacter newCharacter = new PlayerCharacter();
         newCharacter.setName(name);
-        newCharacter.setDex(10);
         newCharacter.setOwner(currentUser);
         return newCharacter;
     }

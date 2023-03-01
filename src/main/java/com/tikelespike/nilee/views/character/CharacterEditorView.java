@@ -5,6 +5,7 @@ import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
+import com.tikelespike.nilee.views.character.editor.AbilitiesEditorView;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -25,6 +26,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private final CharacterSanityChecker sanityChecker;
     private Accordion accordion;
     private PlayerCharacter pc;
+    private AbilitiesEditorView abilitiesEditorView;
 
 
     public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
@@ -51,7 +53,11 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private Accordion createAccordion() {
         Accordion accordion = new Accordion();
         accordion.add("Description", new Span(pc.getName()));
-        accordion.add("Abilities & Stats", new Span("Abilities & Stats"));
+        this.abilitiesEditorView = new AbilitiesEditorView(pc.getSdciwc());
+        accordion.add("Abilities & Stats", abilitiesEditorView);
+        accordion.addOpenedChangeListener(e -> {
+            abilitiesEditorView.update();
+        });
         accordion.add("Class", new Span("Class"));
         return accordion;
     }
@@ -70,6 +76,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
 
     private void save() {
         sanityChecker.ensureSanity(pc.getId());
+        abilitiesEditorView.update();
         characterService.update(pc);
         getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
     }

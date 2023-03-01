@@ -86,6 +86,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         tabSheet.add("Tab 1", new Scroller(placeholderText));
         tabSheet.add("Tab 2", new Scroller(placeholderText2));
         tabSheet.add("Tab 3", new Scroller(placeholderText3));
+        tabSheet.add("Strength Demo", new Scroller(new Text("" + pc.getSdciwc().getStrengthProperty().getValue())));
         tabSheet.addThemeVariants(TabSheetVariant.LUMO_TABS_EQUAL_WIDTH_TABS);
         return tabSheet;
     }
