@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
-public class SDCIWCAttributes extends AbstractEntity {
+public class AbilityScores extends AbstractEntity {
 
     public static final int DEFAULT_STRENGTH = 10;
 
@@ -18,7 +18,7 @@ public class SDCIWCAttributes extends AbstractEntity {
     private ConstantBaseValue baseStrength;
 
 
-    public SDCIWCAttributes() {
+    public AbilityScores() {
         this.baseStrength = new ConstantBaseValue(DEFAULT_STRENGTH, "Base Strength");
         this.strengthProperty = new Property<>(this.baseStrength);
     }

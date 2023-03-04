@@ -77,15 +77,8 @@ public class CharacterSelectionView extends VerticalLayout {
     private Button createAddCharacterButton() {
         Button button = new Button(AppStrings.ADD_CHARACTER_CTA);
         button.addClickShortcut(Key.ENTER);
-        button.addClickListener(e -> addPC(createNewCharacter(newCharacterNameTF.getValue())));
+        button.addClickListener(e -> addPC(new PlayerCharacter(newCharacterNameTF.getValue(), currentUser)));
         return button;
-    }
-
-    private PlayerCharacter createNewCharacter(String name) {
-        PlayerCharacter newCharacter = new PlayerCharacter();
-        newCharacter.setName(name);
-        newCharacter.setOwner(currentUser);
-        return newCharacter;
     }
 
     private void addPC(PlayerCharacter character) {

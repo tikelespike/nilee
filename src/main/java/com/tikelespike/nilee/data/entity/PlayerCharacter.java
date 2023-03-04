@@ -1,7 +1,7 @@
 package com.tikelespike.nilee.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.tikelespike.nilee.data.entity.property.SDCIWCAttributes;
+import com.tikelespike.nilee.data.entity.property.AbilityScores;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,14 +17,25 @@ public class PlayerCharacter extends AbstractEntity {
     private User owner;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private SDCIWCAttributes sdciwc;
+    private AbilityScores abilityScores;
 
     private String name;
     private int hitPoints = 10;
     private int maxHitPoints = 10;
 
-    public PlayerCharacter() {
-        sdciwc = new SDCIWCAttributes();
+    protected PlayerCharacter() {
+        abilityScores = new AbilityScores();
+        name = getDefaultName();
+    }
+
+    public PlayerCharacter(User owner) {
+        this();
+        this.owner = owner;
+    }
+
+    public PlayerCharacter(String name, User owner) {
+        this(owner);
+        this.name = name;
     }
 
     public String getName() {
@@ -35,8 +46,8 @@ public class PlayerCharacter extends AbstractEntity {
         this.name = name;
     }
 
-    public SDCIWCAttributes getSdciwc() {
-        return sdciwc;
+    public AbilityScores getAbilityScores() {
+        return abilityScores;
     }
 
     public void setOwner(User owner) {
@@ -62,5 +73,10 @@ public class PlayerCharacter extends AbstractEntity {
 
     public void setHitPoints(int hitPoints) {
         this.hitPoints = hitPoints;
+    }
+
+
+    private String getDefaultName() {
+        return "Unnamed Character #" + getId();
     }
 }

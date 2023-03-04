@@ -53,7 +53,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private Accordion createAccordion() {
         Accordion accordion = new Accordion();
         accordion.add("Description", new Span(pc.getName()));
-        this.abilitiesEditorView = new AbilitiesEditorView(pc.getSdciwc());
+        this.abilitiesEditorView = new AbilitiesEditorView(pc.getAbilityScores());
         accordion.add("Abilities & Stats", abilitiesEditorView);
         accordion.addOpenedChangeListener(e -> {
             abilitiesEditorView.update();

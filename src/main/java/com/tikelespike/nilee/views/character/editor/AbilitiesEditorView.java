@@ -1,21 +1,17 @@
 package com.tikelespike.nilee.views.character.editor;
 
-import com.tikelespike.nilee.data.entity.PlayerCharacter;
-import com.tikelespike.nilee.data.entity.property.SDCIWCAttributes;
+import com.tikelespike.nilee.data.entity.property.AbilityScores;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 
-import java.awt.*;
-
 public class AbilitiesEditorView extends FormLayout {
 
-    private final SDCIWCAttributes attributes;
-    private final Binder<SDCIWCAttributes> binder;
+    private final AbilityScores attributes;
+    private final Binder<AbilityScores> binder;
 
-    public AbilitiesEditorView(SDCIWCAttributes attributes) {
+    public AbilitiesEditorView(AbilityScores attributes) {
         this.attributes = attributes;
 
         IntegerField strField = createStatField("Base Strength");
@@ -28,9 +24,9 @@ public class AbilitiesEditorView extends FormLayout {
         setResponsiveSteps(new ResponsiveStep("0", 6));
         add(strField, dexField, conField, intField, wisField, chaField);
 
-        // create a binder mapping the field values to the pc
-        binder = new Binder<>(SDCIWCAttributes.class);
-        binder.forField(strField).bind(SDCIWCAttributes::getBaseStrength, SDCIWCAttributes::setBaseStrength);
+        // maps the UI fields to the attributes object
+        binder = new Binder<>(AbilityScores.class);
+        binder.forField(strField).bind(AbilityScores::getBaseStrength, AbilityScores::setBaseStrength);
 
         binder.readBean(attributes);
     }
