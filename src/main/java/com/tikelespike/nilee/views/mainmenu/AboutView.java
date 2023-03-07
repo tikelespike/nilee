@@ -15,7 +15,7 @@ public class AboutView extends VerticalLayout {
     public AboutView() {
         setAlignItems(Alignment.CENTER);
 
-        add(new H2("Nilee - Open Source Character Sheets for D&D 5e"));
+        add(new H2(getTranslation("about.title")));
         add("by Timo Weberruß");
         add(new Anchor("https://github.com/tikelespike/nilee", "https://github.com/tikelespike/nilee"));
         add("This is a work in progress.");

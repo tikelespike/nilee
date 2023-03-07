@@ -71,7 +71,7 @@ public class MainLayout extends AppLayout {
             nav.addItem(new AppNavItem("Preferences", UserPreferencesView.class, "la la-cog"));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem("About", AboutView.class, "la la-globe"));
+            nav.addItem(new AppNavItem(getTranslation("navigation.about"), AboutView.class, "la la-globe"));
         }
 
         return nav;

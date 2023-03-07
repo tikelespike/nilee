@@ -2,35 +2,46 @@ package com.tikelespike.nilee.i18n;
 
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.vaadin.flow.server.ServiceException;
-import com.vaadin.flow.server.SessionInitEvent;
-import com.vaadin.flow.server.SessionInitListener;
+import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.security.AuthenticationContext;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.web.context.support.SecurityWebApplicationContextUtils;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.io.Serial;
+import javax.servlet.ServletContext;
 import java.util.Locale;
 import java.util.Optional;
 
 @SpringComponent
-public class LocaleSetter implements SessionInitListener {
+public class LocaleSetter implements UIInitListener, VaadinServiceInitListener {
 
-    private final Optional<User> currentUser;
+    AuthenticationContext authenticationContext;
 
-    /** serial VUID */
-    @Serial
-    private static final long serialVersionUID = 7782078275956323697L;
-
-    public LocaleSetter(AuthenticatedUser authenticatedUser) {
-        this.currentUser = authenticatedUser.get();
+    public LocaleSetter(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
     }
 
     @Override
-    public void sessionInit(SessionInitEvent event) throws ServiceException {
+    public void uiInit(UIInitEvent event) {
+        // Don't fully understand this, security risk? Was sort of recommended to me by GitHub Copilot
+        ServletContext servletContext = VaadinServlet.getCurrent().getServletContext();
+        WebApplicationContext context =
+            SecurityWebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        AuthenticatedUser authUser = context.getBean(AuthenticatedUser.class);
+        Optional<User> currentUser = authUser.get();
+
         currentUser.ifPresent(user -> {
             Locale preferredLocale = user.getPreferredLocale();
             if (preferredLocale != null) {
-                event.getSession().setLocale(preferredLocale);
+                event.getUI().setLocale(preferredLocale);
+                LoggerFactory.getLogger(getClass()).info("Locale set to: " + preferredLocale.getDisplayLanguage());
             }
         });
+    }
+
+    @Override
+    public void serviceInit(ServiceInitEvent event) {
+        event.getSource().addUIInitListener(this);
     }
 }
