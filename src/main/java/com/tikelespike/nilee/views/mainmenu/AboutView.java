@@ -1,6 +1,5 @@
 package com.tikelespike.nilee.views.mainmenu;
 
-import com.tikelespike.nilee.views.mainmenu.MainLayout;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

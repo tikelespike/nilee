@@ -65,12 +65,13 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         if (accessChecker.hasAccess(CharacterSelectionView.class)) {
-            nav.addItem(new AppNavItem("My Characters", CharacterSelectionView.class, "la la-globe"));
-
+            nav.addItem(new AppNavItem(getTranslation("navigation.character_list"), CharacterSelectionView.class, "la la-list"));
+        }
+        if (accessChecker.hasAccess(UserPreferencesView.class)) {
+            nav.addItem(new AppNavItem("Preferences", UserPreferencesView.class, "la la-cog"));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem("About", AboutView.class, "la la-list"));
-
+            nav.addItem(new AppNavItem("About", AboutView.class, "la la-globe"));
         }
 
         return nav;

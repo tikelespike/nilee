@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tikelespike.nilee.data.Role;
 
 import javax.persistence.*;
+import java.util.Locale;
 import java.util.Set;
 
 @Entity
@@ -20,6 +21,8 @@ public class User extends AbstractEntity {
     @Lob
     @Column(length = 1000000)
     private byte[] profilePicture;
+
+    private Locale preferredLocale;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private Set<PlayerCharacter> characters;
@@ -59,4 +62,11 @@ public class User extends AbstractEntity {
         return characters;
     }
 
+    public Locale getPreferredLocale() {
+        return preferredLocale;
+    }
+
+    public void setPreferredLocale(Locale preferredLocale) {
+        this.preferredLocale = preferredLocale;
+    }
 }
