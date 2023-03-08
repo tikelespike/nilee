@@ -8,17 +8,16 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.I18NProvider;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
 import javax.annotation.security.PermitAll;
 import java.util.Locale;
 
-@PageTitle("User Preferences")
 @Route(value = "preferences", layout = MainLayout.class)
 @PermitAll
-public class UserPreferencesView extends VerticalLayout {
+public class UserPreferencesView extends VerticalLayout implements HasDynamicTitle {
 
 
     public UserPreferencesView(I18NProvider i18NProvider, UserService userService,
@@ -40,12 +39,12 @@ public class UserPreferencesView extends VerticalLayout {
     private FormLayout createForm(I18NProvider i18NProvider, UserService userService, User user) {
         FormLayout form = new FormLayout();
         ComboBox<Locale> localeComboBox = createLocaleComboBox(i18NProvider, user);
-        form.addFormItem(localeComboBox, "Language");
+        form.addFormItem(localeComboBox, getTranslation("preferences.language.label"));
         return form;
     }
 
     private Button createSaveButton(UserService userService, User user) {
-        Button saveButton = new Button("Save");
+        Button saveButton = new Button(getTranslation("generic.save"));
         saveButton.addClickListener(e -> {
             userService.update(user);
             VaadinSession.getCurrent().setLocale(user.getPreferredLocale());
@@ -64,5 +63,10 @@ public class UserPreferencesView extends VerticalLayout {
         }
         localeComboBox.addThemeVariants();
         return localeComboBox;
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("preferences.title");
     }
 }

@@ -1,15 +1,15 @@
 package com.tikelespike.nilee.views.character;
 
-import com.tikelespike.nilee.AppStrings;
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class CharacterSanityChecker {
+public class CharacterSanityChecker extends Div {
 
     private final PlayerCharacterService characterService;
     private final User currentUser;
@@ -33,9 +33,24 @@ public class CharacterSanityChecker {
             && Objects.equals(character.getId(), characterId);
     }
 
+    public boolean sanityCheck(PlayerCharacter character) {
+        if (character == null) {
+            return false;
+        }
+        return sanityCheck(character.getId());
+    }
+
     public void ensureSanity(Long characterId) {
-        if (!sanityCheck(characterId)) {
-            Notification.show(AppStrings.CHARACTER_NOT_FOUND);
+        notifyError(sanityCheck(characterId));
+    }
+
+    public void ensureSanity(PlayerCharacter character) {
+        notifyError(sanityCheck(character));
+    }
+
+    private void notifyError(boolean isCharacterSane) {
+        if (!isCharacterSane) {
+            Notification.show(getTranslation("error.character_not_found"));
             throw new IllegalStateException("Invalid character (null, not found, or not owned by current user)");
         }
     }

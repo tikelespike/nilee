@@ -1,10 +1,12 @@
-package com.tikelespike.nilee.views.character;
+package com.tikelespike.nilee.views.character.editor;
 
 import com.tikelespike.nilee.AppStrings;
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
+import com.tikelespike.nilee.views.character.CharacterSanityChecker;
+import com.tikelespike.nilee.views.character.CharacterSheetView;
 import com.tikelespike.nilee.views.character.editor.AbilitiesEditorView;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
@@ -34,14 +36,14 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         User currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
             "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
-        add(AppStrings.CHARACTER_NOT_FOUND);
+        add(getTranslation("error.character_not_found"));
     }
 
     private void init() {
         removeAll();
         setAlignItems(Alignment.CENTER);
 
-        add(new H1("Character Creation"));
+        add(new H1(getTranslation("character_editor.title")));
 
         accordion = createAccordion();
         add(accordion);
@@ -54,7 +56,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         Accordion accordion = new Accordion();
         accordion.add("Description", new Span(pc.getName()));
         this.abilitiesEditorView = new AbilitiesEditorView(pc.getAbilityScores());
-        accordion.add("Abilities & Stats", abilitiesEditorView);
+        accordion.add(getTranslation("character_editor.abilities.title"), abilitiesEditorView);
         accordion.addOpenedChangeListener(e -> {
             abilitiesEditorView.update();
         });

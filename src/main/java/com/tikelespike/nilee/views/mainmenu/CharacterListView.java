@@ -1,11 +1,11 @@
 package com.tikelespike.nilee.views.mainmenu;
 
-import com.tikelespike.nilee.AppStrings;
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.data.service.UserService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
+import com.tikelespike.nilee.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.views.character.CharacterSheetView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -18,20 +18,18 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.security.PermitAll;
 
-@PageTitle("My Characters")
 @Route(value = "characters", layout = MainLayout.class)
 @PermitAll
-public class CharacterSelectionView extends VerticalLayout {
+public class CharacterListView extends VerticalLayout implements HasDynamicTitle {
 
     private final TextField newCharacterNameTF;
 
@@ -39,18 +37,24 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private final UserService userService;
     private final PlayerCharacterService characterService;
+    private final CharacterSanityChecker sanityChecker;
+
     private User currentUser;
 
 
-    public CharacterSelectionView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService, UserService userService) {
-        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not authenticated"));
+    public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
+                             UserService userService) {
+        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
+            "authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
+        this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
+
 
         this.characterGrid = createCharacterGrid();
         updateCharacterGrid();
 
-        this.newCharacterNameTF = new TextField(AppStrings.CHARACTER_NAME_HEADER);
+        this.newCharacterNameTF = new TextField(getTranslation("character_list.new_character.name.label"));
         newCharacterNameTF.addFocusShortcut(Key.KEY_N, KeyModifier.CONTROL, KeyModifier.ALT);
         Button addCharacterButton = createAddCharacterButton();
         var addCharacterLayout = new HorizontalLayout(newCharacterNameTF, addCharacterButton);
@@ -61,9 +65,9 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private Grid<PlayerCharacter> createCharacterGrid() {
         Grid<PlayerCharacter> grid = new Grid<>(PlayerCharacter.class, false);
-        grid.addColumn(PlayerCharacter::getName).setHeader(AppStrings.CHARACTER_NAME_HEADER).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton)).setHeader(AppStrings.OPEN_CHARACTER_HEADER);
-        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton)).setHeader(AppStrings.DEL_CHARACTER_HEADER);
+        grid.addColumn(PlayerCharacter::getName).setHeader(getTranslation("character_list.list.headings.name")).setAutoWidth(true).setFlexGrow(0);
+        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton)).setHeader(getTranslation("character_list.list.headings.open"));
+        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton)).setHeader(getTranslation("character_list.list.headings.delete"));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addSelectionListener(e -> {
             if (e.getFirstSelectedItem().isPresent()) {
@@ -75,7 +79,7 @@ public class CharacterSelectionView extends VerticalLayout {
     }
 
     private Button createAddCharacterButton() {
-        Button button = new Button(AppStrings.ADD_CHARACTER_CTA);
+        Button button = new Button(getTranslation("character_list.new_character.button.label"));
         button.addClickShortcut(Key.ENTER);
         button.addClickListener(e -> addPC(new PlayerCharacter(newCharacterNameTF.getValue(), currentUser)));
         return button;
@@ -88,14 +92,14 @@ public class CharacterSelectionView extends VerticalLayout {
     }
 
     private Button createOpenPCButton(PlayerCharacter pc) {
-        Button openButton = new Button(AppStrings.OPEN_CHARACTER_CTA);
+        Button openButton = new Button(getTranslation("generic.open"));
         ComponentEventListener<ClickEvent<Button>> navigateToCharacterSheet = e -> openPCSheet(pc);
         openButton.addClickListener(navigateToCharacterSheet);
         return openButton;
     }
 
     private void openPCSheet(PlayerCharacter pc) {
-        ensureSanity(pc);
+        sanityChecker.ensureSanity(pc);
         getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
     }
 
@@ -112,17 +116,17 @@ public class CharacterSelectionView extends VerticalLayout {
 
     private Dialog createConfirmDialog(PlayerCharacter pc) {
         Dialog confirmDialog = new Dialog();
-        confirmDialog.setHeaderTitle(AppStrings.DEL_CHARACTER_HEADER);
-        confirmDialog.add(String.format(AppStrings.DEL_CHARACTER_CONFIRMATION_BODY, pc.getName()));
+        confirmDialog.setHeaderTitle(getTranslation("character_list.list.delete.confirm.title", pc.getName()));
+        confirmDialog.add(getTranslation("character_list.list.delete.confirm.body", pc.getName()));
 
-        Button confirmButton = new Button(AppStrings.DEL_CHARACTER_CTA);
+        Button confirmButton = new Button(getTranslation("generic.delete"));
         confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         confirmButton.addClickListener(e -> {
             deletePC(pc);
             confirmDialog.close();
         });
 
-        Button cancelButton = new Button(AppStrings.CANCEL_CTA);
+        Button cancelButton = new Button(getTranslation("generic.cancel"));
         cancelButton.addThemeVariants();
         cancelButton.addClickListener(e -> confirmDialog.close());
 
@@ -131,7 +135,7 @@ public class CharacterSelectionView extends VerticalLayout {
     }
 
     private void deletePC(PlayerCharacter pc) {
-        ensureSanity(pc);
+        sanityChecker.ensureSanity(pc);
         characterService.delete(pc.getId());
         updateUserInfo(); // since the user object will now have the character removed too
         updateCharacterGrid();
@@ -141,22 +145,14 @@ public class CharacterSelectionView extends VerticalLayout {
         characterGrid.setItems(currentUser.getCharacters());
     }
 
-    private boolean sanityCheck(PlayerCharacter character) {
-        return character != null
-            && character.getOwner() != null
-            && character.getOwner().equals(currentUser)
-            && character.getId() != null
-            && characterService.get(character.getId()).isPresent();
-    }
-
-    private void ensureSanity(PlayerCharacter character) {
-        if (!sanityCheck(character)) {
-            Notification.show(AppStrings.CHARACTER_NOT_FOUND);
-            throw new IllegalStateException("Invalid character (null, not found, or not owned by current user)");
-        }
-    }
 
     private void updateUserInfo() {
-        currentUser = userService.get(currentUser.getId()).orElseThrow(() -> new IllegalStateException("User not found"));
+        currentUser = userService.get(currentUser.getId()).orElseThrow(() -> new IllegalStateException("User not " +
+            "found"));
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("character_list.title");
     }
 }

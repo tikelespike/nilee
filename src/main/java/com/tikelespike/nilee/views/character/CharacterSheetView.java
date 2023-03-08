@@ -1,11 +1,11 @@
 package com.tikelespike.nilee.views.character;
 
-import com.tikelespike.nilee.AppStrings;
 import com.tikelespike.nilee.data.entity.PlayerCharacter;
 import com.tikelespike.nilee.data.entity.User;
 import com.tikelespike.nilee.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.security.AuthenticatedUser;
-import com.tikelespike.nilee.views.mainmenu.CharacterSelectionView;
+import com.tikelespike.nilee.views.character.editor.CharacterEditorView;
+import com.tikelespike.nilee.views.mainmenu.CharacterListView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -37,7 +37,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
 
         // initialization happens in setParameter based on the given character
-        add(AppStrings.CHARACTER_NOT_FOUND);
+        add(getTranslation("error.character_not_found"));
 
         // prevent scrolling down so the header disappears
         getStyle().set("position", "sticky");
@@ -102,13 +102,13 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         header.getStyle().set("z-index", "99");
         header.getStyle().set("background-color", "var(--lumo-base-color)");
 
-        Button backButton = new Button("Back to overview");
-        backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterSelectionView.class)));
+        Button backButton = new Button(getTranslation("character_sheet.header.back"));
+        backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterListView.class)));
 
         H3 nameTitle = new H3(pc.getName());
         nameTitle.getElement().getStyle().set("margin-top", "0.5em");
 
-        Button editButton = new Button("Edit Character");
+        Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
         Button hitPointsButton = new Button(pc.getHitPoints() + "/" + pc.getMaxHitPoints() + " HP");
 
@@ -125,6 +125,6 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     @Override
     public String getPageTitle() {
-        return pc == null ? "My Characters" : pc.getName() + " - Character Sheet";
+        return pc == null ? "My Characters" : getTranslation("character_sheet.title", pc.getName());
     }
 }

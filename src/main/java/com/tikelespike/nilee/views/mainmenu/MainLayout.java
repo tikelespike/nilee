@@ -50,7 +50,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        H1 appName = new H1("Nilee");
+        H1 appName = new H1(getTranslation("main.title"));
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
 
@@ -64,14 +64,14 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        if (accessChecker.hasAccess(CharacterSelectionView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("navigation.character_list"), CharacterSelectionView.class, "la la-list"));
+        if (accessChecker.hasAccess(CharacterListView.class)) {
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.character_list"), CharacterListView.class, "la la-list"));
         }
         if (accessChecker.hasAccess(UserPreferencesView.class)) {
-            nav.addItem(new AppNavItem("Preferences", UserPreferencesView.class, "la la-cog"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.preferences"), UserPreferencesView.class, "la la-cog"));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("navigation.about"), AboutView.class, "la la-globe"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.about"), AboutView.class, "la la-globe"));
         }
 
         return nav;
@@ -103,7 +103,7 @@ public class MainLayout extends AppLayout {
             div.getElement().getStyle().set("align-items", "center");
             div.getElement().getStyle().set("gap", "var(--lumo-space-s)");
             userName.add(div);
-            userName.getSubMenu().addItem("Sign out", e -> authenticatedUser.logout());
+            userName.getSubMenu().addItem(getTranslation("main.logout.label"), e -> authenticatedUser.logout());
 
             layout.add(userMenu);
         } else {

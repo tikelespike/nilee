@@ -14,12 +14,12 @@ public class AbilitiesEditorView extends FormLayout {
     public AbilitiesEditorView(AbilityScores attributes) {
         this.attributes = attributes;
 
-        IntegerField strField = createStatField("Base Strength");
-        IntegerField dexField = createStatField("Base Dexterity");
-        IntegerField conField = createStatField("Base Constitution");
-        IntegerField intField = createStatField("Base Intelligence");
-        IntegerField wisField = createStatField("Base Wisdom");
-        IntegerField chaField = createStatField("Base Charisma");
+        IntegerField strField = createStatField(getTranslation("character_editor.abilities.str.label"));
+        IntegerField dexField = createStatField(getTranslation("character_editor.abilities.dex.label"));
+        IntegerField conField = createStatField(getTranslation("character_editor.abilities.con.label"));
+        IntegerField intField = createStatField(getTranslation("character_editor.abilities.int.label"));
+        IntegerField wisField = createStatField(getTranslation("character_editor.abilities.wis.label"));
+        IntegerField chaField = createStatField(getTranslation("character_editor.abilities.cha.label"));
 
         setResponsiveSteps(new ResponsiveStep("0", 6));
         add(strField, dexField, conField, intField, wisField, chaField);
