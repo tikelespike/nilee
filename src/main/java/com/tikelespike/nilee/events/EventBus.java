@@ -6,8 +6,10 @@ import java.util.List;
 public class EventBus {
     private final List<TypedEventListener<?>> typedEventListeners = new ArrayList<>();
 
-    public <T extends Event> void registerListener(Class<? extends T> eventType, EventListener<T> listener) {
-        typedEventListeners.add(new TypedEventListener<>(eventType, listener));
+    public <T extends Event> Registration registerListener(Class<? extends T> eventType, EventListener<T> listener) {
+        TypedEventListener<T> typedListener = new TypedEventListener<>(eventType, listener);
+        typedEventListeners.add(typedListener);
+        return new Registration(this, typedListener);
     }
 
     protected <T extends Event> void unregister(TypedEventListener<T> listener) {
