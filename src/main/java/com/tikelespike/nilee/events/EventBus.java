@@ -12,8 +12,12 @@ public class EventBus {
         return new Registration(this, typedListener);
     }
 
-    protected <T extends Event> void unregister(TypedEventListener<T> listener) {
-        typedEventListeners.remove(listener);
+    protected <T extends Event> boolean unregister(TypedEventListener<T> listener) {
+        return typedEventListeners.remove(listener);
+    }
+
+    protected <T extends Event> boolean isSubscribed(TypedEventListener<T> listener) {
+        return typedEventListeners.contains(listener);
     }
 
     public void fireEvent(Event event) {

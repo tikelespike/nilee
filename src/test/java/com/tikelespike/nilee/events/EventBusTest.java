@@ -3,7 +3,7 @@ package com.tikelespike.nilee.events;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EventBusTest {
 
@@ -77,6 +77,17 @@ class EventBusTest {
         registration2.unregister();
         bus.fireEvent(new Event());
         assertEquals(simpleListener.getNumCalls(), 1, "Listener should not have been called because unregistered before event");
+    }
+
+    @Test
+    public void testRegistrationValidity() {
+        Registration registration = bus.registerListener(Event.class, simpleListener);
+        assertTrue(registration.isActive(), "Registration should be active before unregistering");
+        boolean success = registration.unregister();
+        assertTrue(success, "Unregistering should have been successful");
+        assertFalse(registration.isActive(), "Registration should not be active after unregistering");
+        success = registration.unregister();
+        assertFalse(success, "Unregistering should not have been successful because already unregistered");
     }
 
     private class TestEvent extends Event {

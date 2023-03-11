@@ -9,7 +9,11 @@ public class Registration {
         this.listener = listener;
     }
 
-    public void unregister() {
-        bus.unregister(listener);
+    public boolean unregister() {
+        return bus.unregister(listener);
+    }
+
+    public boolean isActive() {
+        return bus.isSubscribed(listener);
     }
 }
