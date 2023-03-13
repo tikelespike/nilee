@@ -2,9 +2,16 @@ package com.tikelespike.nilee.core.data.entity.property;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.GameEntity;
+import com.tikelespike.nilee.core.events.Event;
+import com.tikelespike.nilee.core.events.EventBus;
+import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.events.Registration;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values
@@ -32,6 +39,9 @@ public class Property<T> extends AbstractEntity {
     // fix for now, should this be lazy?
     @OneToOne(targetEntity = GameEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+
+    @Transient
+    private final EventBus eventBus = new EventBus();
 
     /**
      * Default constructor for JPA. Will not add any base value suppliers or modifiers. You must add at least one
@@ -81,7 +91,7 @@ public class Property<T> extends AbstractEntity {
         if (getBaseValueSuppliers().isEmpty())
             throw new IllegalStateException("No base value suppliers has been defined for this property");
         Optional<T> opt =
-            baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+                baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
         //noinspection OptionalGetWithoutIsPresent - optional may only be empty if the list is empty
         return opt.get();
     }
@@ -105,7 +115,9 @@ public class Property<T> extends AbstractEntity {
      * @param modifier the modifier to add to this property
      */
     public void addModifier(PropertyModifier<T> modifier) {
+        T oldValue = getValue();
         modifiers.add(modifier);
+        notifyListeners(oldValue);
     }
 
     /**
@@ -115,14 +127,18 @@ public class Property<T> extends AbstractEntity {
      * @param modifier the modifier to remove from this property
      */
     public void removeModifier(PropertyModifier<T> modifier) {
+        T oldValue = getValue();
         modifiers.remove(modifier);
+        notifyListeners(oldValue);
     }
 
     /**
      * Removes all modifiers from this property. The property will no longer be affected by any modifiers.
      */
     public void clearModifiers() {
+        T oldValue = getValue();
         modifiers.clear();
+        notifyListeners(oldValue);
     }
 
 
@@ -146,7 +162,9 @@ public class Property<T> extends AbstractEntity {
      * @param baseValueSupplier the base value supplier to add to this property
      */
     public void addBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
+        T oldValue = getValue();
         baseValueSuppliers.add(baseValueSupplier);
+        notifyListeners(oldValue);
     }
 
     /**
@@ -156,7 +174,9 @@ public class Property<T> extends AbstractEntity {
      * @param baseValueSupplier the base value supplier to remove from this property
      */
     public void removeBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
+        T oldValue = getValue();
         baseValueSuppliers.remove(baseValueSupplier);
+        notifyListeners(oldValue);
     }
 
 
@@ -169,7 +189,9 @@ public class Property<T> extends AbstractEntity {
      *                          suppliers
      */
     public void setBaseValueSelector(ValueSelector<T> baseValueSelector) {
+        T oldValue = getValue();
         this.baseValueSelector = baseValueSelector;
+        notifyListeners(oldValue);
     }
 
     /**
@@ -179,5 +201,107 @@ public class Property<T> extends AbstractEntity {
      */
     public ValueSelector<T> getBaseValueSelector() {
         return baseValueSelector;
+    }
+
+    /**
+     * Registers a listener to be notified when the way this property is calculated changes. Specifically,
+     * the listener will be notified when the base value changes, when a modifier is added or removed, or when the
+     * base value selector changes.
+     *
+     * @param listener the listener to register
+     * @return a registration object that can be used to unregister the listener
+     */
+    public Registration addPropertyChangeListener(EventListener<? super PropertyChangeEvent> listener) {
+        return eventBus.registerListener(PropertyChangeEvent.class, listener);
+    }
+
+    /**
+     * Registers a listener to be notified when a change in the way this property is calculated results in a change
+     * in the value of this property. This will not notify the listener when internals of the base value providers,
+     * modifiers, or base value selector change, but only when modifying the property itself results in a change in
+     * the value of the property.
+     * <p>
+     * Therefore, subscribing to this event is equivalent to subscribing to PropertyChangeEvents and checking manually
+     * whether the new value is different from the old value (as in the {@code equals} relationship).
+     *
+     * @param listener the listener to register
+     * @return a registration object that can be used to unregister the listener
+     */
+    public Registration addValueChangeListener(EventListener<? super ValueChangeEvent> listener) {
+        return eventBus.registerListener(ValueChangeEvent.class, listener);
+    }
+
+    private void notifyListeners(T oldValue) {
+        T newValue = getValue();
+        if (!Objects.equals(oldValue, newValue)) {
+            eventBus.fireEvent(new ValueChangeEvent(this, oldValue));
+        }
+        eventBus.fireEvent(new PropertyChangeEvent(this, oldValue));
+    }
+
+    /**
+     * An event fired when the way a property is calculated changes. Contains the old value and a reference to the
+     * property that changed.
+     */
+    public class PropertyChangeEvent extends PropertyChangeEventBase {
+        /**
+         * Creates a new property change event.
+         *
+         * @param property the property that changed
+         * @param oldValue the old value of the property
+         */
+        public PropertyChangeEvent(Property<T> property, T oldValue) {
+            super(property, oldValue);
+        }
+    }
+
+    /**
+     * An event fired when the way a property is calculated changes, and the new value is different from the old
+     * value. Contains the old value and a reference to the property that changed.
+     */
+    public class ValueChangeEvent extends PropertyChangeEventBase {
+        /**
+         * Creates a new value change event.
+         *
+         * @param property the property that changed
+         * @param oldValue the old value of the property, has to be different to the new value
+         * @throws IllegalArgumentException if the old and new value are equal
+         */
+        public ValueChangeEvent(Property<T> property, T oldValue) {
+            super(property, oldValue);
+            if (Objects.equals(oldValue, getNewValue()))
+                throw new IllegalArgumentException("Old and new value are equal");
+        }
+    }
+
+    private abstract class PropertyChangeEventBase extends Event {
+        private final T oldValue;
+        private final Property<T> property;
+
+        public PropertyChangeEventBase(Property<T> property, T oldValue) {
+            this.property = property;
+            this.oldValue = oldValue;
+        }
+
+        /**
+         * @return the value {@link Property#getValue()} returned before the change
+         */
+        public T getOldValue() {
+            return oldValue;
+        }
+
+        /**
+         * @return the value {@link Property#getValue()} returns after the change
+         */
+        public T getNewValue() {
+            return property.getValue();
+        }
+
+        /**
+         * @return the property that changed
+         */
+        public Property<T> getProperty() {
+            return property;
+        }
     }
 }
