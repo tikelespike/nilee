@@ -31,14 +31,14 @@ import java.util.Set;
 public class Property<T> extends AbstractEntity {
 
     @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
-    private final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
+    protected final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
 
     @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
-    private final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
+    protected final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
 
     // fix for now, should this be lazy?
     @OneToOne(targetEntity = GameEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+    protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
     @Transient
     private final EventBus eventBus = new EventBus();
@@ -70,7 +70,11 @@ public class Property<T> extends AbstractEntity {
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getValue() {
-        T value = getBaseValue();
+        return getValueOnBase(getBaseValue());
+    }
+
+    public T getValueOnBase(T base) {
+        T value = base;
         for (PropertyModifier<T> modifier : getModifiers()) {
             value = modifier.apply(value);
         }
@@ -231,7 +235,7 @@ public class Property<T> extends AbstractEntity {
         return eventBus.registerListener(ValueChangeEvent.class, listener);
     }
 
-    private void notifyListeners(T oldValue) {
+    protected void notifyListeners(T oldValue) {
         T newValue = getValue();
         if (!Objects.equals(oldValue, newValue)) {
             eventBus.fireEvent(new ValueChangeEvent(this, oldValue));

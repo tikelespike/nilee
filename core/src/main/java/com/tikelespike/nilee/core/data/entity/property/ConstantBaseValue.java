@@ -8,16 +8,16 @@ import javax.persistence.Entity;
  * A {@link PropertyBaseSupplier} that wraps a constant value that can be accessed with getters and setters.
  */
 @Entity
-public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplier<Integer> {
+public class ConstantBaseValue<T> extends GameEntity implements PropertyBaseSupplier<T> {
 
-    private int baseValue;
+    private T baseValue;
     private String sourceName;
 
     /**
      * Default constructor for JPA. Should not be used directly.
      */
     protected ConstantBaseValue() {
-        this(0, "(default)");
+        this(null, "(default)");
     }
 
     /**
@@ -27,13 +27,13 @@ public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplie
      * @param baseValue the base value to wrap
      * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
      */
-    public ConstantBaseValue(int baseValue, String sourceName) {
+    public ConstantBaseValue(T baseValue, String sourceName) {
         this.baseValue = baseValue;
         this.sourceName = sourceName;
     }
 
     @Override
-    public Integer getBaseValue() {
+    public T getBaseValue() {
         return baseValue;
     }
 
@@ -42,13 +42,13 @@ public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplie
      *
      * @param baseValue the new base value
      */
-    public void setBaseValue(int baseValue) {
+    public void setBaseValue(T baseValue) {
         this.baseValue = baseValue;
     }
 
     @Override
     public String getAbstractDescription() {
-        return baseValue + "";
+        return baseValue.toString();
     }
 
     @Override

@@ -12,26 +12,13 @@ public class AbilityScores extends AbstractEntity {
     public static final int DEFAULT_STRENGTH = 10;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Property<Integer> strengthProperty;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private ConstantBaseValue baseStrength;
-
+    private AbilityScore strength;
 
     public AbilityScores() {
-        this.baseStrength = new ConstantBaseValue(DEFAULT_STRENGTH, "Base Strength");
-        this.strengthProperty = new Property<>(this.baseStrength);
+        this.strength = new AbilityScore(DEFAULT_STRENGTH, "Strength");
     }
 
-    public int getBaseStrength() {
-        return baseStrength.getBaseValue();
-    }
-
-    public void setBaseStrength(int baseStrength) {
-        this.baseStrength.setBaseValue(baseStrength);
-    }
-
-    public Property<Integer> getStrengthProperty() {
-        return strengthProperty;
+    public AbilityScore getStrength() {
+        return strength;
     }
 }

@@ -26,7 +26,7 @@ public class AbilitiesEditorView extends FormLayout {
 
         // maps the UI fields to the attributes object
         binder = new Binder<>(AbilityScores.class);
-        binder.forField(strField).bind(AbilityScores::getBaseStrength, AbilityScores::setBaseStrength);
+        binder.forField(strField).bind(scores -> scores.getStrength().getBaseValue(), (scores, v) -> scores.getStrength().setBaseValue(v));
 
         binder.readBean(attributes);
     }
