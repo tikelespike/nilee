@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 @Entity
 public class ConstantBaseValue<T> extends GameEntity implements PropertyBaseSupplier<T> {
 
+    // TODO: persist this somehow
     private T baseValue;
     private String sourceName;
 

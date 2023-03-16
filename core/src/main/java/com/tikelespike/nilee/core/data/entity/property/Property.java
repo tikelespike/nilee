@@ -50,7 +50,7 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
     private final Map<PropertyBaseSupplier<T>, Registration> baseRegistrations = new HashMap<>();
 
     @Transient
-    private Registration baseSelectorRegistration;
+    private Registration baseSelectorRegistration = Registration.getInvalid();
 
     @Transient
     private final EventBus eventBus = new EventBus();
@@ -73,7 +73,7 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}.
      */
     public Property(PropertyBaseSupplier<T> baseValueSupplier) {
-        this.baseValueSuppliers.add(baseValueSupplier);
+        addBaseValueSupplier(baseValueSupplier);
     }
 
 

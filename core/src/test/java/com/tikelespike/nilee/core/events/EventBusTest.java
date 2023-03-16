@@ -102,19 +102,6 @@ class EventBusTest {
         }
     }
 
-    private static class SimpleListener implements EventListener<Event> {
-        private int numCalls = 0;
-
-        @Override
-        public void onEvent(Event event) {
-            numCalls++;
-        }
-
-        public int getNumCalls() {
-            return numCalls;
-        }
-    }
-
     private static class MessageListener implements EventListener<TestEvent> {
         private int numCalls = 0;
         private String lastMessage;
