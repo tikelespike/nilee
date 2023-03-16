@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.core.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tikelespike.nilee.core.data.entity.character.PlayerCharacter;
 
 import javax.persistence.*;
 import java.util.Locale;

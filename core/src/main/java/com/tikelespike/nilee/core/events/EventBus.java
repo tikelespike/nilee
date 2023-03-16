@@ -51,6 +51,12 @@ public class EventBus {
         return typedEventListeners.remove(listener);
     }
 
+    protected <T extends Event> boolean unregisterAll(TypedEventListener<T> listener) {
+        boolean removed = typedEventListeners.contains(listener);
+        while (typedEventListeners.remove(listener)) {}
+        return removed;
+    }
+
     /**
      * Checks if a listener is still subscribed to this event bus. Should only be called by the {@link Registration}.
      * Use the registration object to check if a listener is still subscribed.
@@ -70,7 +76,7 @@ public class EventBus {
      *
      * @param event the event to be dispatched
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+        @SuppressWarnings({"unchecked", "rawtypes"})
     public void fireEvent(Event event) {
         // We have to do manual type checking here
         for (TypedEventListener typedListener : typedEventListeners) {

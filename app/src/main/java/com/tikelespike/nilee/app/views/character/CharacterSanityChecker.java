@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.app.views.character;
 
-import com.tikelespike.nilee.core.data.entity.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.html.Div;

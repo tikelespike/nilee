@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
-import com.tikelespike.nilee.core.data.entity.property.AbilityScores;
+import com.tikelespike.nilee.core.data.entity.character.stats.AbilityScores;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;

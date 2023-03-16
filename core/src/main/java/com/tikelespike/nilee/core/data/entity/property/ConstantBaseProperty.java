@@ -13,13 +13,12 @@ public class ConstantBaseProperty<T> extends Property<T> {
 
     public ConstantBaseProperty(T defaultBase, String description) {
         constantBaseValue = new ConstantBaseValue<>(defaultBase, description);
-        baseValueSuppliers.add(constantBaseValue);
+        addBaseValueSupplier(constantBaseValue);
     }
 
     public void setBaseValue(T baseValue) {
-        T oldValue = getValue();
         constantBaseValue.setBaseValue(baseValue);
-        notifyListeners(oldValue);
+        notifyListeners();
     }
 
     public T getBaseValue() {

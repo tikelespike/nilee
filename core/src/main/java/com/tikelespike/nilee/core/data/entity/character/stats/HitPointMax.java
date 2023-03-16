@@ -1,4 +1,6 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.data.entity.character.stats;
+
+import com.tikelespike.nilee.core.data.entity.property.Property;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -19,11 +21,11 @@ public class HitPointMax extends Property<Integer> {
     public HitPointMax(AbilityScore constitution) {
         this();
         base = new HPMaxBase(constitution);
-        baseValueSuppliers.add(base);
+        addBaseValueSupplier(base);
     }
 
     private void init() {
-        base.addValueChangeListener(event -> notifyListeners(getValueOnBase(event.getOldValue())));
+        base.addValueChangeListener(event -> notifyListeners());
     }
 
     public Property<Integer> getBaseValueProperty() {

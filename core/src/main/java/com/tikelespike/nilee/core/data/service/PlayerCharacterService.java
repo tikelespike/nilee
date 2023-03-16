@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.data.service;
 
-import com.tikelespike.nilee.core.data.entity.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.character.PlayerCharacter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

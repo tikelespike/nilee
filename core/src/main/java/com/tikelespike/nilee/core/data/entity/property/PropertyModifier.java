@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
+import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
+
 /**
  * Modifies the value of a {@link Property} by applying a transformation to it.
  * <p>
@@ -9,7 +11,7 @@ package com.tikelespike.nilee.core.data.entity.property;
  *
  * @param <T> the type of the value to modify
  */
-public interface PropertyModifier<T> {
+public interface PropertyModifier<T> extends UpdateSubject {
 
     /**
      * Applies a transformation to the given value and returns the result, which may not be null, but may be the same

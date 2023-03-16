@@ -15,6 +15,7 @@ node_modules/
 app/frontend/generated/
 pnpmfile.js
 vite.generated.ts
+frontend/
 
 # Browser drivers for local integration tests
 drivers/

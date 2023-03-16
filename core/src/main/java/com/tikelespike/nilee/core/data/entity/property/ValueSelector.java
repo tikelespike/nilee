@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
+import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +11,7 @@ import java.util.Optional;
  *
  * @param <T> the type of the values to select from
  */
-public interface ValueSelector<T> {
+public interface ValueSelector<T> extends UpdateSubject {
 
     /**
      * Chooses a value from the given list of values and returns it. The value in the returned optional must be one

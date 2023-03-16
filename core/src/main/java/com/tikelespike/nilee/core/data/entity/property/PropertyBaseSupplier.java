@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
+import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
+
 /**
  * Provides a base value for a property, and a description of where the value comes from and how it is calculated.
  * A base value is one that computes a value from scratch, as opposed to a {@link PropertyModifier modifier} which
@@ -10,7 +12,7 @@ package com.tikelespike.nilee.core.data.entity.property;
  *
  * @param <T> the type of the property value
  */
-public interface PropertyBaseSupplier<T> {
+public interface PropertyBaseSupplier<T> extends UpdateSubject {
 
     /**
      * Returns a base value as described by the implementing class.
