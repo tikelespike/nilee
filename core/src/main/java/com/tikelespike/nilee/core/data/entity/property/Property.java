@@ -3,6 +3,7 @@ package com.tikelespike.nilee.core.data.entity.property;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.GameEntity;
 import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeListener;
 import com.tikelespike.nilee.core.events.EventBus;
@@ -102,6 +103,7 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * There has to be at least
      * one base value supplier added before calling this method.
      * The selection strategy can be set using {@link #setBaseValueSelector(ValueSelector)}.
+     * This corresponds to the value of the property without any modifiers applied.
      *
      * @return the base value of this property, as selected by the base value selector
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
@@ -130,6 +132,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
     /**
      * Adds a modifier to this property. The modifier will be applied after the base value is calculated, and will
      * affect the end result retrieved by {@link #getValue()}. All modifiers are applied in the order they are added.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the modifier.
      *
      * @param modifier the modifier to add to this property
      */
@@ -143,6 +147,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
     /**
      * Removes a modifier from this property. The modifier will no longer affect the end result retrieved by
      * {@link #getValue()}. If the modifier was not previously added, this method has no effect.
+     * <p>
+     * Calling this method will trigger a value change event.
      *
      * @param modifier the modifier to remove from this property
      */
@@ -155,6 +161,7 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
 
     /**
      * Removes all modifiers from this property. The property will no longer be affected by any modifiers.
+     * Calling this method will trigger a value change event.
      */
     public void clearModifiers() {
         modifiers.clear();
@@ -180,6 +187,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * Adds a base value supplier to this property. The added supplier will provide a base value for the selection
      * strategy to choose from. The selection strategy can be set using
      * {@link #setBaseValueSelector(ValueSelector)}.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the base value supplier.
      *
      * @param baseValueSupplier the base value supplier to add to this property
      */
@@ -193,6 +202,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
     /**
      * Removes a base value supplier from this property. The removed supplier will no longer provide a base value for
      * the selection strategy to choose from. If the supplier was not previously added, this method has no effect.
+     * <p>
+     * Calling this method will trigger a value change event.
      *
      * @param baseValueSupplier the base value supplier to remove from this property
      */
@@ -208,6 +219,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * Sets the strategy used to select the base value from all base values provided by the base value suppliers.
      * Typical strategies include selecting the first value, the highest value, or the lowest value. The default is
      * {@link FirstValueSelector}.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the value selector.
      *
      * @param baseValueSelector the strategy selecting the base value from all base values provided by the base value
      *                          suppliers
@@ -231,7 +244,12 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
     /**
      * Registers a listener to be notified when the way this property is calculated changes. Specifically,
      * the listener will be notified when the base value changes, when a modifier is added or removed, or when the
-     * base value selector changes.
+     * base value selector changes. If the implementation of the modifiers and base value providers of this property
+     * notify this property when they change, the listener will also be called on those changes. However, it is not
+     * guaranteed that the listener will be called on every change, as the implementation of the modifiers and base
+     * value providers may not notify this property of every change. It is also not guaranteed that the new value
+     * will be different from the old value, since changes to the property may not affect the end result (for example,
+     * changes to a base value supplier that is not selected by the selection strategy).
      *
      * @param listener the listener to register
      * @return a registration object that can be used to unregister the listener
@@ -243,6 +261,9 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
         return eventBus.registerListener(ValueChangeEvent.class, (ValueChangeListener) listener);
     }
 
+    /**
+     * Notifies all {@link ValueChangeListener}s that the value of this property might have changed.
+     */
     protected void notifyListeners() {
         T newValue = getValue();
         eventBus.fireEvent(new ValueChangeEvent<>(lastKnownValue, newValue));
