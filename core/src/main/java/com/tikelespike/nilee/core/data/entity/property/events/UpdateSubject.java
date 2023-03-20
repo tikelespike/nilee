@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.data.entity.property.events;
 
+import com.tikelespike.nilee.core.data.entity.AbstractEntity;
+import com.tikelespike.nilee.core.data.entity.GameEntity;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
@@ -11,21 +13,26 @@ import com.tikelespike.nilee.core.events.Registration;
  * If a class is constant and never changes returned values, it may implement this interface without overriding
  * its default implementation, which is to simply ignore any observers (assuming no events will be fired anyway).
  */
-public interface UpdateSubject {
+public abstract class UpdateSubject extends GameEntity {
+
+    private final EventBus bus = new EventBus();
 
     /**
      * Registers a listener for {@link UpdateEvent UpdateEvents} fired by this subject. The implementation should
      * use an {@link EventBus} to register the listener, and return a corresponding {@link Registration} for the
-     * listener. The default implementation of this method is a convenience implementation for classes that would
-     * never fire update events anyway (because the values returned by their methods don't change) which simply
-     * ignores the listener.
+     * listener.
      *
      * @param listener the event listener to register to update events sent by this subject
      * @return a registration for the listener that can be used to unregister the listener
      */
-    default Registration addUpdateListener(EventListener<UpdateEvent> listener) {
-        // this default implementation is a convenience implementation for classes that would never fire update events
-        // anyway, so they don't have to implement this method
-        return new EventBus().registerListener(UpdateEvent.class, listener);
+    public Registration addUpdateListener(EventListener<UpdateEvent> listener) {
+        return bus.registerListener(UpdateEvent.class, listener);
+    }
+
+    /**
+     * Fires an {@link UpdateEvent} on the {@link EventBus} of this subject.
+     */
+    protected void update() {
+        bus.fireEvent(new UpdateEvent());
     }
 }

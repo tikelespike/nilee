@@ -9,13 +9,11 @@ import javax.persistence.OneToOne;
 @Entity
 public class AbilityScores extends AbstractEntity {
 
-    public static final int DEFAULT_STRENGTH = 10;
-
     @OneToOne(cascade = CascadeType.ALL)
     private AbilityScore strength;
 
     public AbilityScores() {
-        this.strength = new AbilityScore(DEFAULT_STRENGTH, "Strength");
+        this.strength = AbilityScore.strength();
     }
 
     public AbilityScore getStrength() {

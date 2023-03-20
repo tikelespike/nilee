@@ -5,6 +5,8 @@ import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 
+import javax.persistence.Entity;
+
 /**
  * Provides a base value for a property, and a description of where the value comes from and how it is calculated.
  * A base value is one that computes a value from scratch, as opposed to a {@link PropertyModifier modifier} which
@@ -20,7 +22,8 @@ import com.tikelespike.nilee.core.events.EventListener;
  *
  * @param <T> the type of the property value
  */
-public interface PropertyBaseSupplier<T> extends UpdateSubject {
+@Entity
+public abstract class PropertyBaseSupplier<T> extends UpdateSubject {
 
     /**
      * Returns a base value as described by the implementing class. This value may be constant or may change over time.
@@ -30,7 +33,7 @@ public interface PropertyBaseSupplier<T> extends UpdateSubject {
      *
      * @return the base value. May not be null.
      */
-    T getBaseValue();
+    public abstract T getBaseValue();
 
     /**
      * Returns an abstract description of how the base value is computed in {@link #getBaseValue()}. This description
@@ -44,7 +47,7 @@ public interface PropertyBaseSupplier<T> extends UpdateSubject {
      *
      * @return a description of the base value computation (e.g. "10 + DEX")
      */
-    String getAbstractDescription();
+    public abstract String getAbstractDescription();
 
     /**
      * Returns a short name describing the implementing class. This name should be suitable for display in a user
@@ -55,5 +58,5 @@ public interface PropertyBaseSupplier<T> extends UpdateSubject {
      *
      * @return a short name describing the implementing class (e.g. "Leather Armor")
      */
-    String getSourceName();
+    public abstract String getSourceName();
 }

@@ -22,7 +22,7 @@ import java.util.Optional;
  *
  * @param <T> the type of the values to select from
  */
-public interface ValueSelector<T> extends UpdateSubject {
+public abstract class ValueSelector<T> extends UpdateSubject {
 
     /**
      * Chooses a value from the given list of values and returns it. The value in the returned optional must be one
@@ -39,5 +39,5 @@ public interface ValueSelector<T> extends UpdateSubject {
      * @param values the list of values to select from. The returned value must be one of these values.
      * @return an optional containing one of the values from the list, or an empty optional if the list is empty
      */
-    Optional<T> select(List<T> values);
+    public abstract Optional<T> select(List<T> values);
 }

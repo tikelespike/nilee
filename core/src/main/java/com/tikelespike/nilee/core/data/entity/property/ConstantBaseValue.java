@@ -1,14 +1,12 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
-import com.tikelespike.nilee.core.data.entity.GameEntity;
-
 import javax.persistence.Entity;
 
 /**
  * A {@link PropertyBaseSupplier} that wraps a constant value that can be accessed with getters and setters.
  */
 @Entity
-public class ConstantBaseValue<T> extends GameEntity implements PropertyBaseSupplier<T> {
+public class ConstantBaseValue<T> extends PropertyBaseSupplier<T> {
 
     // TODO: persist this somehow
     private T baseValue;
@@ -45,6 +43,7 @@ public class ConstantBaseValue<T> extends GameEntity implements PropertyBaseSupp
      */
     public void setBaseValue(T baseValue) {
         this.baseValue = baseValue;
+        update();
     }
 
     @Override
@@ -66,5 +65,6 @@ public class ConstantBaseValue<T> extends GameEntity implements PropertyBaseSupp
      */
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+        update();
     }
 }

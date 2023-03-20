@@ -12,7 +12,7 @@ import java.util.Optional;
  * @param <T> the type of the values to select from
  */
 @Entity
-public class FirstValueSelector<T> extends GameEntity implements ValueSelector<T> {
+public class FirstValueSelector<T> extends ValueSelector<T> {
 
     @Override
     public Optional<T> select(List<T> values) {

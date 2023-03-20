@@ -18,7 +18,6 @@ public class ConstantBaseProperty<T> extends Property<T> {
 
     public void setDefaultBaseValue(T baseValue) {
         constantBaseValue.setBaseValue(baseValue);
-        notifyListeners();
     }
 
     public T getDefaultBaseValue() {

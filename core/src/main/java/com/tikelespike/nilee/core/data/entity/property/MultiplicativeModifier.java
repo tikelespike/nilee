@@ -1,13 +1,12 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.events.EventBus;
+import javax.persistence.Entity;
 
-public class MultiplicativeModifier implements PropertyModifier<Integer> {
+@Entity
+public class MultiplicativeModifier extends PropertyModifier<Integer> {
 
     private int factor;
     private String source;
-    private final EventBus eventBus = new EventBus();
 
     public MultiplicativeModifier() {
         this(1, "");
@@ -40,7 +39,7 @@ public class MultiplicativeModifier implements PropertyModifier<Integer> {
 
     public void setFactor(int factor) {
         this.factor = factor;
-        eventBus.fireEvent(new UpdateEvent());
+        update();
     }
 
     public int getFactor() {
@@ -49,7 +48,7 @@ public class MultiplicativeModifier implements PropertyModifier<Integer> {
 
     public void setSource(String source) {
         this.source = source;
-        eventBus.fireEvent(new UpdateEvent());
+        update();
     }
 
     public String getSource() {

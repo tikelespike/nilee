@@ -10,7 +10,7 @@ import javax.persistence.OneToOne;
 public class HitPointMax extends Property<Integer> {
 
     @OneToOne
-    private HPMaxBase base;
+    private HPMaxBaseProperty base;
 
     /**
      * Default constructor for JPA. Do not use.
@@ -21,8 +21,8 @@ public class HitPointMax extends Property<Integer> {
 
     public HitPointMax(AbilityScore constitution) {
         this();
-        base = new HPMaxBase(constitution);
-        addBaseValueSupplier(base);
+        base = new HPMaxBaseProperty(constitution);
+        addBaseValueSupplier(new HPMaxBaseSupplier(base));
     }
 
     private void init() {
@@ -33,11 +33,11 @@ public class HitPointMax extends Property<Integer> {
         return base;
     }
 
-    private void setBase(HPMaxBase base) {
+    private void setBase(HPMaxBaseProperty base) {
         this.base = base;
     }
 
-    private HPMaxBase getBase() {
+    private HPMaxBaseProperty getBase() {
         return base;
     }
 }

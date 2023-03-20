@@ -1,16 +1,12 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.events.EventBus;
-import com.tikelespike.nilee.core.events.EventListener;
-import com.tikelespike.nilee.core.events.Registration;
+import javax.persistence.Entity;
 
-public class AdditiveModifier implements PropertyModifier<Integer> {
+@Entity
+public class AdditiveModifier extends PropertyModifier<Integer> {
 
     private int offset;
     private String source;
-
-    private final EventBus eventBus = new EventBus();
 
     public AdditiveModifier() {
         this(0, "");
@@ -43,7 +39,7 @@ public class AdditiveModifier implements PropertyModifier<Integer> {
 
     public void setOffset(int offset) {
         this.offset = offset;
-        eventBus.fireEvent(new UpdateEvent());
+        update();
     }
 
     public int getOffset() {
@@ -52,15 +48,10 @@ public class AdditiveModifier implements PropertyModifier<Integer> {
 
     public void setSource(String source) {
         this.source = source;
-        eventBus.fireEvent(new UpdateEvent());
+        update();
     }
 
     public String getSource() {
         return source;
-    }
-
-    @Override
-    public Registration addUpdateListener(EventListener<UpdateEvent> listener) {
-        return eventBus.registerListener(UpdateEvent.class, listener);
     }
 }

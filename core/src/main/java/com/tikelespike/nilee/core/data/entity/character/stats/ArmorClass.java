@@ -31,7 +31,7 @@ public class ArmorClass extends Property<Integer> {
      *
      * @param dex the dexterity property of the character whose armor class this is referring to
      */
-    public ArmorClass(Property<Integer> dex) {
+    public ArmorClass(AbilityScore dex) {
         this();
         this.dex = dex;
         addBaseValueSupplier(new DefaultAC(dex));

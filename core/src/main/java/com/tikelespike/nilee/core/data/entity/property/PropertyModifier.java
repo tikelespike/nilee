@@ -20,7 +20,7 @@ import com.tikelespike.nilee.core.events.EventListener;
  *
  * @param <T> the type of the value to modify
  */
-public interface PropertyModifier<T> extends UpdateSubject {
+public abstract class PropertyModifier<T> extends UpdateSubject {
 
     /**
      * Applies a transformation to the given value and returns the result, which may not be null, but may be the same
@@ -36,7 +36,7 @@ public interface PropertyModifier<T> extends UpdateSubject {
      * @param value the value to modify. Not null.
      * @return the modified value. May not be null. May be the same as the input value.
      */
-    T apply(T value);
+    public abstract T apply(T value);
 
     /**
      * An abstract description of the transformation applied by the implementing class. This description should be
@@ -55,7 +55,7 @@ public interface PropertyModifier<T> extends UpdateSubject {
      * @return a description of the transformation applied by the implementing class which may contain variable names
      * (e.g. "+ DEX")
      */
-    String getAbstractDescription();
+    public abstract String getAbstractDescription();
 
     /**
      * A concrete description of the transformation applied by the implementing class. This description should be
@@ -75,7 +75,7 @@ public interface PropertyModifier<T> extends UpdateSubject {
      * @return a description of the transformation applied by the implementing class that does not contain variable
      * names (e.g. "+ 2")
      */
-    String getConcreteDescription();
+    public abstract String getConcreteDescription();
 
     /**
      * Returns a short name describing the semantics of the implementing class.
@@ -88,5 +88,5 @@ public interface PropertyModifier<T> extends UpdateSubject {
      *
      * @return a short name describing the implementing class (e.g. "Leather Armor")
      */
-    String getSourceName();
+    public abstract String getSourceName();
 }

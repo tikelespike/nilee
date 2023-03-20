@@ -10,7 +10,7 @@ import java.util.Optional;
  * A {@link ValueSelector} that always returns the highest value in the list.
  */
 @Entity
-public class MaxValueSelector<T extends Comparable<T>> extends GameEntity implements ValueSelector<T> {
+public class MaxValueSelector<T extends Comparable<T>> extends ValueSelector<T> {
 
     @Override
     public Optional<T> select(List<T> values) {
