@@ -16,12 +16,12 @@ public class ConstantBaseProperty<T> extends Property<T> {
         addBaseValueSupplier(constantBaseValue);
     }
 
-    public void setBaseValue(T baseValue) {
+    public void setDefaultBaseValue(T baseValue) {
         constantBaseValue.setBaseValue(baseValue);
         notifyListeners();
     }
 
-    public T getBaseValue() {
+    public T getDefaultBaseValue() {
         return constantBaseValue.getBaseValue();
     }
 }

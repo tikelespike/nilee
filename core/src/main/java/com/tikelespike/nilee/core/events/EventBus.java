@@ -1,7 +1,9 @@
 package com.tikelespike.nilee.core.events;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A generic subject of the observer pattern. It allows to register listeners for specific event types, and firing
@@ -33,8 +35,10 @@ public class EventBus {
      * @param <T>       the type of the event the listener processes (has to be a superclass of {@code eventType})
      * @return a registration object that can be used to unregister the listener
      */
-    public <T extends Event> Registration registerListener(Class<? extends T> eventType, EventListener<T> listener) {
-        TypedEventListener<T> typedListener = new TypedEventListener<>(eventType, listener);
+    public <T extends Event> Registration registerListener(@NotNull Class<? extends T> eventType,
+                                                           @NotNull EventListener<T> listener) {
+        TypedEventListener<T> typedListener = new TypedEventListener<>(Objects.requireNonNull(eventType),
+            Objects.requireNonNull(listener));
         typedEventListeners.add(typedListener);
         return new Registration(this, typedListener);
     }
@@ -47,13 +51,15 @@ public class EventBus {
      * @param <T>      the type of the event the listener processes
      * @return true if the listener was removed, false if it was not registered
      */
-    protected <T extends Event> boolean unregister(TypedEventListener<T> listener) {
-        return typedEventListeners.remove(listener);
+    protected <T extends Event> boolean unregister(@NotNull TypedEventListener<T> listener) {
+        return typedEventListeners.remove(Objects.requireNonNull(listener));
     }
 
-    protected <T extends Event> boolean unregisterAll(TypedEventListener<T> listener) {
+    protected <T extends Event> boolean unregisterAll(@NotNull TypedEventListener<T> listener) {
+        Objects.requireNonNull(listener);
         boolean removed = typedEventListeners.contains(listener);
-        while (typedEventListeners.remove(listener)) {}
+        while (typedEventListeners.remove(listener)) {
+        }
         return removed;
     }
 
@@ -62,7 +68,7 @@ public class EventBus {
      * Use the registration object to check if a listener is still subscribed.
      *
      * @param listener the listener to check
-     * @param <T>     the type of the event the listener processes
+     * @param <T>      the type of the event the listener processes
      * @return true if the listener is (still) subscribed, false if it is not (no longer) subscribed
      */
     protected <T extends Event> boolean isSubscribed(TypedEventListener<T> listener) {
@@ -76,8 +82,9 @@ public class EventBus {
      *
      * @param event the event to be dispatched
      */
-        @SuppressWarnings({"unchecked", "rawtypes"})
-    public void fireEvent(Event event) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void fireEvent(@NotNull Event event) {
+        Objects.requireNonNull(event);
         // We have to do manual type checking here
         for (TypedEventListener typedListener : typedEventListeners) {
             if (typedListener.eventType().isInstance(event)) {

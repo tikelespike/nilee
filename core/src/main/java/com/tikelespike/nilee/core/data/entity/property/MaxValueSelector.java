@@ -1,7 +1,6 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.data.entity.property;
 
 import com.tikelespike.nilee.core.data.entity.GameEntity;
-import com.tikelespike.nilee.core.data.entity.property.ValueSelector;
 
 import javax.persistence.Entity;
 import java.util.List;

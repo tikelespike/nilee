@@ -3,19 +3,14 @@ package com.tikelespike.nilee.core.data.entity.property;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.GameEntity;
 import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeEvent;
-import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeListener;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values
@@ -73,8 +68,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      *
      * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}.
      */
-    public Property(PropertyBaseSupplier<T> baseValueSupplier) {
-        addBaseValueSupplier(baseValueSupplier);
+    public Property(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        addBaseValueSupplier(Objects.requireNonNull(baseValueSupplier));
     }
 
 
@@ -137,7 +132,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      *
      * @param modifier the modifier to add to this property
      */
-    public void addModifier(PropertyModifier<T> modifier) {
+    public void addModifier(@NotNull PropertyModifier<T> modifier) {
+        Objects.requireNonNull(modifier);
         Registration registration = modifier.addUpdateListener(this);
         modifiers.add(modifier);
         modifierRegistrations.put(modifier, registration);
@@ -152,7 +148,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      *
      * @param modifier the modifier to remove from this property
      */
-    public void removeModifier(PropertyModifier<T> modifier) {
+    public void removeModifier(@NotNull PropertyModifier<T> modifier) {
+        Objects.requireNonNull(modifier);
         modifiers.remove(modifier);
         modifierRegistrations.get(modifier).unregisterAll();
         modifierRegistrations.remove(modifier);
@@ -192,7 +189,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      *
      * @param baseValueSupplier the base value supplier to add to this property
      */
-    public void addBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
+    public void addBaseValueSupplier(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        Objects.requireNonNull(baseValueSupplier);
         Registration registration = baseValueSupplier.addUpdateListener(this);
         baseValueSuppliers.add(baseValueSupplier);
         baseRegistrations.put(baseValueSupplier, registration);
@@ -207,7 +205,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      *
      * @param baseValueSupplier the base value supplier to remove from this property
      */
-    public void removeBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
+    public void removeBaseValueSupplier(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        Objects.requireNonNull(baseValueSupplier);
         baseValueSuppliers.remove(baseValueSupplier);
         baseRegistrations.get(baseValueSupplier).unregisterAll();
         baseRegistrations.remove(baseValueSupplier);
@@ -225,7 +224,8 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * @param baseValueSelector the strategy selecting the base value from all base values provided by the base value
      *                          suppliers
      */
-    public void setBaseValueSelector(ValueSelector<T> baseValueSelector) {
+    public void setBaseValueSelector(@NotNull ValueSelector<T> baseValueSelector) {
+        Objects.requireNonNull(baseValueSelector);
         this.baseValueSelector = baseValueSelector;
         baseSelectorRegistration.unregisterAll();
         this.baseSelectorRegistration = baseValueSelector.addUpdateListener(this);
@@ -255,14 +255,15 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * @return a registration object that can be used to unregister the listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Registration addValueChangeListener(ValueChangeListener<T> listener) {
+    public Registration addValueChangeListener(@NotNull EventListener<ValueChangeEvent<T>> listener) {
+        Objects.requireNonNull(listener);
         // requires this class to only send value change events of type T, otherwise, the listeners will also be
         // triggered by value change events of other type, which will cause a class cast exception
-        return eventBus.registerListener(ValueChangeEvent.class, (ValueChangeListener) listener);
+        return eventBus.registerListener(ValueChangeEvent.class, (EventListener) listener);
     }
 
     /**
-     * Notifies all {@link ValueChangeListener}s that the value of this property might have changed.
+     * Notifies all listeners that the value of this property might have changed.
      */
     protected void notifyListeners() {
         T newValue = getValue();

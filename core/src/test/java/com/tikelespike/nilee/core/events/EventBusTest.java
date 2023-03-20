@@ -21,28 +21,28 @@ class EventBusTest {
     }
 
     @Test
-    public void testSingleListenerSingleEvent() {
+    public void test_singleListenerSingleEvent() {
         bus.registerListener(Event.class, simpleListener);
         bus.fireEvent(new Event());
         assertEquals(simpleListener.getNumCalls(), 1, "Listener should have been called");
     }
 
     @Test
-    public void testNotCalledOnUnsubscribedEvent() {
+    public void test_notCalledOnUnsubscribedEvent() {
         bus.registerListener(TestEvent.class, simpleListener);
         bus.fireEvent(new Event());
         assertEquals(simpleListener.getNumCalls(), 0, "Listener should not have been called by unsubscribed event type");
     }
 
     @Test
-    public void testCalledOnSubclassEvent() {
+    public void test_calledOnSubclassEvent() {
         bus.registerListener(Event.class, simpleListener);
         bus.fireEvent(new TestEvent("test"));
         assertEquals(simpleListener.getNumCalls(), 1, "Listener should have been called because it subscribed to all events, specifically the subclass");
     }
 
     @Test
-    public void testMultipleListeners() {
+    public void test_multipleListeners() {
         bus.registerListener(TestEvent.class, simpleListener);
         bus.registerListener(TestEvent.class, messageListener);
         bus.fireEvent(new TestEvent("test"));
@@ -52,7 +52,7 @@ class EventBusTest {
     }
 
     @Test
-    public void testMultipleRegistration() {
+    public void test_multipleRegistration() {
         bus.registerListener(Event.class, simpleListener);
         bus.registerListener(Event.class, simpleListener);
         bus.fireEvent(new Event());
@@ -60,7 +60,7 @@ class EventBusTest {
     }
 
     @Test
-    public void testUnsubscribe() {
+    public void test_unsubscribe() {
         Registration registration = bus.registerListener(Event.class, simpleListener);
         registration.unregister();
         bus.fireEvent(new Event());
@@ -68,7 +68,7 @@ class EventBusTest {
     }
 
     @Test
-    public void testUnsubscribeMultiple() {
+    public void test_unsubscribeMultiple() {
         Registration registration = bus.registerListener(Event.class, simpleListener);
         Registration registration2 = bus.registerListener(Event.class, simpleListener);
         registration.unregister();
@@ -80,7 +80,7 @@ class EventBusTest {
     }
 
     @Test
-    public void testRegistrationValidity() {
+    public void test_registrationValidity() {
         Registration registration = bus.registerListener(Event.class, simpleListener);
         assertTrue(registration.isActive(), "Registration should be active before unregistering");
         boolean success = registration.unregister();
@@ -88,6 +88,13 @@ class EventBusTest {
         assertFalse(registration.isActive(), "Registration should not be active after unregistering");
         success = registration.unregister();
         assertFalse(success, "Unregistering should not have been successful because already unregistered");
+    }
+
+    @Test
+    public void test_nullValues() {
+        assertThrows(NullPointerException.class, () -> bus.registerListener(null, simpleListener));
+        assertThrows(NullPointerException.class, () -> bus.registerListener(Event.class, null));
+        assertThrows(NullPointerException.class, () -> bus.fireEvent(null));
     }
 
     private static class TestEvent extends Event {
