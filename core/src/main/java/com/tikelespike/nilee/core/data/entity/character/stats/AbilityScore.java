@@ -5,7 +5,7 @@ import com.tikelespike.nilee.core.data.entity.property.ConstantBaseProperty;
 import javax.persistence.Entity;
 
 @Entity
-public class AbilityScore extends ConstantBaseProperty<Integer> {
+public class AbilityScore extends ConstantBaseProperty {
 
     private static final int DEFAULT_VALUE = 10;
 

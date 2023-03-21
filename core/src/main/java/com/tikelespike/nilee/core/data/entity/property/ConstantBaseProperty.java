@@ -1,26 +1,28 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Entity
-public class ConstantBaseProperty<T> extends Property<T> {
+public class ConstantBaseProperty extends Property<Integer> {
 
-    private final ConstantBaseValue<T> constantBaseValue;
+    @OneToOne
+    private final ConstantBaseValue constantBaseValue;
 
     protected ConstantBaseProperty() {
         constantBaseValue = null;
     }
 
-    public ConstantBaseProperty(T defaultBase, String description) {
-        constantBaseValue = new ConstantBaseValue<>(defaultBase, description);
+    public ConstantBaseProperty(int defaultBase, String description) {
+        constantBaseValue = new ConstantBaseValue(defaultBase, description);
         addBaseValueSupplier(constantBaseValue);
     }
 
-    public void setDefaultBaseValue(T baseValue) {
-        constantBaseValue.setBaseValue(baseValue);
+    public void setDefaultBaseValue(int baseValue) {
+        constantBaseValue.setDefaultBaseValue(baseValue);
     }
 
-    public T getDefaultBaseValue() {
+    public int getDefaultBaseValue() {
         return constantBaseValue.getBaseValue();
     }
 }

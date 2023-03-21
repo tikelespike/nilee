@@ -6,6 +6,9 @@ import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
 
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 /**
  * A subject that can fire {@link UpdateEvent UpdateEvents}. If a class implements this interface, it means that it
  * should accept listeners for update events, and fire update events when appropriate.

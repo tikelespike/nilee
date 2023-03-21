@@ -12,13 +12,13 @@ class PropertyTest {
     private static final int TEST_VALUE = 42;
 
     // CUT
-    private ConstantBaseProperty<Integer> property;
+    private ConstantBaseProperty property;
 
     private EventStoreListener<ValueChangeEvent<Integer>> listener;
 
     @BeforeEach
     void setUp() {
-        property = new ConstantBaseProperty<>(TEST_VALUE, "Test property");
+        property = new ConstantBaseProperty(TEST_VALUE, "Test property");
         property.setBaseValueSelector(new MaxValueSelector<>());
 
         listener = new EventStoreListener<>();
@@ -32,7 +32,7 @@ class PropertyTest {
 
     @Test
     void test_multipleBase_noModifiers() {
-        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2"));
+        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, "Test base 2"));
         assertEquals(TEST_VALUE + 1, property.getValue());
         assertEquals(TEST_VALUE + 1, property.getBaseValue());
     }
@@ -54,7 +54,7 @@ class PropertyTest {
 
     @Test
     void test_multipleBase_multipleModifiers() {
-        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2"));
+        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, "Test base 2"));
         property.addModifier(new AdditiveModifier(1, "Add 1 mod"));
         property.addModifier(new MultiplicativeModifier(2, "x2 mod"));
         assertEquals((TEST_VALUE + 1 + 1) * 2, property.getValue());
@@ -63,7 +63,7 @@ class PropertyTest {
 
     @Test
     void test_changeSelector() {
-        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2"));
+        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, "Test base 2"));
         property.addModifier(new AdditiveModifier(1, "Add 1 mod"));
         assertEquals(TEST_VALUE + 2, property.getValue());
         assertEquals(TEST_VALUE + 1, property.getBaseValue());
@@ -75,7 +75,7 @@ class PropertyTest {
 
     @Test
     void test_removeBaseValueSupplier() {
-        ConstantBaseValue<Integer> base = new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2");
+        ConstantBaseValue base = new ConstantBaseValue(TEST_VALUE + 1, "Test base 2");
         property.addBaseValueSupplier(base);
         property.addModifier(new MultiplicativeModifier(2, "x2 mod"));
         assertEquals((TEST_VALUE + 1) * 2, property.getValue());
@@ -102,7 +102,7 @@ class PropertyTest {
 
     @Test
     void test_selectorChangeEvent() {
-        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2"));
+        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, "Test base 2"));
         property.addValueChangeListener(listener);
         property.setBaseValueSelector(new FirstValueSelector<>());
         ValueChangeEvent<Integer> event = listener.getLatestEvent();
@@ -114,7 +114,7 @@ class PropertyTest {
     @Test
     void test_newBaseSupplierEvent() {
         property.addValueChangeListener(listener);
-        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2"));
+        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, "Test base 2"));
         ValueChangeEvent<Integer> event = listener.getLatestEvent();
         assertNotNull(event, "Event should be fired when base supplier is added");
         assertEquals(TEST_VALUE, event.getOldValue(), "Old value should be the value before the base supplier addition");
@@ -123,7 +123,7 @@ class PropertyTest {
 
     @Test
     void test_removeBaseSupplierEvent() {
-        PropertyBaseSupplier<Integer> base = new ConstantBaseValue<>(TEST_VALUE + 1, "Test base 2");
+        PropertyBaseSupplier<Integer> base = new ConstantBaseValue(TEST_VALUE + 1, "Test base 2");
         property.addBaseValueSupplier(base);
         property.addValueChangeListener(listener);
         property.removeBaseValueSupplier(base);
