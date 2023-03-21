@@ -2,6 +2,7 @@ package com.tikelespike.nilee.core.data.entity.property;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.GameEntity;
+import com.tikelespike.nilee.core.data.entity.property.convenience.FirstValueSelector;
 import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.events.EventBus;

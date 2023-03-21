@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.data.entity.character.stats;
 
-import com.tikelespike.nilee.core.data.entity.property.ConstantBaseProperty;
+import com.tikelespike.nilee.core.data.entity.property.convenience.ConstantBaseProperty;
 
 import javax.persistence.Entity;
 

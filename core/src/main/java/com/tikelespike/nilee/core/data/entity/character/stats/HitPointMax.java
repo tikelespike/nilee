@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.data.entity.character.stats;
 
-import com.tikelespike.nilee.core.data.entity.property.MaxValueSelector;
+import com.tikelespike.nilee.core.data.entity.property.convenience.MaxValueSelector;
 import com.tikelespike.nilee.core.data.entity.property.Property;
 
 import javax.persistence.Entity;

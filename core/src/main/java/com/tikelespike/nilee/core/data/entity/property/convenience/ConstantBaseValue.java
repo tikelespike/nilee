@@ -1,4 +1,6 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.data.entity.property.convenience;
+
+import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
 
 import javax.persistence.Entity;
 
