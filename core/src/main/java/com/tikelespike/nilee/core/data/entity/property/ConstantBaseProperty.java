@@ -1,12 +1,13 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
 public class ConstantBaseProperty extends Property<Integer> {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private final ConstantBaseValue constantBaseValue;
 
     protected ConstantBaseProperty() {
