@@ -4,6 +4,7 @@ import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
 
 @Entity
 public class HitPoints extends AbstractEntity {
@@ -14,7 +15,6 @@ public class HitPoints extends AbstractEntity {
     private int temporaryHitPoints;
 
     protected HitPoints() {
-        init();
     }
 
     public HitPoints(AbilityScore constitution) {
@@ -61,6 +61,11 @@ public class HitPoints extends AbstractEntity {
     public void reset() {
         currentHitPoints = maxHitPoints.getValue();
         temporaryHitPoints = 0;
+    }
+
+    @PostLoad
+    private void postLoad() {
+        init();
     }
 
     private void init() {
