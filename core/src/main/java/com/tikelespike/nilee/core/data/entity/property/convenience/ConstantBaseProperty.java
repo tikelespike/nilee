@@ -2,11 +2,10 @@ package com.tikelespike.nilee.core.data.entity.property.convenience;
 
 import com.tikelespike.nilee.core.data.entity.property.Property;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class ConstantBaseProperty extends Property<Integer> {
 
     @OneToOne(cascade = CascadeType.ALL)

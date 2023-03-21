@@ -28,6 +28,7 @@ import java.util.*;
  * @param <T> the type of the value (typically, an integer or a dice roll like 3d4)
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Property<T> extends AbstractEntity implements EventListener<UpdateEvent> {
 
     @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
