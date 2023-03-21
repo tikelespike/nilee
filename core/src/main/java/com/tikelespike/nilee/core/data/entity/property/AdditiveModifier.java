@@ -5,21 +5,21 @@ import javax.persistence.Entity;
 @Entity
 public class AdditiveModifier extends PropertyModifier<Integer> {
 
-    private int offset;
+    private int bonus;
     private String source;
 
     public AdditiveModifier() {
         this(0, "");
     }
 
-    public AdditiveModifier(int offset, String source) {
-        this.offset = offset;
+    public AdditiveModifier(int bonus, String source) {
+        this.bonus = bonus;
         this.source = source;
     }
 
     @Override
     public Integer apply(Integer value) {
-        return value == null ? null : value + offset;
+        return value == null ? null : value + bonus;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
 
     @Override
     public String getConcreteDescription() {
-        return "+ " + offset;
+        return "+ " + bonus;
     }
 
     @Override
@@ -37,13 +37,13 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
         return source;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public void setBonus(int offset) {
+        this.bonus = offset;
         update();
     }
 
-    public int getOffset() {
-        return offset;
+    public int getBonus() {
+        return bonus;
     }
 
     public void setSource(String source) {

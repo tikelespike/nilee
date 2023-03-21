@@ -170,7 +170,7 @@ class PropertyTest {
         AdditiveModifier modifier = new AdditiveModifier(1, "Test modifier");
         property.addModifier(modifier);
         property.addValueChangeListener(listener);
-        modifier.setOffset(2);
+        modifier.setBonus(2);
         ValueChangeEvent<Integer> event = listener.getLatestEvent();
         assertNotNull(event, "Event should be fired when modifier value is changed");
         assertEquals(TEST_VALUE + 1, event.getOldValue(), "Old value should be the value before the modifier value change");
