@@ -1,5 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.data.entity.character.stats.hitpoints;
 
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScoreBaseSupplier;
 import com.tikelespike.nilee.core.data.entity.property.convenience.MaxValueSelector;
 import com.tikelespike.nilee.core.data.entity.property.Property;
 
@@ -10,7 +12,7 @@ import javax.persistence.OneToOne;
 public class HitPointMax extends Property<Integer> {
 
     @OneToOne
-    private HPMaxBaseProperty base;
+    private Property<Integer> base;
 
     /**
      * Default constructor for JPA. Do not use.
@@ -21,23 +23,23 @@ public class HitPointMax extends Property<Integer> {
 
     public HitPointMax(AbilityScore constitution) {
         this();
-        base = new HPMaxBaseProperty(constitution);
+        base = new Property<>(new AbilityScoreBaseSupplier(constitution));
         addBaseValueSupplier(new HPMaxBaseSupplier(base));
-    }
-
-    private void init() {
-        base.addValueChangeListener(event -> notifyListeners());
     }
 
     public Property<Integer> getBaseValueProperty() {
         return base;
     }
 
-    private void setBase(HPMaxBaseProperty base) {
+
+
+    // JPA setters and getters
+
+    private void setBase(Property<Integer> base) {
         this.base = base;
     }
 
-    private HPMaxBaseProperty getBase() {
+    private Property<Integer> getBase() {
         return base;
     }
 }

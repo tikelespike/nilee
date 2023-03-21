@@ -3,7 +3,7 @@ package com.tikelespike.nilee.core.data.entity.character;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.User;
-import com.tikelespike.nilee.core.data.entity.character.stats.AbilityScores;
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScores;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

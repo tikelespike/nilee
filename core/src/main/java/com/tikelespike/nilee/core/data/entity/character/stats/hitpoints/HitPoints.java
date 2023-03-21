@@ -1,6 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.data.entity.character.stats.hitpoints;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -28,6 +29,7 @@ public class HitPoints extends AbstractEntity {
         return maxHitPoints;
     }
 
+    // JPA only
     private void setMaxHitPoints(HitPointMax maxHitPoints) {
         this.maxHitPoints = maxHitPoints;
     }
@@ -58,10 +60,6 @@ public class HitPoints extends AbstractEntity {
         currentHitPoints = Math.min(currentHitPoints + healing, maxHitPoints.getValue());
     }
 
-    public void reset() {
-        currentHitPoints = maxHitPoints.getValue();
-        temporaryHitPoints = 0;
-    }
 
     @PostLoad
     private void postLoad() {

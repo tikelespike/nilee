@@ -1,4 +1,4 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.data.entity.character.stats.ability;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 

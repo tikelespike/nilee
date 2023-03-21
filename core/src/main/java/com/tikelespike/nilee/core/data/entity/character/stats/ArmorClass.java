@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.core.data.entity.character.stats;
 
 import com.tikelespike.nilee.core.content.core.DefaultAC;
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.data.entity.property.convenience.MaxValueSelector;
 import com.tikelespike.nilee.core.data.entity.property.Property;
 

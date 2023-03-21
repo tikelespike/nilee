@@ -1,4 +1,4 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.data.entity.character.stats.hitpoints;
 
 import com.tikelespike.nilee.core.data.entity.property.Property;
 import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
@@ -34,7 +34,10 @@ public class HPMaxBaseSupplier extends PropertyBaseSupplier<Integer> {
         return "Base Hit Point Max";
     }
 
-    public Property<Integer> getHpMaxBaseProperty() {
+
+    // JPA setters and getters
+
+    private Property<Integer> getHpMaxBaseProperty() {
         return hpMaxBaseProperty;
     }
 

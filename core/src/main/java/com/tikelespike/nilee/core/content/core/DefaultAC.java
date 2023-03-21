@@ -1,7 +1,6 @@
 package com.tikelespike.nilee.core.content.core;
 
-import com.tikelespike.nilee.core.data.entity.character.stats.AbilityScore;
-import com.tikelespike.nilee.core.data.entity.property.Property;
+import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
 
 /**
