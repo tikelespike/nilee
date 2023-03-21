@@ -266,7 +266,7 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
      * Notifies all listeners that the value of this property might have changed.
      */
     protected void notifyListeners() {
-        T newValue = getValue();
+        T newValue = baseValueSuppliers.isEmpty() ? null : getValue();
         eventBus.fireEvent(new ValueChangeEvent<>(lastKnownValue, newValue));
         lastKnownValue = newValue;
     }
