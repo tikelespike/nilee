@@ -5,13 +5,14 @@ import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilitySco
 import com.tikelespike.nilee.core.data.entity.property.convenience.MaxValueSelector;
 import com.tikelespike.nilee.core.data.entity.property.Property;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
 public class HitPointMax extends Property<Integer> {
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Property<Integer> base;
 
     /**

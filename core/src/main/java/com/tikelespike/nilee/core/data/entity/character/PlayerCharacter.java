@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScores;
+import com.tikelespike.nilee.core.data.entity.character.stats.hitpoints.HitPoints;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -21,13 +22,15 @@ public class PlayerCharacter extends AbstractEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private AbilityScores abilityScores;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private HitPoints hitPoints;
+
     private String name;
-    private int hitPoints = 10;
-    private int maxHitPoints = 10;
 
     protected PlayerCharacter() {
         abilityScores = new AbilityScores();
         name = getDefaultName();
+        hitPoints = new HitPoints(abilityScores.getConstitution());
     }
 
     public PlayerCharacter(User owner) {
@@ -60,23 +63,9 @@ public class PlayerCharacter extends AbstractEntity {
         return owner;
     }
 
-
-    public int getMaxHitPoints() {
-        return maxHitPoints;
-    }
-
-    public void setMaxHitPoints(int maxHitPoints) {
-        this.maxHitPoints = maxHitPoints;
-    }
-
-    public int getHitPoints() {
+    public HitPoints getHitPoints() {
         return hitPoints;
     }
-
-    public void setHitPoints(int hitPoints) {
-        this.hitPoints = hitPoints;
-    }
-
 
     private String getDefaultName() {
         return "Unnamed Character #" + getId();
