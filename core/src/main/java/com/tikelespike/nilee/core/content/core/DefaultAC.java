@@ -1,7 +1,7 @@
 package com.tikelespike.nilee.core.content.core;
 
-import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
-import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
+import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
  * The default armor class for a character, computed as 10 + DEX.

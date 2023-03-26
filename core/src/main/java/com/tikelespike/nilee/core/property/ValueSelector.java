@@ -1,7 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 

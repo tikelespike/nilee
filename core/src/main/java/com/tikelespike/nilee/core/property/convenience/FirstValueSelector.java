@@ -1,9 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.property.convenience;
+package com.tikelespike.nilee.core.property.convenience;
 
-import com.tikelespike.nilee.core.data.entity.GameEntity;
-import com.tikelespike.nilee.core.data.entity.property.ValueSelector;
+import com.tikelespike.nilee.core.property.ValueSelector;
 
-import javax.persistence.Entity;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +10,6 @@ import java.util.Optional;
  *
  * @param <T> the type of the values to select from
  */
-@Entity
 public class FirstValueSelector<T> extends ValueSelector<T> {
 
     @Override

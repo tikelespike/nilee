@@ -1,28 +1,17 @@
-package com.tikelespike.nilee.core.data.entity.character;
+package com.tikelespike.nilee.core.character;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.tikelespike.nilee.core.data.entity.AbstractEntity;
+import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
+import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.entity.User;
-import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScores;
-import com.tikelespike.nilee.core.data.entity.character.stats.hitpoints.HitPoints;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+public class PlayerCharacter {
 
-@Entity
-@Table(name = "application_player_character")
-public class PlayerCharacter extends AbstractEntity {
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @NotNull
-    @JsonIgnoreProperties({"characters"})
     private User owner;
 
-    @OneToOne(cascade = CascadeType.ALL)
     private AbilityScores abilityScores;
 
-    @OneToOne(cascade = CascadeType.ALL)
     private HitPoints hitPoints;
 
     private String name;
@@ -55,6 +44,14 @@ public class PlayerCharacter extends AbstractEntity {
         return abilityScores;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setOwner(User owner) {
         this.owner = owner;
     }
@@ -68,6 +65,6 @@ public class PlayerCharacter extends AbstractEntity {
     }
 
     private String getDefaultName() {
-        return "Unnamed Character #" + getId();
+        return "Unnamed Character #" + id;
     }
 }

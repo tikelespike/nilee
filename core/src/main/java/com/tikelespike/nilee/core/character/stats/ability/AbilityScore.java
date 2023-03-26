@@ -1,10 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.character.stats.ability;
+package com.tikelespike.nilee.core.character.stats.ability;
 
-import com.tikelespike.nilee.core.data.entity.property.convenience.ConstantBaseProperty;
+import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
 
-import javax.persistence.Entity;
-
-@Entity
 public class AbilityScore extends ConstantBaseProperty {
 
     private final String longName;

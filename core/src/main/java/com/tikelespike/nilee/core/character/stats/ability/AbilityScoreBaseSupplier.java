@@ -1,14 +1,9 @@
-package com.tikelespike.nilee.core.data.entity.character.stats.ability;
+package com.tikelespike.nilee.core.character.stats.ability;
 
-import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-
-@Entity
 public class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer> {
 
-    @OneToOne
     private AbilityScore abilityScore;
 
     protected AbilityScoreBaseSupplier() {

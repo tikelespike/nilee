@@ -1,15 +1,10 @@
-package com.tikelespike.nilee.core.data.entity.character.stats.hitpoints;
+package com.tikelespike.nilee.core.character.stats.hitpoints;
 
-import com.tikelespike.nilee.core.data.entity.property.Property;
-import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
+import com.tikelespike.nilee.core.property.Property;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-
-@Entity
 public class HPMaxBaseSupplier extends PropertyBaseSupplier<Integer> {
 
-    @OneToOne
     private Property<Integer> hpMaxBaseProperty;
 
     protected HPMaxBaseSupplier() {

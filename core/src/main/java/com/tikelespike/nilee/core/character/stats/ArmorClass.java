@@ -1,22 +1,17 @@
-package com.tikelespike.nilee.core.data.entity.character.stats;
+package com.tikelespike.nilee.core.character.stats;
 
+import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.content.core.DefaultAC;
-import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
-import com.tikelespike.nilee.core.data.entity.property.convenience.MaxValueSelector;
-import com.tikelespike.nilee.core.data.entity.property.Property;
-
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
+import com.tikelespike.nilee.core.property.Property;
 
 /**
  * A property describing the armor class of a character. The armor class is the value that is used to determine whether
  * an attack on the character hits or misses. Will always provide at least the {@link DefaultAC default armor class}
  * as a base value.
  */
-@Entity
 public class ArmorClass extends Property<Integer> {
 
-    @OneToOne
     private Property<Integer> dex;
 
     /**
@@ -36,12 +31,5 @@ public class ArmorClass extends Property<Integer> {
         this();
         this.dex = dex;
         addBaseValueSupplier(new DefaultAC(dex));
-    }
-
-    private void setDex(Property<Integer> dex) {
-        this.dex = dex;
-    }
-    private Property<Integer> getDex() {
-        return dex;
     }
 }

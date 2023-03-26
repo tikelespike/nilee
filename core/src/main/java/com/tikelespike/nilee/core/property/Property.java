@@ -1,15 +1,12 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.data.entity.AbstractEntity;
-import com.tikelespike.nilee.core.data.entity.GameEntity;
-import com.tikelespike.nilee.core.data.entity.property.convenience.FirstValueSelector;
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeEvent;
+import com.tikelespike.nilee.core.property.convenience.FirstValueSelector;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
@@ -27,33 +24,22 @@ import java.util.*;
  *
  * @param <T> the type of the value (typically, an integer or a dice roll like 3d4)
  */
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Property<T> extends AbstractEntity implements EventListener<UpdateEvent> {
+public class Property<T> implements EventListener<UpdateEvent> {
 
-    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
     private final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
 
-    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
     private final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
 
-    // fix for now, should this be lazy?
-    @OneToOne(targetEntity = GameEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
-    @Transient
     private final Map<PropertyModifier<T>, Registration> modifierRegistrations = new HashMap<>();
 
-    @Transient
     private final Map<PropertyBaseSupplier<T>, Registration> baseRegistrations = new HashMap<>();
 
-    @Transient
     private Registration baseSelectorRegistration = Registration.getInvalid();
 
-    @Transient
     private final EventBus eventBus = new EventBus();
 
-    @Transient
     private T lastKnownValue;
 
     /**
@@ -271,18 +257,6 @@ public class Property<T> extends AbstractEntity implements EventListener<UpdateE
         T newValue = baseValueSuppliers.isEmpty() ? null : getValue();
         eventBus.fireEvent(new ValueChangeEvent<>(lastKnownValue, newValue));
         lastKnownValue = newValue;
-    }
-
-    @PostLoad
-    private void init() {
-        lastKnownValue = getValue();
-        for (PropertyBaseSupplier<T> baseValueSupplier : baseValueSuppliers) {
-            baseRegistrations.put(baseValueSupplier, baseValueSupplier.addUpdateListener(this));
-        }
-        for (PropertyModifier<T> modifier : modifiers) {
-            modifierRegistrations.put(modifier, modifier.addUpdateListener(this));
-        }
-        baseSelectorRegistration = baseValueSelector.addUpdateListener(this);
     }
 
     @Override

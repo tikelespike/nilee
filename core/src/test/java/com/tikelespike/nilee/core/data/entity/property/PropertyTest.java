@@ -1,7 +1,9 @@
 package com.tikelespike.nilee.core.data.entity.property;
 
-import com.tikelespike.nilee.core.data.entity.property.convenience.*;
-import com.tikelespike.nilee.core.data.entity.property.events.ValueChangeEvent;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
+import com.tikelespike.nilee.core.property.PropertyModifier;
+import com.tikelespike.nilee.core.property.convenience.*;
+import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.events.EventStoreListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

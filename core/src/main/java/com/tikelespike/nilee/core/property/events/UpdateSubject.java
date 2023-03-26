@@ -1,13 +1,8 @@
-package com.tikelespike.nilee.core.data.entity.property.events;
+package com.tikelespike.nilee.core.property.events;
 
-import com.tikelespike.nilee.core.data.entity.AbstractEntity;
-import com.tikelespike.nilee.core.data.entity.GameEntity;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
-
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 
 /**
  * A subject that can fire {@link UpdateEvent UpdateEvents}. If a class implements this interface, it means that it
@@ -16,7 +11,7 @@ import javax.persistence.Transient;
  * If a class is constant and never changes returned values, it may implement this interface without overriding
  * its default implementation, which is to simply ignore any observers (assuming no events will be fired anyway).
  */
-public abstract class UpdateSubject extends GameEntity {
+public abstract class UpdateSubject {
 
     private final EventBus bus = new EventBus();
 

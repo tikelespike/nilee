@@ -1,10 +1,7 @@
-package com.tikelespike.nilee.core.data.entity.property.convenience;
+package com.tikelespike.nilee.core.property.convenience;
 
-import com.tikelespike.nilee.core.data.entity.property.PropertyModifier;
+import com.tikelespike.nilee.core.property.PropertyModifier;
 
-import javax.persistence.Entity;
-
-@Entity
 public class MultiplicativeModifier extends PropertyModifier<Integer> {
 
     private int factor;

@@ -1,13 +1,10 @@
-package com.tikelespike.nilee.core.data.entity.property.convenience;
+package com.tikelespike.nilee.core.property.convenience;
 
-import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
-
-import javax.persistence.Entity;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
  * A {@link PropertyBaseSupplier} that wraps a constant value that can be accessed with getters and setters.
  */
-@Entity
 public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
 
     private Integer defaultBaseValue;

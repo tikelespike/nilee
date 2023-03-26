@@ -1,11 +1,9 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.data.entity.property.events.UpdateSubject;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
-
-import javax.persistence.Entity;
 
 /**
  * Provides a base value for a property, and a description of where the value comes from and how it is calculated.
@@ -22,7 +20,6 @@ import javax.persistence.Entity;
  *
  * @param <T> the type of the property value
  */
-@Entity
 public abstract class PropertyBaseSupplier<T> extends UpdateSubject {
 
     /**

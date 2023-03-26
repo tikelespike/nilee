@@ -1,17 +1,10 @@
-package com.tikelespike.nilee.core.data.entity.character.stats.hitpoints;
+package com.tikelespike.nilee.core.character.stats.hitpoints;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
-import com.tikelespike.nilee.core.data.entity.character.stats.ability.AbilityScore;
+import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-
-@Entity
 public class HitPoints extends AbstractEntity {
 
-    @OneToOne(cascade = CascadeType.ALL)
     private HitPointMax maxHitPoints;
 
     private int currentHitPoints;
@@ -57,11 +50,6 @@ public class HitPoints extends AbstractEntity {
         currentHitPoints = Math.min(currentHitPoints + healing, maxHitPoints.getValue());
     }
 
-
-    @PostLoad
-    private void postLoad() {
-        init();
-    }
 
     private void init() {
         maxHitPoints.addValueChangeListener(event -> {

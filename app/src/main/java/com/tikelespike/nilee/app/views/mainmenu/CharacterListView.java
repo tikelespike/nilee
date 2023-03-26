@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.views.mainmenu;
 
-import com.tikelespike.nilee.core.data.entity.character.PlayerCharacter;
+import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
@@ -142,7 +143,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void updateCharacterGrid() {
-        characterGrid.setItems(currentUser.getCharacters());
+        characterGrid.setItems(currentUser.getCharacters().stream().map(PlayerCharacterDTO::toBO).toList());
     }
 
 

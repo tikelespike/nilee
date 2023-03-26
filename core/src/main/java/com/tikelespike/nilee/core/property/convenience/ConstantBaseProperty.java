@@ -1,14 +1,9 @@
-package com.tikelespike.nilee.core.data.entity.property.convenience;
+package com.tikelespike.nilee.core.property.convenience;
 
-import com.tikelespike.nilee.core.data.entity.property.Property;
+import com.tikelespike.nilee.core.property.Property;
 
-import javax.persistence.*;
-
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class ConstantBaseProperty extends Property<Integer> {
 
-    @OneToOne(cascade = CascadeType.ALL)
     private final ConstantBaseValue constantBaseValue;
 
     protected ConstantBaseProperty() {

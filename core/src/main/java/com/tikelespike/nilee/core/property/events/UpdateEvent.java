@@ -1,6 +1,6 @@
-package com.tikelespike.nilee.core.data.entity.property.events;
+package com.tikelespike.nilee.core.property.events;
 
-import com.tikelespike.nilee.core.data.entity.property.PropertyBaseSupplier;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 import com.tikelespike.nilee.core.events.Event;
 
 /**
