@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class PlayerCharacterService {
 
     private final PlayerCharacterRepository repository;
@@ -19,18 +18,22 @@ public class PlayerCharacterService {
         this.repository = repository;
     }
 
+    @Transactional
     public Optional<PlayerCharacter> get(Long id) {
         return repository.findById(id).map(PlayerCharacterDTO::toBO);
     }
 
-    public PlayerCharacter update(PlayerCharacter entity) {
-        return repository.save(PlayerCharacterDTO.fromBO(entity)).toBO();
+    @Transactional
+    public PlayerCharacterDTO update(PlayerCharacterDTO playerCharacterDTO) {
+        return repository.save(playerCharacterDTO);
     }
 
+    @Transactional
     public void delete(Long id) {
         repository.deleteById(id);
     }
 
+    @Transactional
     public Page<PlayerCharacter> list(Pageable pageable) {
         return repository.findAll(pageable).map(PlayerCharacterDTO::toBO);
     }

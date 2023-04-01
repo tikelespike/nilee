@@ -16,7 +16,7 @@ public class HitPoints extends AbstractEntity {
     public HitPoints(AbilityScore constitution) {
         maxHitPoints = new HitPointMax(constitution);
         currentHitPoints = maxHitPoints.getValue();
-        temporaryHitPoints = 0;
+        temporaryHitPoints = 5; // TESTING
         init();
     }
 

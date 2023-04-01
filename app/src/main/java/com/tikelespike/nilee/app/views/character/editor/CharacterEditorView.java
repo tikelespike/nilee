@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
@@ -77,7 +78,8 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private void save() {
         sanityChecker.ensureSanity(pc.getId());
         abilitiesEditorView.update();
-        characterService.update(pc);
+        PlayerCharacterDTO dto = PlayerCharacterDTO.fromBO(pc);
+        characterService.update(dto);
         getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
     }
 }

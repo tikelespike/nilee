@@ -87,7 +87,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void addPC(PlayerCharacter character) {
-        characterService.update(character);
+        characterService.update(PlayerCharacterDTO.fromBO(character));
         updateUserInfo();
         updateCharacterGrid();
     }

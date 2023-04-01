@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.character;
 
+import com.tikelespike.nilee.app.components.HitPointsDisplay;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
