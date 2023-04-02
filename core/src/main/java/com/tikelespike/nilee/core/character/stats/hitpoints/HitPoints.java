@@ -53,8 +53,14 @@ public class HitPoints extends AbstractEntity {
 
     private void init() {
         maxHitPoints.addValueChangeListener(event -> {
-            if (currentHitPoints > event.getNewValue())
-                setCurrentHitPoints(event.getNewValue());
+            // TODO: This is probably not rules as written, but it's a good start
+            if (event.getNewValue() < event.getOldValue()) {
+                currentHitPoints = Math.min(currentHitPoints, event.getNewValue());
+            } else {
+                float ratio = ((float) event.getNewValue()) / event.getOldValue();
+                int scaledHP = Math.round(currentHitPoints * ratio);
+                setCurrentHitPoints(scaledHP);
+            }
         });
     }
 }

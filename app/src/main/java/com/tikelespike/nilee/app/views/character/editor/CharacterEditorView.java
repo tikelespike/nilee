@@ -1,14 +1,14 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
-import com.tikelespike.nilee.core.character.PlayerCharacter;
-import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
-import com.tikelespike.nilee.core.data.entity.User;
-import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSheetView;
+import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
+import com.tikelespike.nilee.core.data.entity.User;
+import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,6 +16,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import javax.annotation.security.PermitAll;
 
@@ -26,7 +27,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private final PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
     private Accordion accordion;
-    private PlayerCharacter pc;
+    private PlayerCharacterDTO pc;
     private AbilitiesEditorView abilitiesEditorView;
 
 
@@ -54,11 +55,9 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private Accordion createAccordion() {
         Accordion accordion = new Accordion();
         accordion.add("Description", new Span(pc.getName()));
-        this.abilitiesEditorView = new AbilitiesEditorView(pc.getAbilityScores());
+        this.abilitiesEditorView = new AbilitiesEditorView(pc);
         accordion.add(getTranslation("character_editor.abilities.title"), abilitiesEditorView);
-        accordion.addOpenedChangeListener(e -> {
-            abilitiesEditorView.update();
-        });
+        accordion.addOpenedChangeListener(e -> abilitiesEditorView.update());
         accordion.add("Class", new Span("Class"));
         return accordion;
     }
@@ -78,8 +77,25 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private void save() {
         sanityChecker.ensureSanity(pc.getId());
         abilitiesEditorView.update();
-        PlayerCharacterDTO dto = PlayerCharacterDTO.fromBO(pc);
-        characterService.update(dto);
-        getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
+        try {
+            characterService.update(pc);
+            getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
+        } catch (OptimisticLockingFailureException e) {
+            showSaveWarningDialog();
+        }
+    }
+
+    private void showSaveWarningDialog() {
+        ConfirmDialog dialog = new ConfirmDialog();
+        dialog.setHeader(getTranslation("character_editor.error.save_conflict.header"));
+        dialog.setText(getTranslation("character_editor.error.save_conflict.body"));
+        dialog.setConfirmText(getTranslation("generic.save"));
+        dialog.setCancelable(true);
+        dialog.setCancelText(getTranslation("generic.cancel"));
+        dialog.addConfirmListener(event -> characterService.update(pc, true));
+        dialog.setRejectable(true);
+        dialog.addRejectListener(event -> getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId())));
+        dialog.setRejectText(getTranslation("character_editor.error.save_conflict.discard"));
+        dialog.open();
     }
 }

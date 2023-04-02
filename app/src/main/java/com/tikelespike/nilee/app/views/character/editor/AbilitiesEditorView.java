@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
-import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
+import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
@@ -8,11 +8,11 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class AbilitiesEditorView extends FormLayout {
 
-    private final AbilityScores attributes;
-    private final Binder<AbilityScores> binder;
+    private final PlayerCharacterDTO pc;
+    private final Binder<PlayerCharacterDTO> binder;
 
-    public AbilitiesEditorView(AbilityScores attributes) {
-        this.attributes = attributes;
+    public AbilitiesEditorView(PlayerCharacterDTO pc) {
+        this.pc = pc;
 
         IntegerField strField = createStatField(getTranslation("character_editor.abilities.str.label"));
         IntegerField dexField = createStatField(getTranslation("character_editor.abilities.dex.label"));
@@ -25,16 +25,16 @@ public class AbilitiesEditorView extends FormLayout {
         add(strField, dexField, conField, intField, wisField, chaField);
 
         // maps the UI fields to the attributes object
-        binder = new Binder<>(AbilityScores.class);
-        binder.forField(strField).bind(scores -> scores.getStrength().getDefaultBaseValue(), (scores, v) -> scores.getStrength().setDefaultBaseValue(v));
-        binder.forField(conField).bind(scores -> scores.getConstitution().getDefaultBaseValue(), (scores, v) -> scores.getConstitution().setDefaultBaseValue(v));
+        binder = new Binder<>(PlayerCharacterDTO.class);
+        binder.forField(strField).bind(PlayerCharacterDTO::getStrength, PlayerCharacterDTO::setStrength);
+        binder.forField(conField).bind(PlayerCharacterDTO::getConstitution, PlayerCharacterDTO::setConstitution);
 
-        binder.readBean(attributes);
+        binder.readBean(pc);
     }
 
     public void update() {
         try {
-            binder.writeBean(attributes);
+            binder.writeBean(pc);
         } catch (ValidationException e) {
             throw new RuntimeException(e);
         }

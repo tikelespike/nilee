@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.views.character;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.html.Div;
@@ -23,11 +24,11 @@ public class CharacterSanityChecker extends Div {
         if (characterId == null) {
             return false;
         }
-        Optional<PlayerCharacter> optPC = characterService.get(characterId);
+        Optional<PlayerCharacterDTO> optPC = characterService.get(characterId);
         if (optPC.isEmpty()) {
             return false;
         }
-        PlayerCharacter character = optPC.get();
+        PlayerCharacterDTO character = optPC.get();
         return character.getOwner() != null
             && character.getOwner().equals(currentUser)
             && Objects.equals(character.getId(), characterId);

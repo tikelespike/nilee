@@ -10,11 +10,13 @@ public class PlayerCharacter {
 
     private User owner;
 
-    private AbilityScores abilityScores;
+    private final AbilityScores abilityScores;
 
-    private HitPoints hitPoints;
+    private final HitPoints hitPoints;
 
     private String name;
+
+    private int loadedFromVersion;
 
     protected PlayerCharacter() {
         abilityScores = new AbilityScores();
@@ -66,5 +68,13 @@ public class PlayerCharacter {
 
     private String getDefaultName() {
         return "Unnamed Character #" + id;
+    }
+
+    public int getLoadedFromVersion() {
+        return loadedFromVersion;
+    }
+
+    public void setLoadedFromVersion(int loadedFromVersion) {
+        this.loadedFromVersion = loadedFromVersion;
     }
 }

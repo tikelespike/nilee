@@ -49,7 +49,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        setPlayerCharacter(characterService.get(parameter).get());
+        setPlayerCharacter(characterService.get(parameter).get().toBO());
     }
 
     public void setPlayerCharacter(PlayerCharacter pc) {
@@ -115,6 +115,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints());
 
         HorizontalLayout rightElements = new HorizontalLayout(editButton, hpDisplay);
+        rightElements.setAlignItems(Alignment.CENTER);
 
         header.add(backButton, nameTitle, rightElements);
         return header;

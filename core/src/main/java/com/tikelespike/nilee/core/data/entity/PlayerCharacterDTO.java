@@ -36,6 +36,7 @@ public class PlayerCharacterDTO extends AbstractEntity {
 
     public static PlayerCharacterDTO fromBO(PlayerCharacter bo) {
         PlayerCharacterDTO dto = new PlayerCharacterDTO();
+        dto.setVersion(bo.getLoadedFromVersion());
         dto.setId(bo.getId());
         dto.setOwner(bo.getOwner());
         dto.setName(bo.getName());
@@ -48,6 +49,7 @@ public class PlayerCharacterDTO extends AbstractEntity {
 
     public PlayerCharacter toBO() {
         PlayerCharacter bo = new PlayerCharacter(this.owner);
+        bo.setLoadedFromVersion(getVersion());
         bo.setId(getId());
         bo.setName(this.name);
         bo.getAbilityScores().getStrength().setDefaultBaseValue(this.strength);
