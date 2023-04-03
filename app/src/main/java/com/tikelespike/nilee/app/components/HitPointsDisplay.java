@@ -18,6 +18,7 @@ public class HitPointsDisplay extends VerticalLayout {
 
             String tempHPString = hitPoints.getTemporaryHitPoints() > 0 ? hitPoints.getTemporaryHitPoints() + " + " : "";
             Button textButton = new Button(tempHPString + hitPoints.getCurrentHitPoints() + " / " + hitPoints.getMaxHitPoints().getValue());
+            textButton.addClickListener(e -> new HitPointsDialog(hitPoints).open());
             setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
             ProgressBar hitPointsBar = createHPBar();
