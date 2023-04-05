@@ -16,8 +16,9 @@ public class HitPointsDisplay extends VerticalLayout {
             setSpacing(false);
             setPadding(false);
 
-            String tempHPString = hitPoints.getTemporaryHitPoints() > 0 ? hitPoints.getTemporaryHitPoints() + " + " : "";
-            Button textButton = new Button(tempHPString + hitPoints.getCurrentHitPoints() + " / " + hitPoints.getMaxHitPoints().getValue());
+            Button textButton = new Button(genHPString());
+            hitPoints.getMaxHitPoints().addValueChangeListener(e -> textButton.setText(genHPString()));
+            hitPoints.registerCurrentHPChangeListener(e -> textButton.setText(genHPString()));
             textButton.addClickListener(e -> new HitPointsDialog(hitPoints).open());
             setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
@@ -25,6 +26,11 @@ public class HitPointsDisplay extends VerticalLayout {
             ProgressBar tempHPBar = createTempHPBar();
 
             add(textButton, hitPointsBar, tempHPBar);
+        }
+
+        private String genHPString() {
+            String tempHPString = hitPoints.getTemporaryHitPoints() > 0 ? hitPoints.getTemporaryHitPoints() + " + " : "";
+            return tempHPString + hitPoints.getCurrentHitPoints() + " / " + hitPoints.getMaxHitPoints().getValue();
         }
 
     private ProgressBar createHPBar() {
@@ -36,6 +42,14 @@ public class HitPointsDisplay extends VerticalLayout {
         hitPointsBar.setValue(hp);
         hitPointsBar.getElement().getStyle().set("margin", "5px");
         hitPointsBar.addThemeVariants(hp > max / 4 ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
+        hitPoints.registerCurrentHPChangeListener(e -> {
+            hitPointsBar.setValue(e.getNewValue());
+            hitPointsBar.removeThemeVariants(ProgressBarVariant.LUMO_SUCCESS, ProgressBarVariant.LUMO_ERROR);
+            hitPointsBar.addThemeVariants(e.getNewValue() > hitPoints.getMaxHitPoints().getValue() / 4 ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
+        });
+        hitPoints.getMaxHitPoints().addValueChangeListener(e -> {
+            hitPointsBar.setMax(e.getNewValue());
+        });
         return hitPointsBar;
     }
 
@@ -46,6 +60,12 @@ public class HitPointsDisplay extends VerticalLayout {
         tempHPBar.setValue(Math.min(hitPoints.getTemporaryHitPoints(), hitPoints.getMaxHitPoints().getValue()));
         tempHPBar.getElement().getStyle().set("margin", "5px");
         tempHPBar.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
+        hitPoints.registerTempHPChangeListener(e -> {
+            tempHPBar.setValue(Math.min(e.getNewValue(), hitPoints.getMaxHitPoints().getValue()));
+        });
+        hitPoints.getMaxHitPoints().addValueChangeListener(e -> {
+            tempHPBar.setMax(e.getNewValue());
+        });
         return tempHPBar;
     }
 }

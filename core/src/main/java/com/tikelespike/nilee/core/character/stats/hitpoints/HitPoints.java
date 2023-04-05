@@ -1,17 +1,22 @@
 package com.tikelespike.nilee.core.character.stats.hitpoints;
 
+import com.tikelespike.nilee.core.character.stats.hitpoints.events.CurrentHPChangeEvent;
+import com.tikelespike.nilee.core.character.stats.hitpoints.events.TempHPChangeEvent;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
+import com.tikelespike.nilee.core.events.EventBus;
+import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.events.Registration;
+import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 
 public class HitPoints extends AbstractEntity {
 
+    private final EventBus bus = new EventBus();
     private HitPointMax maxHitPoints;
 
     private int currentHitPoints;
     private int temporaryHitPoints;
 
-    protected HitPoints() {
-    }
 
     public HitPoints(AbilityScore constitution) {
         maxHitPoints = new HitPointMax(constitution);
@@ -29,7 +34,9 @@ public class HitPoints extends AbstractEntity {
     }
 
     public void setCurrentHitPoints(int currentHitPoints) {
+        int oldHP = this.currentHitPoints;
         this.currentHitPoints = currentHitPoints;
+        bus.fireEvent(new CurrentHPChangeEvent(oldHP, currentHitPoints));
     }
 
     public int getTemporaryHitPoints() {
@@ -37,30 +44,37 @@ public class HitPoints extends AbstractEntity {
     }
 
     public void setTemporaryHitPoints(int temporaryHitPoints) {
+        int oldHP = this.temporaryHitPoints;
         this.temporaryHitPoints = temporaryHitPoints;
+        bus.fireEvent(new TempHPChangeEvent(oldHP, temporaryHitPoints));
     }
 
     public void takeDamage(int damage) {
+        int oldHP = currentHitPoints;
         int tempHPDiff = Math.min(damage, temporaryHitPoints);
         temporaryHitPoints -= tempHPDiff;
         currentHitPoints -= Math.max(damage - tempHPDiff, 0);
+        bus.fireEvent(new TempHPChangeEvent(temporaryHitPoints + tempHPDiff, temporaryHitPoints));
+        bus.fireEvent(new CurrentHPChangeEvent(oldHP, currentHitPoints));
     }
 
     public void heal(int healing) {
+        int oldHP = currentHitPoints;
         currentHitPoints = Math.min(currentHitPoints + healing, maxHitPoints.getValue());
+        bus.fireEvent(new CurrentHPChangeEvent(oldHP, currentHitPoints));
     }
 
+    public Registration registerCurrentHPChangeListener(EventListener<CurrentHPChangeEvent> listener) {
+        return bus.registerListener(CurrentHPChangeEvent.class, listener);
+    }
+
+    public Registration registerTempHPChangeListener(EventListener<TempHPChangeEvent> listener) {
+        return bus.registerListener(TempHPChangeEvent.class, listener);
+    }
 
     private void init() {
         maxHitPoints.addValueChangeListener(event -> {
-            // TODO: This is probably not rules as written, but it's a good start
-            if (event.getNewValue() < event.getOldValue()) {
-                currentHitPoints = Math.min(currentHitPoints, event.getNewValue());
-            } else {
-                float ratio = ((float) event.getNewValue()) / event.getOldValue();
-                int scaledHP = Math.round(currentHitPoints * ratio);
-                setCurrentHitPoints(scaledHP);
-            }
+            setCurrentHitPoints(Math.min(currentHitPoints, event.getNewValue()));
         });
     }
 }
