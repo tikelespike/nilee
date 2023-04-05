@@ -4,12 +4,9 @@ import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
-import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
@@ -72,8 +69,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addSelectionListener(e -> {
             if (e.getFirstSelectedItem().isPresent()) {
-                PlayerCharacter pc = e.getFirstSelectedItem().get();
-                openPCSheet(pc);
+                openPCSheet(e.getFirstSelectedItem().get().getId());
             }
         });
         return grid;
@@ -87,21 +83,20 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void addPC(PlayerCharacter character) {
-        characterService.update(PlayerCharacterDTO.fromBO(character));
+        characterService.update(character.createSnapshot());
         updateUserInfo();
         updateCharacterGrid();
     }
 
     private Button createOpenPCButton(PlayerCharacter pc) {
         Button openButton = new Button(getTranslation("generic.open"));
-        ComponentEventListener<ClickEvent<Button>> navigateToCharacterSheet = e -> openPCSheet(pc);
-        openButton.addClickListener(navigateToCharacterSheet);
+        openButton.addClickListener(e -> openPCSheet(pc.getId()));
         return openButton;
     }
 
-    private void openPCSheet(PlayerCharacter pc) {
-        sanityChecker.ensureSanity(pc);
-        getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
+    private void openPCSheet(Long id) {
+        sanityChecker.ensureSanity(id);
+        getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, id));
     }
 
     private Button createDeletePCButton(PlayerCharacter pc) {
@@ -137,7 +132,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void updateCharacterGrid() {
-        characterGrid.setItems(currentUser.getCharacters().stream().map(PlayerCharacterDTO::toBO).toList());
+        characterGrid.setItems(currentUser.getCharacters().stream().map(PlayerCharacter::createFromSnapshot).toList());
     }
 
 

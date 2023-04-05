@@ -49,7 +49,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        setPlayerCharacter(characterService.get(parameter).get().toBO());
+        setPlayerCharacter(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
     }
 
     public void setPlayerCharacter(PlayerCharacter pc) {

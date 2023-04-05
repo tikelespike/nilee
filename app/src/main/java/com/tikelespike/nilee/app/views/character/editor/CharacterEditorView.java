@@ -3,7 +3,7 @@ package com.tikelespike.nilee.app.views.character.editor;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSheetView;
-import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -27,7 +27,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private final PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
     private Accordion accordion;
-    private PlayerCharacterDTO pc;
+    private PlayerCharacter pc;
     private AbilitiesEditorView abilitiesEditorView;
 
 
@@ -70,7 +70,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     @Override
     public void setParameter(BeforeEvent event, Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        this.pc = characterService.get(parameter).get();
+        this.pc = PlayerCharacter.createFromSnapshot(characterService.get(parameter).get());
         init();
     }
 
@@ -78,7 +78,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         sanityChecker.ensureSanity(pc.getId());
         abilitiesEditorView.update();
         try {
-            characterService.update(pc);
+            characterService.update(pc.createSnapshot());
             getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
         } catch (OptimisticLockingFailureException e) {
             showSaveWarningDialog();
@@ -92,7 +92,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         dialog.setConfirmText(getTranslation("generic.save"));
         dialog.setCancelable(true);
         dialog.setCancelText(getTranslation("generic.cancel"));
-        dialog.addConfirmListener(event -> characterService.update(pc, true));
+        dialog.addConfirmListener(event -> characterService.update(pc.createSnapshot(), true));
         dialog.setRejectable(true);
         dialog.addRejectListener(event -> getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId())));
         dialog.setRejectText(getTranslation("character_editor.error.save_conflict.discard"));

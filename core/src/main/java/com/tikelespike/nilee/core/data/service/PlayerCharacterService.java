@@ -1,7 +1,6 @@
 package com.tikelespike.nilee.core.data.service;
 
-import com.tikelespike.nilee.core.character.PlayerCharacter;
-import com.tikelespike.nilee.core.data.entity.PlayerCharacterDTO;
+import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,23 +18,23 @@ public class PlayerCharacterService {
     }
 
     @Transactional
-    public Optional<PlayerCharacterDTO> get(Long id) {
+    public Optional<PlayerCharacterSnapshot> get(Long id) {
         return repository.findById(id);
     }
 
     @Transactional
-    public PlayerCharacterDTO update(PlayerCharacterDTO playerCharacterDTO) {
-        return update(playerCharacterDTO, false);
+    public PlayerCharacterSnapshot update(PlayerCharacterSnapshot playerCharacterSnapshot) {
+        return update(playerCharacterSnapshot, false);
     }
 
     @Transactional
-    public PlayerCharacterDTO update(PlayerCharacterDTO playerCharacterDTO, boolean force) {
+    public PlayerCharacterSnapshot update(PlayerCharacterSnapshot playerCharacterSnapshot, boolean force) {
         if (force) {
             // Force update by overriding the version, ignoring all changes made between loading the given dto and this
             // save operation.
-            playerCharacterDTO.setVersion(repository.findById(playerCharacterDTO.getId()).get().getVersion());
+            playerCharacterSnapshot.setVersion(repository.findById(playerCharacterSnapshot.getId()).get().getVersion());
         }
-        return repository.save(playerCharacterDTO);
+        return repository.save(playerCharacterSnapshot);
     }
 
     @Transactional
@@ -44,7 +43,7 @@ public class PlayerCharacterService {
     }
 
     @Transactional
-    public Page<PlayerCharacter> list(Pageable pageable) {
-        return repository.findAll(pageable).map(PlayerCharacterDTO::toBO);
+    public Page<PlayerCharacterSnapshot> list(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 }
