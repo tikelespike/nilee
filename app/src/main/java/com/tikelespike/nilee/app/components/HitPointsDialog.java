@@ -83,6 +83,7 @@ public class HitPointsDialog extends Dialog {
         tempHPField.setValue(hitPoints.getTemporaryHitPoints());
         content.setColspan(tempHPField, 3);
         tempHPField.addValueChangeListener(e -> hitPoints.setTemporaryHitPoints(e.getValue()));
+        hitPoints.registerTempHPChangeListener(e -> tempHPField.setValue(e.getNewValue()));
 
         content.add(headingSetHP, hitPointsField, maxHPField, maxHPOverrideField, tempHPField);
     }
@@ -91,15 +92,23 @@ public class HitPointsDialog extends Dialog {
         H4 headingDamageHeal = new H4(getTranslation("character_editor.hit_points.section.heal_damage.heading"));
         content.setColspan(headingDamageHeal, 3);
 
-        Button damageButton = new Button(getTranslation("character_editor.hit_points.section.heal_damage.damage"));
-        damageButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
-
         IntegerField deltaField = new IntegerField(getTranslation("character_editor.hit_points.section.heal_damage.amount"));
         deltaField.setStepButtonsVisible(true);
         deltaField.setMin(0);
 
+        Button damageButton = new Button(getTranslation("character_editor.hit_points.section.heal_damage.damage"));
+        damageButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        damageButton.addClickListener(e -> {
+            hitPoints.takeDamage(deltaField.getValue());
+            deltaField.setValue(deltaField.getEmptyValue());
+        });
+
         Button healButton = new Button(getTranslation("character_editor.hit_points.section.heal_damage.heal"));
         healButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
+        healButton.addClickListener(e -> {
+            hitPoints.heal(deltaField.getValue());
+            deltaField.setValue(deltaField.getEmptyValue());
+        });
 
         content.add(headingDamageHeal, damageButton, deltaField, healButton);
     }

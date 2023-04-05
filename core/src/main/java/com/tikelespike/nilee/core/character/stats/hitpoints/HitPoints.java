@@ -51,10 +51,11 @@ public class HitPoints extends AbstractEntity {
 
     public void takeDamage(int damage) {
         int oldHP = currentHitPoints;
-        int tempHPDiff = Math.min(damage, temporaryHitPoints);
-        temporaryHitPoints -= tempHPDiff;
-        currentHitPoints -= Math.max(damage - tempHPDiff, 0);
-        bus.fireEvent(new TempHPChangeEvent(temporaryHitPoints + tempHPDiff, temporaryHitPoints));
+        int damageTakenByTempHP = Math.min(damage, temporaryHitPoints);
+        temporaryHitPoints -= damageTakenByTempHP;
+        int remainingDamage = damage - damageTakenByTempHP;
+        currentHitPoints = Math.max(currentHitPoints - remainingDamage, 0);
+        bus.fireEvent(new TempHPChangeEvent(temporaryHitPoints + damageTakenByTempHP, temporaryHitPoints));
         bus.fireEvent(new CurrentHPChangeEvent(oldHP, currentHitPoints));
     }
 
