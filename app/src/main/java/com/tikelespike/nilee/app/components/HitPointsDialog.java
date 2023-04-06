@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.components;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.events.Registration;
@@ -11,6 +12,10 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
+import com.vaadin.flow.data.binder.ValueContext;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -86,7 +91,13 @@ public class HitPointsDialog extends Dialog {
         maxHPField.setReadOnly(!hitPoints.getMaxHitPoints().isOverridden());
         maxHPField.setValue(hitPoints.getMaxHitPoints().getValue());
         maxHPField.setStepButtonsVisible(true);
+        maxHPField.setMin(0);
         maxHPField.addValueChangeListener(e -> {
+            if (e.getValue() == null) {
+                maxHPField.setInvalid(true);
+                maxHPField.setErrorMessage(getTranslation("error.empty_field"));
+                return;
+            }
             hitPointsField.setMax(e.getValue());
             if (!maxHPField.isReadOnly()) {
                 hitPoints.getMaxHitPoints().setOverride(e.getValue());
