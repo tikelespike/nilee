@@ -95,7 +95,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
         if (getBaseValueSuppliers().isEmpty())
             throw new IllegalStateException("No base value suppliers has been defined for this property");
         Optional<T> opt =
-            baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+                baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
         //noinspection OptionalGetWithoutIsPresent - optional may only be empty if the list is empty
         return opt.get();
     }
@@ -138,6 +138,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
      */
     public void removeModifier(@NotNull PropertyModifier<T> modifier) {
         Objects.requireNonNull(modifier);
+        if (!modifiers.contains(modifier)) return;
         modifiers.remove(modifier);
         modifierRegistrations.get(modifier).unregisterAll();
         modifierRegistrations.remove(modifier);

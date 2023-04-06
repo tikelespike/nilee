@@ -104,7 +104,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
-        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints());
+        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc, characterService);
 
         header.addLeft(backButton, editButton);
         header.addCenter(nameTitle);

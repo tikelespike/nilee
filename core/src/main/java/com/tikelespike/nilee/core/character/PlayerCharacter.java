@@ -44,10 +44,11 @@ public class PlayerCharacter {
         snapshot.setConstitution(this.getAbilityScores().getConstitution().getDefaultBaseValue());
         snapshot.setHitPoints(this.getHitPoints().getCurrentHitPoints());
         snapshot.setTemporaryHitPoints(this.getHitPoints().getTemporaryHitPoints());
+        snapshot.setHitPointMaxOverride(this.getHitPoints().getMaxHitPoints().getOverride());
         return snapshot;
     }
 
-    public void loadSnapshot(PlayerCharacterSnapshot snapshot) {
+    public void restoreSnapshot(PlayerCharacterSnapshot snapshot) {
         loadedFromVersion = snapshot.getVersion();
         id = snapshot.getId();
         owner = snapshot.getOwner();
@@ -56,11 +57,12 @@ public class PlayerCharacter {
         abilityScores.getConstitution().setDefaultBaseValue(snapshot.getConstitution());
         hitPoints.setCurrentHitPoints(snapshot.getHitPoints());
         hitPoints.setTemporaryHitPoints(snapshot.getTemporaryHitPoints());
+        hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
     }
 
     public static PlayerCharacter createFromSnapshot(PlayerCharacterSnapshot snapshot) {
         PlayerCharacter bo = new PlayerCharacter();
-        bo.loadSnapshot(snapshot);
+        bo.restoreSnapshot(snapshot);
         return bo;
     }
 

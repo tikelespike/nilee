@@ -31,6 +31,7 @@ public class PlayerCharacterSnapshot extends AbstractEntity {
 
     private int hitPoints;
     private int temporaryHitPoints;
+    private Integer hitPointMaxOverride;
 
     public PlayerCharacterSnapshot() {
     }
@@ -113,5 +114,13 @@ public class PlayerCharacterSnapshot extends AbstractEntity {
 
     protected void setTemporaryHitPoints(int temporaryHitPoints) {
         this.temporaryHitPoints = temporaryHitPoints;
+    }
+
+    protected Integer getHitPointMaxOverride() {
+        return hitPointMaxOverride;
+    }
+
+    protected void setHitPointMaxOverride(Integer hitPointMaxOverride) {
+        this.hitPointMaxOverride = hitPointMaxOverride;
     }
 }

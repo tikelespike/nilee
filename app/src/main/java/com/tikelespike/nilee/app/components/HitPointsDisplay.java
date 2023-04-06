@@ -1,6 +1,8 @@
 package com.tikelespike.nilee.app.components;
 
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
+import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
@@ -8,30 +10,30 @@ import com.vaadin.flow.component.progressbar.ProgressBarVariant;
 
 public class HitPointsDisplay extends VerticalLayout {
 
-        private final HitPoints hitPoints;
+    private final HitPoints hitPoints;
 
-        public HitPointsDisplay(HitPoints hitPoints) {
-            this.hitPoints = hitPoints;
+    public HitPointsDisplay(PlayerCharacter pc, PlayerCharacterService characterService) {
+        this.hitPoints = pc.getHitPoints();
 
-            setSpacing(false);
-            setPadding(false);
+        setSpacing(false);
+        setPadding(false);
 
-            Button textButton = new Button(genHPString());
-            hitPoints.getMaxHitPoints().addValueChangeListener(e -> textButton.setText(genHPString()));
-            hitPoints.registerCurrentHPChangeListener(e -> textButton.setText(genHPString()));
-            textButton.addClickListener(e -> new HitPointsDialog(hitPoints).open());
-            setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        Button textButton = new Button(genHPString());
+        hitPoints.getMaxHitPoints().addValueChangeListener(e -> textButton.setText(genHPString()));
+        hitPoints.registerCurrentHPChangeListener(e -> textButton.setText(genHPString()));
+        textButton.addClickListener(e -> new HitPointsDialog(pc, characterService).open());
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-            ProgressBar hitPointsBar = createHPBar();
-            ProgressBar tempHPBar = createTempHPBar();
+        ProgressBar hitPointsBar = createHPBar();
+        ProgressBar tempHPBar = createTempHPBar();
 
-            add(textButton, hitPointsBar, tempHPBar);
-        }
+        add(textButton, hitPointsBar, tempHPBar);
+    }
 
-        private String genHPString() {
-            String tempHPString = hitPoints.getTemporaryHitPoints() > 0 ? hitPoints.getTemporaryHitPoints() + " + " : "";
-            return tempHPString + hitPoints.getCurrentHitPoints() + " / " + hitPoints.getMaxHitPoints().getValue();
-        }
+    private String genHPString() {
+        String tempHPString = hitPoints.getTemporaryHitPoints() > 0 ? hitPoints.getTemporaryHitPoints() + " + " : "";
+        return tempHPString + hitPoints.getCurrentHitPoints() + " / " + hitPoints.getMaxHitPoints().getValue();
+    }
 
     private ProgressBar createHPBar() {
         ProgressBar hitPointsBar = new ProgressBar();
