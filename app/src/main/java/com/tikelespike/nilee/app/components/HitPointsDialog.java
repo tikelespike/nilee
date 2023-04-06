@@ -1,13 +1,12 @@
 package com.tikelespike.nilee.app.components;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
-import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.events.Registration;
-import com.tikelespike.nilee.core.property.convenience.ManualOverrideModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H4;
@@ -31,7 +30,7 @@ public class HitPointsDialog extends Dialog {
         this.characterService = characterService;
 
         setHeaderTitle(getTranslation("character_editor.hit_points.title"));
-        setMaxWidth("600px");
+        setMaxWidth("700px");
 
         FormLayout content = createContent();
         add(content);
@@ -84,30 +83,37 @@ public class HitPointsDialog extends Dialog {
         registrations.add(hitPoints.registerCurrentHPChangeListener(e -> hitPointsField.setValue(e.getNewValue())));
 
         IntegerField maxHPField = new IntegerField(getTranslation("character_editor.hit_points.section.set_hp.max"));
-        maxHPField.setReadOnly(true);
+        maxHPField.setReadOnly(!hitPoints.getMaxHitPoints().isOverridden());
         maxHPField.setValue(hitPoints.getMaxHitPoints().getValue());
+        maxHPField.setStepButtonsVisible(true);
         maxHPField.addValueChangeListener(e -> {
             hitPointsField.setMax(e.getValue());
+            if (!maxHPField.isReadOnly()) {
+                hitPoints.getMaxHitPoints().setOverride(e.getValue());
+            }
         });
         registrations.add(hitPoints.getMaxHitPoints().addValueChangeListener(e -> maxHPField.setValue(e.getNewValue())));
 
-        IntegerField maxHPOverrideField = new IntegerField(getTranslation("character_editor.hit_points.section.set_hp.max_override"));
-        maxHPOverrideField.setStepButtonsVisible(true);
-        maxHPOverrideField.setMin(0);
-        maxHPOverrideField.setValue(hitPoints.getMaxHitPoints().getOverride());
-        maxHPOverrideField.addValueChangeListener(e -> {
-            hitPoints.getMaxHitPoints().setOverride(e.getValue());
+        Checkbox maxHPOverrideCheckbox = new Checkbox(getTranslation("character_editor.hit_points.section.set_hp.override_max"));
+        maxHPOverrideCheckbox.setValue(hitPoints.getMaxHitPoints().isOverridden());
+        maxHPOverrideCheckbox.addValueChangeListener(e -> {
+            maxHPField.setReadOnly(!e.getValue());
+            if (e.getValue()) {
+                hitPoints.getMaxHitPoints().setOverride(hitPoints.getMaxHitPoints().getValue());
+            } else {
+                hitPoints.getMaxHitPoints().removeOverride();
+            }
+            maxHPField.setValue(hitPoints.getMaxHitPoints().getValue());
         });
 
         IntegerField tempHPField = new IntegerField(getTranslation("character_editor.hit_points.section.set_hp.temp"));
         tempHPField.setStepButtonsVisible(true);
         tempHPField.setMin(0);
         tempHPField.setValue(hitPoints.getTemporaryHitPoints());
-        content.setColspan(tempHPField, 3);
         tempHPField.addValueChangeListener(e -> hitPoints.setTemporaryHitPoints(e.getValue()));
         registrations.add(hitPoints.registerTempHPChangeListener(e -> tempHPField.setValue(e.getNewValue())));
 
-        content.add(headingSetHP, hitPointsField, maxHPField, maxHPOverrideField, tempHPField);
+        content.add(headingSetHP, hitPointsField, maxHPField, maxHPOverrideCheckbox, tempHPField);
     }
 
     private void createAndAddHealDamageSection(FormLayout content) {

@@ -55,9 +55,9 @@ public class PlayerCharacter {
         name = snapshot.getName();
         abilityScores.getStrength().setDefaultBaseValue(snapshot.getStrength());
         abilityScores.getConstitution().setDefaultBaseValue(snapshot.getConstitution());
+        hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
         hitPoints.setCurrentHitPoints(snapshot.getHitPoints());
         hitPoints.setTemporaryHitPoints(snapshot.getTemporaryHitPoints());
-        hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
     }
 
     public static PlayerCharacter createFromSnapshot(PlayerCharacterSnapshot snapshot) {
