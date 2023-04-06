@@ -42,8 +42,8 @@ public class OverridableProperty<T> extends Property<T> {
     public void addModifier(PropertyModifier<T> modifier) {
         // we want the override modifier to always stay the last in the list, since it's explicitly set by the user
         // and should therefore have the highest priority
-        if (getModifiers().get(getModifiers().size() - 1).equals(overrideModifier)) {
+        if (!getModifiers().isEmpty() && getModifiers().get(getModifiers().size() - 1).equals(overrideModifier)) {
             super.addModifier(getModifiers().size() - 1, modifier);
-        }
+        } else super.addModifier(modifier);
     }
 }

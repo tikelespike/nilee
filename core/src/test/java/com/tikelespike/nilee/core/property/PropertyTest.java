@@ -1,4 +1,4 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property;
 
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 import com.tikelespike.nilee.core.property.PropertyModifier;
