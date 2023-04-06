@@ -21,6 +21,7 @@ public class HitPointsDisplay extends VerticalLayout {
         Button textButton = new Button(genHPString());
         hitPoints.getMaxHitPoints().addValueChangeListener(e -> textButton.setText(genHPString()));
         hitPoints.registerCurrentHPChangeListener(e -> textButton.setText(genHPString()));
+        hitPoints.registerTempHPChangeListener(e -> textButton.setText(genHPString()));
         textButton.addClickListener(e -> new HitPointsDialog(pc, characterService).open());
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 

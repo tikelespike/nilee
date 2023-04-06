@@ -19,11 +19,8 @@ import java.util.Set;
 public class HitPointsDialog extends Dialog {
 
     private final HitPoints hitPoints;
-    private final ManualOverrideModifier<Integer> hitPointMaxOverride = new ManualOverrideModifier<>(0);
     private final PlayerCharacterService characterService;
 
-    private Registration hpMaxOverrideRegistration = null;
-    private PlayerCharacterSnapshot before;
     private PlayerCharacter playerCharacter;
 
     private Set<Registration> registrations = new HashSet<>();
@@ -31,7 +28,6 @@ public class HitPointsDialog extends Dialog {
     public HitPointsDialog(PlayerCharacter playerCharacter, PlayerCharacterService characterService) {
         this.playerCharacter = playerCharacter;
         this.hitPoints = playerCharacter.getHitPoints();
-        this.before = playerCharacter.createSnapshot();
         this.characterService = characterService;
 
         setHeaderTitle(getTranslation("character_editor.hit_points.title"));
@@ -140,11 +136,11 @@ public class HitPointsDialog extends Dialog {
     }
 
     private void save() {
-        characterService.update(playerCharacter.createSnapshot());
+        playerCharacter.restoreSnapshot(characterService.update(playerCharacter.createSnapshot()));
     }
 
     private void discard() {
-        playerCharacter.restoreSnapshot(before);
+        playerCharacter.restoreSnapshot(characterService.get(playerCharacter.getId()).get());
     }
 
 }
