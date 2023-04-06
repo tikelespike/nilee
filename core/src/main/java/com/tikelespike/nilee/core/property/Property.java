@@ -28,7 +28,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
     private final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
 
-    private final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
+    private final List<PropertyModifier<T>> modifiers = new ArrayList<>();
 
     protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
@@ -108,8 +108,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
      *
      * @return a copy of the set of modifiers applied to this property
      */
-    public Set<PropertyModifier<T>> getModifiers() {
-        return new LinkedHashSet<>(modifiers);
+    public List<PropertyModifier<T>> getModifiers() {
+        return new ArrayList<>(modifiers);
     }
 
     /**
@@ -121,9 +121,23 @@ public class Property<T> implements EventListener<UpdateEvent> {
      * @param modifier the modifier to add to this property
      */
     public void addModifier(@NotNull PropertyModifier<T> modifier) {
+        addModifier(modifiers.size(), modifier);
+    }
+
+    /**
+     * Adds a modifier to this property. The modifier will be applied after the base value is calculated, and will
+     * affect the end result retrieved by {@link #getValue()}. The modifier will be applied at the given index, so
+     * all modifiers with an index greater than or equal to the given index will be applied after the new modifier.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the modifier.
+     *
+     * @param modifier the modifier to add to this property
+     * @param index    the index at which to add the modifier. Has to be between 0 and the number of modifiers already added
+     */
+    public void addModifier(int index, @NotNull PropertyModifier<T> modifier) {
         Objects.requireNonNull(modifier);
         Registration registration = modifier.addUpdateListener(this);
-        modifiers.add(modifier);
+        modifiers.add(index, modifier);
         modifierRegistrations.put(modifier, registration);
         notifyListeners();
     }
