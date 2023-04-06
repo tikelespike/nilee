@@ -18,12 +18,16 @@ public class OverridableProperty<T> extends Property<T> {
     public void setOverride(T override) {
         if (override == null) {
             removeModifier(overrideModifier);
+            overrideModifier.setOverrideValue(override);
         } else {
-            if (!isOverridden()) {
+            if (isOverridden()) {
+                overrideModifier.setOverrideValue(override);
+            }
+            else {
+                overrideModifier.setOverrideValue(override);
                 addModifier(overrideModifier);
             }
         }
-        overrideModifier.setOverrideValue(override);
     }
 
     public void removeOverride() {
