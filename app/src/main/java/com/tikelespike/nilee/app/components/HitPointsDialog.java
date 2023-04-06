@@ -84,7 +84,7 @@ public class HitPointsDialog extends Dialog {
         hitPointsField.setMin(0);
         hitPointsField.setMax(hitPoints.getMaxHitPoints().getValue());
         hitPointsField.setValue(hitPoints.getCurrentHitPoints());
-        hitPointsField.addValueChangeListener(e -> hitPoints.setCurrentHitPoints(e.getValue()));
+        hitPointsField.addValueChangeListener(e -> hitPoints.setCurrentHitPoints(e.getValue() == null ? 0 : e.getValue()));
         registrations.add(hitPoints.registerCurrentHPChangeListener(e -> hitPointsField.setValue(e.getNewValue())));
 
         IntegerField maxHPField = new IntegerField(getTranslation("character_editor.hit_points.section.set_hp.max"));
@@ -92,12 +92,10 @@ public class HitPointsDialog extends Dialog {
         maxHPField.setValue(hitPoints.getMaxHitPoints().getValue());
         maxHPField.setStepButtonsVisible(true);
         maxHPField.setMin(0);
+        maxHPField.setRequiredIndicatorVisible(true);
+        maxHPField.setErrorMessage(getTranslation("error.empty_field"));
         maxHPField.addValueChangeListener(e -> {
-            if (e.getValue() == null) {
-                maxHPField.setInvalid(true);
-                maxHPField.setErrorMessage(getTranslation("error.empty_field"));
-                return;
-            }
+            if (e.getValue() == null) return;
             hitPointsField.setMax(e.getValue());
             if (!maxHPField.isReadOnly()) {
                 hitPoints.getMaxHitPoints().setOverride(e.getValue());
@@ -121,7 +119,7 @@ public class HitPointsDialog extends Dialog {
         tempHPField.setStepButtonsVisible(true);
         tempHPField.setMin(0);
         tempHPField.setValue(hitPoints.getTemporaryHitPoints());
-        tempHPField.addValueChangeListener(e -> hitPoints.setTemporaryHitPoints(e.getValue()));
+        tempHPField.addValueChangeListener(e -> hitPoints.setTemporaryHitPoints(e.getValue() == null ? 0 : e.getValue()));
         registrations.add(hitPoints.registerTempHPChangeListener(e -> tempHPField.setValue(e.getNewValue())));
 
         content.add(headingSetHP, hitPointsField, maxHPField, maxHPOverrideCheckbox, tempHPField);
