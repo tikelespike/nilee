@@ -28,12 +28,14 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private final CharacterSanityChecker sanityChecker;
 
+    private final User currentUser;
+
     private PlayerCharacter pc;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService) {
         this.characterService = characterService;
-        User currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
+        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
             "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
 
@@ -104,7 +106,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
-        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc, characterService);
+        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc, characterService, currentUser);
 
         header.addLeft(backButton, editButton);
         header.addCenter(nameTitle);

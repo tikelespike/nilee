@@ -1,8 +1,9 @@
 package com.tikelespike.nilee.app.components;
 
+import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
-import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
+import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.events.Registration;
 import com.vaadin.flow.component.button.Button;
@@ -12,27 +13,24 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationResult;
-import com.vaadin.flow.data.binder.Validator;
-import com.vaadin.flow.data.binder.ValueContext;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class HitPointsDialog extends Dialog {
 
     private final HitPoints hitPoints;
-    private final PlayerCharacterService characterService;
+    private final CharacterSaver characterSaver;
 
     private PlayerCharacter playerCharacter;
 
     private Set<Registration> registrations = new HashSet<>();
 
-    public HitPointsDialog(PlayerCharacter playerCharacter, PlayerCharacterService characterService) {
+    public HitPointsDialog(PlayerCharacter playerCharacter, PlayerCharacterService characterService, User currentUser) {
         this.playerCharacter = playerCharacter;
         this.hitPoints = playerCharacter.getHitPoints();
-        this.characterService = characterService;
+        this.characterSaver = new CharacterSaver(playerCharacter, characterService, currentUser);
 
         setHeaderTitle(getTranslation("character_editor.hit_points.title"));
         setMaxWidth("700px");
@@ -42,21 +40,25 @@ public class HitPointsDialog extends Dialog {
 
         Button saveButton = new Button(getTranslation("generic.save"));
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Consumer<CharacterSaver.SaveResult> onSave = result -> {
+            if (result == CharacterSaver.SaveResult.SAVED || result == CharacterSaver.SaveResult.CHANGES_DISCARDED) {
+                registrations.forEach(Registration::unregister);
+                close();
+            }
+        };
         saveButton.addClickListener(e -> {
-            save();
-            registrations.forEach(Registration::unregister);
-            close();
+            characterSaver.save(onSave);
         });
 
         Button discardButton = new Button(getTranslation("generic.discard"));
         discardButton.addClickListener(e -> {
-            discard();
+            characterSaver.discard();
             registrations.forEach(Registration::unregister);
             close();
         });
 
         addDialogCloseActionListener(e -> {
-            discard();
+            characterSaver.discard();
             registrations.forEach(Registration::unregister);
             close();
         });
@@ -149,13 +151,4 @@ public class HitPointsDialog extends Dialog {
 
         content.add(headingDamageHeal, damageButton, deltaField, healButton);
     }
-
-    private void save() {
-        playerCharacter.restoreSnapshot(characterService.update(playerCharacter.createSnapshot()));
-    }
-
-    private void discard() {
-        playerCharacter.restoreSnapshot(characterService.get(playerCharacter.getId()).get());
-    }
-
 }

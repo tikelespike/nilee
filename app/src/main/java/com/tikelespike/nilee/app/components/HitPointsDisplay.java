@@ -2,6 +2,7 @@ package com.tikelespike.nilee.app.components;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
+import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -12,7 +13,7 @@ public class HitPointsDisplay extends VerticalLayout {
 
     private final HitPoints hitPoints;
 
-    public HitPointsDisplay(PlayerCharacter pc, PlayerCharacterService characterService) {
+    public HitPointsDisplay(PlayerCharacter pc, PlayerCharacterService characterService, User currentUser) {
         this.hitPoints = pc.getHitPoints();
 
         setSpacing(false);
@@ -22,7 +23,7 @@ public class HitPointsDisplay extends VerticalLayout {
         hitPoints.getMaxHitPoints().addValueChangeListener(e -> textButton.setText(genHPString()));
         hitPoints.registerCurrentHPChangeListener(e -> textButton.setText(genHPString()));
         hitPoints.registerTempHPChangeListener(e -> textButton.setText(genHPString()));
-        textButton.addClickListener(e -> new HitPointsDialog(pc, characterService).open());
+        textButton.addClickListener(e -> new HitPointsDialog(pc, characterService, currentUser).open());
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
         ProgressBar hitPointsBar = createHPBar();

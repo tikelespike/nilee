@@ -2,6 +2,7 @@ package com.tikelespike.nilee.app.views.character.editor;
 
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
+import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.app.views.character.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
@@ -26,6 +27,8 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
 
     private final PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
+    private final User currentUser;
+    private CharacterSaver characterSaver;
     private Accordion accordion;
     private PlayerCharacter pc;
     private AbilitiesEditorView abilitiesEditorView;
@@ -33,7 +36,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
 
     public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
         this.characterService = characterService;
-        User currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
+        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
             "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         add(getTranslation("error.character_not_found"));
@@ -48,7 +51,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         accordion = createAccordion();
         add(accordion);
 
-        Button saveButton = new Button("Save", e -> save());
+        Button saveButton = new Button(getTranslation("generic.save"), e -> save());
         add(saveButton);
     }
 
@@ -71,31 +74,16 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     public void setParameter(BeforeEvent event, Long parameter) {
         sanityChecker.ensureSanity(parameter);
         this.pc = PlayerCharacter.createFromSnapshot(characterService.get(parameter).get());
+        this.characterSaver = new CharacterSaver(pc, characterService, currentUser);
         init();
     }
 
     private void save() {
-        sanityChecker.ensureSanity(pc.getId());
         abilitiesEditorView.update();
-        try {
-            characterService.update(pc.createSnapshot());
-            getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
-        } catch (OptimisticLockingFailureException e) {
-            showSaveWarningDialog();
-        }
-    }
-
-    private void showSaveWarningDialog() {
-        ConfirmDialog dialog = new ConfirmDialog();
-        dialog.setHeader(getTranslation("character_editor.error.save_conflict.header"));
-        dialog.setText(getTranslation("character_editor.error.save_conflict.body"));
-        dialog.setConfirmText(getTranslation("generic.save"));
-        dialog.setCancelable(true);
-        dialog.setCancelText(getTranslation("generic.cancel"));
-        dialog.addConfirmListener(event -> characterService.update(pc.createSnapshot(), true));
-        dialog.setRejectable(true);
-        dialog.addRejectListener(event -> getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId())));
-        dialog.setRejectText(getTranslation("character_editor.error.save_conflict.discard"));
-        dialog.open();
+        characterSaver.save(r -> {
+            if (r == CharacterSaver.SaveResult.SAVED || r == CharacterSaver.SaveResult.CHANGES_DISCARDED) {
+                getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
+            }
+        });
     }
 }
