@@ -3,12 +3,19 @@ package com.tikelespike.nilee.app.components;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
+/**
+ * A component that can be used to display a sticky header at the top of the page. The header is
+ * divided into three sections: left, center and right. Components can be added to these sections individually.
+ */
 public class HeaderComponent extends HorizontalLayout {
 
     private final HorizontalLayout leftLayout = new HorizontalLayout();
     private final HorizontalLayout centerLayout = new HorizontalLayout();
     private final HorizontalLayout rightLayout = new HorizontalLayout();
 
+    /**
+     * Creates a new header component.
+     */
     public HeaderComponent() {
         setWidthFull();
         setJustifyContentMode(JustifyContentMode.BETWEEN);
@@ -23,46 +30,66 @@ public class HeaderComponent extends HorizontalLayout {
 
         leftLayout.setAlignItems(Alignment.CENTER);
         leftLayout.setJustifyContentMode(JustifyContentMode.START);
+
         centerLayout.setAlignItems(Alignment.CENTER);
         centerLayout.getStyle().set("position", "absolute");
         centerLayout.getStyle().set("left", "50%");
-        leftLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        centerLayout.getStyle().set("transform", "translateX(-50%)");
+        centerLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+
         rightLayout.setAlignItems(Alignment.CENTER);
-        leftLayout.setJustifyContentMode(JustifyContentMode.END);
+        rightLayout.setJustifyContentMode(JustifyContentMode.END);
 
         add(leftLayout, centerLayout, rightLayout);
+
+
     }
 
+    /**
+     * Adds one or more components to the left-aligned section of the header. The components will be added from
+     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
+     * {@link HorizontalLayout} that is part of the header.
+     *
+     * @param components the components to add
+     */
     public void addLeft(Component... components) {
-        for (Component component : components) {
-            addLeft(component);
-        }
+        leftLayout.add(components);
     }
 
-    private void addLeft(Component component) {
-        leftLayout.add(component);
-    }
-
+    /**
+     * Adds one or more components to the centered section of the header. The centered section is placed such that
+     * its center aligns horizontally with the center of the page. As this will result in overlapping components
+     * if the page is not wide enough, it is recommended to use this section only if there is enough space.
+     * <p>
+     * The components will be added from
+     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
+     * {@link HorizontalLayout} that is part of the header.
+     *
+     * @param components the components to add
+     */
     public void addCenter(Component... components) {
-        for (Component component : components) {
-            addCenter(component);
-        }
+        centerLayout.add(components);
     }
 
-    private void addCenter(Component component) {
-        centerLayout.add(component);
-    }
-
+    /**
+     * Adds one or more components to the right-aligned section of the header. The components will be added from
+     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
+     * {@link HorizontalLayout} that is part of the header.
+     *
+     * @param components the components to add
+     */
     public void addRight(Component... components) {
-        for (Component component : components) {
-            addRight(component);
-        }
+        rightLayout.add(components);
     }
 
-    private void addRight(Component component) {
-        rightLayout.add(component);
-    }
-
+    /**
+     * Removes a component from the header. The component must have been added to the header using one of the
+     * {@code add} methods. If the component is not a child of the header, an {@link IllegalArgumentException}
+     * will be thrown.
+     *
+     * @param component the component to remove
+     * @throws IllegalArgumentException if the component has not been added to the header previously
+     */
     public void remove(Component component) {
         boolean removed = false;
         if (leftLayout.getElement().equals(component.getElement().getParent())) {
