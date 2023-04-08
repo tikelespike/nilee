@@ -3,13 +3,12 @@ package com.tikelespike.nilee.app.views.character.editor;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
-import com.tikelespike.nilee.app.views.character.CharacterSheetView;
+import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,7 +16,6 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
-import org.springframework.dao.OptimisticLockingFailureException;
 
 import javax.annotation.security.PermitAll;
 

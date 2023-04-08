@@ -2,7 +2,7 @@ package com.tikelespike.nilee.app.views.mainmenu;
 
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
-import com.tikelespike.nilee.app.views.character.CharacterSheetView;
+import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;

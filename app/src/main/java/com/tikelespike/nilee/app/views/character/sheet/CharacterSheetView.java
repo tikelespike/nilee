@@ -1,7 +1,8 @@
-package com.tikelespike.nilee.app.views.character;
+package com.tikelespike.nilee.app.views.character.sheet;
 
 import com.tikelespike.nilee.app.components.HeaderComponent;
-import com.tikelespike.nilee.app.components.HitPointsDisplay;
+import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
+import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
@@ -31,6 +32,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private final User currentUser;
 
     private PlayerCharacter pc;
+    private CharacterSaver characterSaver;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService) {
@@ -51,15 +53,11 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        setPlayerCharacter(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
+        initWithCharacter(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
     }
 
-    public void setPlayerCharacter(PlayerCharacter pc) {
-        this.pc = pc;
-        init();
-    }
-
-    private void init() {
+    private void initWithCharacter(PlayerCharacter pc) {
+        this.characterSaver = new CharacterSaver(pc, characterService, currentUser);
         removeAll();
         setPadding(true);
         Component header = createHeader();
@@ -106,7 +104,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
-        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc, characterService, currentUser);
+        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints(), characterSaver);
 
         header.addLeft(backButton, editButton);
         header.addCenter(nameTitle);

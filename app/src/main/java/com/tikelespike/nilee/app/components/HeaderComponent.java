@@ -21,7 +21,7 @@ public class HeaderComponent extends HorizontalLayout {
         setJustifyContentMode(JustifyContentMode.BETWEEN);
         setAlignItems(Alignment.CENTER);
 
-        // set the style of the header so it always stays at the top of the page
+        // set the style of the header, so it always stays at the top of the page
         getStyle().set("position", "sticky");
         getStyle().set("top", "0");
         getStyle().set("z-index", "99");
