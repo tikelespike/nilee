@@ -3,6 +3,9 @@ package com.tikelespike.nilee.core.character.stats.hitpoints.events;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 
+/**
+ * An event that is fired when the current hit points of a {@link HitPoints} object change.
+ */
 public class CurrentHPChangeEvent extends ValueChangeEvent<Integer> {
 
     /**
