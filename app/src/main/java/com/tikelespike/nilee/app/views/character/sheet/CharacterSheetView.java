@@ -58,7 +58,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private void initWithCharacter(PlayerCharacter pc) {
         this.pc = pc;
-        this.characterSaver = new CharacterSaver(pc, characterService, currentUser);
+        this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
         removeAll();
         setPadding(true);
         Component header = createHeader();

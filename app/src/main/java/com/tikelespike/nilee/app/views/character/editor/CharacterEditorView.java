@@ -72,7 +72,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     public void setParameter(BeforeEvent event, Long parameter) {
         sanityChecker.ensureSanity(parameter);
         this.pc = PlayerCharacter.createFromSnapshot(characterService.get(parameter).get());
-        this.characterSaver = new CharacterSaver(pc, characterService, currentUser);
+        this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
         init();
     }
 
