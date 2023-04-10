@@ -107,8 +107,8 @@ public class CharacterSaver extends Div {
 
     private void showSaveWarningDialog(Consumer<SaveResult> andThen) {
         ConfirmDialog dialog = new ConfirmDialog();
-        dialog.setHeader(getTranslation("character_editor.error.save_conflict.header"));
-        dialog.setText(getTranslation("character_editor.error.save_conflict.body"));
+        dialog.setHeader(getTranslation("error.save_conflict.header"));
+        dialog.setText(getTranslation("error.save_conflict.body"));
         dialog.setConfirmText(getTranslation("generic.save"));
         dialog.setCancelable(true);
         dialog.setCancelText(getTranslation("generic.cancel"));
@@ -123,7 +123,7 @@ public class CharacterSaver extends Div {
             discard();
             andThen.accept(SaveResult.CHANGES_DISCARDED);
         });
-        dialog.setRejectText(getTranslation("character_editor.error.save_conflict.discard"));
+        dialog.setRejectText(getTranslation("error.save_conflict.discard"));
         dialog.open();
     }
 
