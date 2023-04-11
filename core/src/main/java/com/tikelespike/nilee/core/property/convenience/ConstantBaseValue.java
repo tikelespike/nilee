@@ -11,13 +11,6 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
     private String sourceName;
 
     /**
-     * Default constructor for JPA. Should not be used directly.
-     */
-    protected ConstantBaseValue() {
-        this(0, "(default)");
-    }
-
-    /**
      * Creates a new {@code ConstantBaseValue} with the given base value and source name. The base value is the value
      * that will be returned by {@link #getBaseValue()}.
      *
@@ -39,13 +32,9 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      *
      * @param defaultBaseValue the new base value
      */
-    public void setDefaultBaseValue(int defaultBaseValue) {
+    public void setBaseValue(int defaultBaseValue) {
         this.defaultBaseValue = defaultBaseValue;
         update();
-    }
-
-    public int getDefaultBaseValue() {
-        return defaultBaseValue;
     }
 
     @Override
