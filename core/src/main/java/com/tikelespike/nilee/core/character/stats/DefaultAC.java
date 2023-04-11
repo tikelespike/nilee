@@ -1,4 +1,4 @@
-package com.tikelespike.nilee.core.content.core;
+package com.tikelespike.nilee.core.character.stats;
 
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;

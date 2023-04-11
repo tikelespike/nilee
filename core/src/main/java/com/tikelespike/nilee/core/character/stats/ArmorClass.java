@@ -1,10 +1,8 @@
 package com.tikelespike.nilee.core.character.stats;
 
-import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
-import com.tikelespike.nilee.core.content.core.DefaultAC;
-import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
 import com.tikelespike.nilee.core.property.Property;
+import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
 
 /**
  * A property describing the armor class of a character. The armor class is the value that is used to determine whether
@@ -13,24 +11,15 @@ import com.tikelespike.nilee.core.property.Property;
  */
 public class ArmorClass extends Property<Integer> {
 
-    private Property<Integer> dex;
-
-    /**
-     * Default constructor for JPA. Do not use.
-     */
-    protected ArmorClass() {
-        // armor class is subject to maximization
-        setBaseValueSelector(new MaxValueSelector<>());
-    }
-
     /**
      * Creates a new armor class property based on the given dexterity property.
      *
      * @param dex the dexterity property of the character whose armor class this is referring to
      */
     public ArmorClass(AbilityScore dex) {
-        this();
-        this.dex = dex;
+        // armor class is subject to maximization
+        setBaseValueSelector(new MaxValueSelector<>());
+
         addBaseValueSupplier(new DefaultAC(dex));
     }
 }
