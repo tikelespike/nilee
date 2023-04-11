@@ -10,6 +10,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+/**
+ * A memento class of a {@link PlayerCharacter} that can stored in the database. Player character snapshots can be used
+ * to save a characters state, optionally store it to the database and restore it later.
+ * <p>
+ * This class is not intended to be used directly. Instead, use {@link PlayerCharacter#createSnapshot()} to create a snapshot of
+ * the current character state. To restore a character from a snapshot, use {@link PlayerCharacter#restoreSnapshot(PlayerCharacterSnapshot)}.
+ * <p>
+ * A snapshot <b>does</b> store all long-term persistent information about a character, such as their name, spell slots, hit points,
+ * and other "character-building" information (class choices, ...). (TODO: Note: most of this is not yet implemented.)
+ * <p>
+ * A snapshot does <b>not</b> store "short-term business object details" such as registered listeners or modifiers applied to
+ * properties.
+ */
 @Entity
 @Table(name = "application_player_character")
 public class PlayerCharacterSnapshot extends AbstractEntity {
@@ -33,7 +46,11 @@ public class PlayerCharacterSnapshot extends AbstractEntity {
     private int temporaryHitPoints;
     private Integer hitPointMaxOverride;
 
-    public PlayerCharacterSnapshot() {
+    /**
+     * Creates a new player character snapshot with uninitialized values. A snapshot should only be created by
+     * {@link PlayerCharacter#createSnapshot()}.
+     */
+    protected PlayerCharacterSnapshot() {
     }
 
     protected User getOwner() {
