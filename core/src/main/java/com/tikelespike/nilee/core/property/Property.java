@@ -43,8 +43,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
     private T lastKnownValue;
 
     /**
-     * Default constructor for JPA. Will not add any base value suppliers or modifiers. You must add at least one
-     * base value supplier before calling {@link #getValue()} or {@link #getBaseValue()} by using
+     * Creates a new property with no base value suppliers or modifiers.
+     * You must add at least one base value supplier before calling {@link #getValue()} or {@link #getBaseValue()} by using
      * {@link #addBaseValueSupplier(PropertyBaseSupplier)}.
      */
     protected Property() {
