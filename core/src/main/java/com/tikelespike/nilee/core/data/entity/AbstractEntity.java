@@ -43,6 +43,10 @@ public abstract class AbstractEntity {
         return version;
     }
 
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     @Override
     public int hashCode() {
         if (getId() != null) {

@@ -1,17 +1,14 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.data.entity.AbstractEntity;
-import com.tikelespike.nilee.core.data.entity.GameEntity;
-import com.tikelespike.nilee.core.events.Event;
+import com.tikelespike.nilee.core.property.convenience.FirstValueSelector;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
 
-import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 /**
  * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values
@@ -27,25 +24,27 @@ import java.util.Set;
  *
  * @param <T> the type of the value (typically, an integer or a dice roll like 3d4)
  */
-@Entity
-public class Property<T> extends AbstractEntity {
+public class Property<T> implements EventListener<UpdateEvent> {
 
-    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
     private final Set<PropertyBaseSupplier<T>> baseValueSuppliers = new LinkedHashSet<>();
 
-    @OneToMany(targetEntity = GameEntity.class, fetch = FetchType.EAGER) // fix for now, should this be lazy?
-    private final Set<PropertyModifier<T>> modifiers = new LinkedHashSet<>();
+    private final List<PropertyModifier<T>> modifiers = new ArrayList<>();
 
-    // fix for now, should this be lazy?
-    @OneToOne(targetEntity = GameEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+    protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
-    @Transient
+    private final Map<PropertyModifier<T>, Registration> modifierRegistrations = new HashMap<>();
+
+    private final Map<PropertyBaseSupplier<T>, Registration> baseRegistrations = new HashMap<>();
+
+    private Registration baseSelectorRegistration = Registration.getInvalid();
+
     private final EventBus eventBus = new EventBus();
 
+    private T lastKnownValue;
+
     /**
-     * Default constructor for JPA. Will not add any base value suppliers or modifiers. You must add at least one
-     * base value supplier before calling {@link #getValue()} or {@link #getBaseValue()} by using
+     * Creates a new property with no base value suppliers or modifiers.
+     * You must add at least one base value supplier before calling {@link #getValue()} or {@link #getBaseValue()} by using
      * {@link #addBaseValueSupplier(PropertyBaseSupplier)}.
      */
     protected Property() {
@@ -57,8 +56,8 @@ public class Property<T> extends AbstractEntity {
      *
      * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}.
      */
-    public Property(PropertyBaseSupplier<T> baseValueSupplier) {
-        this.baseValueSuppliers.add(baseValueSupplier);
+    public Property(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        addBaseValueSupplier(Objects.requireNonNull(baseValueSupplier));
     }
 
 
@@ -70,7 +69,11 @@ public class Property<T> extends AbstractEntity {
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getValue() {
-        T value = getBaseValue();
+        return getValueOnBase(getBaseValue());
+    }
+
+    public T getValueOnBase(T base) {
+        T value = base;
         for (PropertyModifier<T> modifier : getModifiers()) {
             value = modifier.apply(value);
         }
@@ -83,6 +86,7 @@ public class Property<T> extends AbstractEntity {
      * There has to be at least
      * one base value supplier added before calling this method.
      * The selection strategy can be set using {@link #setBaseValueSelector(ValueSelector)}.
+     * This corresponds to the value of the property without any modifiers applied.
      *
      * @return the base value of this property, as selected by the base value selector
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
@@ -104,41 +108,66 @@ public class Property<T> extends AbstractEntity {
      *
      * @return a copy of the set of modifiers applied to this property
      */
-    public Set<PropertyModifier<T>> getModifiers() {
-        return new LinkedHashSet<>(modifiers);
+    public List<PropertyModifier<T>> getModifiers() {
+        return new ArrayList<>(modifiers);
     }
 
     /**
      * Adds a modifier to this property. The modifier will be applied after the base value is calculated, and will
      * affect the end result retrieved by {@link #getValue()}. All modifiers are applied in the order they are added.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the modifier.
      *
      * @param modifier the modifier to add to this property
      */
-    public void addModifier(PropertyModifier<T> modifier) {
-        T oldValue = getValue();
-        modifiers.add(modifier);
-        notifyListeners(oldValue);
+    public void addModifier(@NotNull PropertyModifier<T> modifier) {
+        addModifier(modifiers.size(), modifier);
+    }
+
+    /**
+     * Adds a modifier to this property. The modifier will be applied after the base value is calculated, and will
+     * affect the end result retrieved by {@link #getValue()}. The modifier will be applied at the given index, so
+     * all modifiers with an index greater than or equal to the given index will be applied after the new modifier.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the modifier.
+     *
+     * @param modifier the modifier to add to this property
+     * @param index    the index at which to add the modifier. Has to be between 0 and the number of modifiers already added
+     */
+    public void addModifier(int index, @NotNull PropertyModifier<T> modifier) {
+        Objects.requireNonNull(modifier);
+        Registration registration = modifier.addUpdateListener(this);
+        modifiers.add(index, modifier);
+        modifierRegistrations.put(modifier, registration);
+        notifyListeners();
     }
 
     /**
      * Removes a modifier from this property. The modifier will no longer affect the end result retrieved by
      * {@link #getValue()}. If the modifier was not previously added, this method has no effect.
+     * <p>
+     * Calling this method will trigger a value change event.
      *
      * @param modifier the modifier to remove from this property
      */
-    public void removeModifier(PropertyModifier<T> modifier) {
-        T oldValue = getValue();
+    public void removeModifier(@NotNull PropertyModifier<T> modifier) {
+        Objects.requireNonNull(modifier);
+        if (!modifiers.contains(modifier)) return;
         modifiers.remove(modifier);
-        notifyListeners(oldValue);
+        modifierRegistrations.get(modifier).unregisterAll();
+        modifierRegistrations.remove(modifier);
+        notifyListeners();
     }
 
     /**
      * Removes all modifiers from this property. The property will no longer be affected by any modifiers.
+     * Calling this method will trigger a value change event.
      */
     public void clearModifiers() {
-        T oldValue = getValue();
         modifiers.clear();
-        notifyListeners(oldValue);
+        modifierRegistrations.values().forEach(Registration::unregisterAll);
+        modifierRegistrations.clear();
+        notifyListeners();
     }
 
 
@@ -158,25 +187,33 @@ public class Property<T> extends AbstractEntity {
      * Adds a base value supplier to this property. The added supplier will provide a base value for the selection
      * strategy to choose from. The selection strategy can be set using
      * {@link #setBaseValueSelector(ValueSelector)}.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the base value supplier.
      *
      * @param baseValueSupplier the base value supplier to add to this property
      */
-    public void addBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
-        T oldValue = getValue();
+    public void addBaseValueSupplier(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        Objects.requireNonNull(baseValueSupplier);
+        Registration registration = baseValueSupplier.addUpdateListener(this);
         baseValueSuppliers.add(baseValueSupplier);
-        notifyListeners(oldValue);
+        baseRegistrations.put(baseValueSupplier, registration);
+        notifyListeners();
     }
 
     /**
      * Removes a base value supplier from this property. The removed supplier will no longer provide a base value for
      * the selection strategy to choose from. If the supplier was not previously added, this method has no effect.
+     * <p>
+     * Calling this method will trigger a value change event.
      *
      * @param baseValueSupplier the base value supplier to remove from this property
      */
-    public void removeBaseValueSupplier(PropertyBaseSupplier<T> baseValueSupplier) {
-        T oldValue = getValue();
+    public void removeBaseValueSupplier(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
+        Objects.requireNonNull(baseValueSupplier);
         baseValueSuppliers.remove(baseValueSupplier);
-        notifyListeners(oldValue);
+        baseRegistrations.get(baseValueSupplier).unregisterAll();
+        baseRegistrations.remove(baseValueSupplier);
+        notifyListeners();
     }
 
 
@@ -184,14 +221,18 @@ public class Property<T> extends AbstractEntity {
      * Sets the strategy used to select the base value from all base values provided by the base value suppliers.
      * Typical strategies include selecting the first value, the highest value, or the lowest value. The default is
      * {@link FirstValueSelector}.
+     * <p>
+     * Calling this method will trigger a value change event, as will any update events sent by the value selector.
      *
      * @param baseValueSelector the strategy selecting the base value from all base values provided by the base value
      *                          suppliers
      */
-    public void setBaseValueSelector(ValueSelector<T> baseValueSelector) {
-        T oldValue = getValue();
+    public void setBaseValueSelector(@NotNull ValueSelector<T> baseValueSelector) {
+        Objects.requireNonNull(baseValueSelector);
         this.baseValueSelector = baseValueSelector;
-        notifyListeners(oldValue);
+        baseSelectorRegistration.unregisterAll();
+        this.baseSelectorRegistration = baseValueSelector.addUpdateListener(this);
+        notifyListeners();
     }
 
     /**
@@ -206,102 +247,35 @@ public class Property<T> extends AbstractEntity {
     /**
      * Registers a listener to be notified when the way this property is calculated changes. Specifically,
      * the listener will be notified when the base value changes, when a modifier is added or removed, or when the
-     * base value selector changes.
+     * base value selector changes. If the implementation of the modifiers and base value providers of this property
+     * notify this property when they change, the listener will also be called on those changes. However, it is not
+     * guaranteed that the listener will be called on every change, as the implementation of the modifiers and base
+     * value providers may not notify this property of every change. It is also not guaranteed that the new value
+     * will be different from the old value, since changes to the property may not affect the end result (for example,
+     * changes to a base value supplier that is not selected by the selection strategy).
      *
      * @param listener the listener to register
      * @return a registration object that can be used to unregister the listener
      */
-    public Registration addPropertyChangeListener(EventListener<? super PropertyChangeEvent> listener) {
-        return eventBus.registerListener(PropertyChangeEvent.class, listener);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Registration addValueChangeListener(@NotNull EventListener<ValueChangeEvent<T>> listener) {
+        Objects.requireNonNull(listener);
+        // requires this class to only send value change events of type T, otherwise, the listeners will also be
+        // triggered by value change events of other type, which will cause a class cast exception
+        return eventBus.registerListener(ValueChangeEvent.class, (EventListener) listener);
     }
 
     /**
-     * Registers a listener to be notified when a change in the way this property is calculated results in a change
-     * in the value of this property. This will not notify the listener when internals of the base value providers,
-     * modifiers, or base value selector change, but only when modifying the property itself results in a change in
-     * the value of the property.
-     * <p>
-     * Therefore, subscribing to this event is equivalent to subscribing to PropertyChangeEvents and checking manually
-     * whether the new value is different from the old value (as in the {@code equals} relationship).
-     *
-     * @param listener the listener to register
-     * @return a registration object that can be used to unregister the listener
+     * Notifies all listeners that the value of this property might have changed.
      */
-    public Registration addValueChangeListener(EventListener<? super ValueChangeEvent> listener) {
-        return eventBus.registerListener(ValueChangeEvent.class, listener);
+    protected void notifyListeners() {
+        T newValue = baseValueSuppliers.isEmpty() ? null : getValue();
+        eventBus.fireEvent(new ValueChangeEvent<>(lastKnownValue, newValue));
+        lastKnownValue = newValue;
     }
 
-    private void notifyListeners(T oldValue) {
-        T newValue = getValue();
-        if (!Objects.equals(oldValue, newValue)) {
-            eventBus.fireEvent(new ValueChangeEvent(this, oldValue));
-        }
-        eventBus.fireEvent(new PropertyChangeEvent(this, oldValue));
-    }
-
-    /**
-     * An event fired when the way a property is calculated changes. Contains the old value and a reference to the
-     * property that changed.
-     */
-    public class PropertyChangeEvent extends PropertyChangeEventBase {
-        /**
-         * Creates a new property change event.
-         *
-         * @param property the property that changed
-         * @param oldValue the old value of the property
-         */
-        public PropertyChangeEvent(Property<T> property, T oldValue) {
-            super(property, oldValue);
-        }
-    }
-
-    /**
-     * An event fired when the way a property is calculated changes, and the new value is different from the old
-     * value. Contains the old value and a reference to the property that changed.
-     */
-    public class ValueChangeEvent extends PropertyChangeEventBase {
-        /**
-         * Creates a new value change event.
-         *
-         * @param property the property that changed
-         * @param oldValue the old value of the property, has to be different to the new value
-         * @throws IllegalArgumentException if the old and new value are equal
-         */
-        public ValueChangeEvent(Property<T> property, T oldValue) {
-            super(property, oldValue);
-            if (Objects.equals(oldValue, getNewValue()))
-                throw new IllegalArgumentException("Old and new value are equal");
-        }
-    }
-
-    private abstract class PropertyChangeEventBase extends Event {
-        private final T oldValue;
-        private final Property<T> property;
-
-        public PropertyChangeEventBase(Property<T> property, T oldValue) {
-            this.property = property;
-            this.oldValue = oldValue;
-        }
-
-        /**
-         * @return the value {@link Property#getValue()} returned before the change
-         */
-        public T getOldValue() {
-            return oldValue;
-        }
-
-        /**
-         * @return the value {@link Property#getValue()} returns after the change
-         */
-        public T getNewValue() {
-            return property.getValue();
-        }
-
-        /**
-         * @return the property that changed
-         */
-        public Property<T> getProperty() {
-            return property;
-        }
+    @Override
+    public void onEvent(UpdateEvent event) {
+        notifyListeners();
     }
 }

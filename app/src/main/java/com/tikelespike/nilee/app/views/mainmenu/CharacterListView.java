@@ -1,19 +1,17 @@
 package com.tikelespike.nilee.app.views.mainmenu;
 
-import com.tikelespike.nilee.core.data.entity.PlayerCharacter;
+import com.tikelespike.nilee.app.security.AuthenticatedUser;
+import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
+import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
-import com.tikelespike.nilee.app.security.AuthenticatedUser;
-import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
-import com.tikelespike.nilee.app.views.character.CharacterSheetView;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.Icon;
@@ -71,8 +69,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addSelectionListener(e -> {
             if (e.getFirstSelectedItem().isPresent()) {
-                PlayerCharacter pc = e.getFirstSelectedItem().get();
-                openPCSheet(pc);
+                openPCSheet(e.getFirstSelectedItem().get().getId());
             }
         });
         return grid;
@@ -86,21 +83,20 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void addPC(PlayerCharacter character) {
-        characterService.update(character);
+        characterService.update(character.createSnapshot());
         updateUserInfo();
         updateCharacterGrid();
     }
 
     private Button createOpenPCButton(PlayerCharacter pc) {
         Button openButton = new Button(getTranslation("generic.open"));
-        ComponentEventListener<ClickEvent<Button>> navigateToCharacterSheet = e -> openPCSheet(pc);
-        openButton.addClickListener(navigateToCharacterSheet);
+        openButton.addClickListener(e -> openPCSheet(pc.getId()));
         return openButton;
     }
 
-    private void openPCSheet(PlayerCharacter pc) {
-        sanityChecker.ensureSanity(pc);
-        getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, pc.getId()));
+    private void openPCSheet(Long id) {
+        sanityChecker.ensureSanity(id);
+        getUI().ifPresent(ui -> ui.navigate(CharacterSheetView.class, id));
     }
 
     private Button createDeletePCButton(PlayerCharacter pc) {
@@ -108,29 +104,23 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         deleteButton.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
         deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
 
-        Dialog confirmDialog = createConfirmDialog(pc);
+        ConfirmDialog confirmDialog = createConfirmDialog(pc);
         deleteButton.addClickListener(e -> confirmDialog.open());
 
         return deleteButton;
     }
 
-    private Dialog createConfirmDialog(PlayerCharacter pc) {
-        Dialog confirmDialog = new Dialog();
-        confirmDialog.setHeaderTitle(getTranslation("character_list.list.delete.confirm.title", pc.getName()));
-        confirmDialog.add(getTranslation("character_list.list.delete.confirm.body", pc.getName()));
+    private ConfirmDialog createConfirmDialog(PlayerCharacter pc) {
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        confirmDialog.setHeader(getTranslation("character_list.list.delete.confirm.title", pc.getName()));
+        confirmDialog.setText(getTranslation("character_list.list.delete.confirm.body", pc.getName()));
 
-        Button confirmButton = new Button(getTranslation("generic.delete"));
-        confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
-        confirmButton.addClickListener(e -> {
-            deletePC(pc);
-            confirmDialog.close();
-        });
+        confirmDialog.setConfirmText(getTranslation("generic.delete"));
+        confirmDialog.addConfirmListener(e -> deletePC(pc));
 
-        Button cancelButton = new Button(getTranslation("generic.cancel"));
-        cancelButton.addThemeVariants();
-        cancelButton.addClickListener(e -> confirmDialog.close());
+        confirmDialog.setCancelable(true);
+        confirmDialog.setCancelText(getTranslation("generic.cancel"));
 
-        confirmDialog.getFooter().add(cancelButton, confirmButton);
         return confirmDialog;
     }
 
@@ -142,7 +132,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void updateCharacterGrid() {
-        characterGrid.setItems(currentUser.getCharacters());
+        characterGrid.setItems(currentUser.getCharacters().stream().map(PlayerCharacter::createFromSnapshot).toList());
     }
 
 

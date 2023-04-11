@@ -1,54 +1,45 @@
-package com.tikelespike.nilee.core.data.entity.property;
+package com.tikelespike.nilee.core.property.convenience;
 
-import com.tikelespike.nilee.core.data.entity.GameEntity;
-
-import javax.persistence.Entity;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
  * A {@link PropertyBaseSupplier} that wraps a constant value that can be accessed with getters and setters.
  */
-@Entity
-public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplier<Integer> {
+public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
 
-    private int baseValue;
+    private Integer defaultBaseValue;
     private String sourceName;
-
-    /**
-     * Default constructor for JPA. Should not be used directly.
-     */
-    protected ConstantBaseValue() {
-        this(0, "(default)");
-    }
 
     /**
      * Creates a new {@code ConstantBaseValue} with the given base value and source name. The base value is the value
      * that will be returned by {@link #getBaseValue()}.
      *
-     * @param baseValue the base value to wrap
+     * @param defaultBaseValue the base value to wrap
      * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
      */
-    public ConstantBaseValue(int baseValue, String sourceName) {
-        this.baseValue = baseValue;
+    public ConstantBaseValue(int defaultBaseValue, String sourceName) {
+        this.defaultBaseValue = defaultBaseValue;
         this.sourceName = sourceName;
     }
 
     @Override
     public Integer getBaseValue() {
-        return baseValue;
+        return defaultBaseValue;
     }
 
     /**
      * Sets the base value that will be returned by {@link #getBaseValue()}.
      *
-     * @param baseValue the new base value
+     * @param defaultBaseValue the new base value
      */
-    public void setBaseValue(int baseValue) {
-        this.baseValue = baseValue;
+    public void setBaseValue(int defaultBaseValue) {
+        this.defaultBaseValue = defaultBaseValue;
+        update();
     }
 
     @Override
     public String getAbstractDescription() {
-        return baseValue + "";
+        return defaultBaseValue.toString();
     }
 
     @Override
@@ -65,5 +56,6 @@ public class ConstantBaseValue extends GameEntity implements PropertyBaseSupplie
      */
     public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
+        update();
     }
 }

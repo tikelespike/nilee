@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.core.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 
 import javax.persistence.*;
 import java.util.Locale;
@@ -24,7 +25,7 @@ public class User extends AbstractEntity {
     private Locale preferredLocale;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
-    private Set<PlayerCharacter> characters;
+    private Set<PlayerCharacterSnapshot> characters;
 
     public String getUsername() {
         return username;
@@ -57,7 +58,7 @@ public class User extends AbstractEntity {
         this.profilePicture = profilePicture;
     }
 
-    public Set<PlayerCharacter> getCharacters() {
+    public Set<PlayerCharacterSnapshot> getCharacters() {
         return characters;
     }
 

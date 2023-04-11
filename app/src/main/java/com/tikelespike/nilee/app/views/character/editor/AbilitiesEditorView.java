@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
-import com.tikelespike.nilee.core.data.entity.property.AbilityScores;
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
@@ -8,11 +8,11 @@ import com.vaadin.flow.data.binder.ValidationException;
 
 public class AbilitiesEditorView extends FormLayout {
 
-    private final AbilityScores attributes;
-    private final Binder<AbilityScores> binder;
+    private final PlayerCharacter pc;
+    private final Binder<PlayerCharacter> binder;
 
-    public AbilitiesEditorView(AbilityScores attributes) {
-        this.attributes = attributes;
+    public AbilitiesEditorView(PlayerCharacter pc) {
+        this.pc = pc;
 
         IntegerField strField = createStatField(getTranslation("character_editor.abilities.str.label"));
         IntegerField dexField = createStatField(getTranslation("character_editor.abilities.dex.label"));
@@ -25,15 +25,16 @@ public class AbilitiesEditorView extends FormLayout {
         add(strField, dexField, conField, intField, wisField, chaField);
 
         // maps the UI fields to the attributes object
-        binder = new Binder<>(AbilityScores.class);
-        binder.forField(strField).bind(AbilityScores::getBaseStrength, AbilityScores::setBaseStrength);
+        binder = new Binder<>(PlayerCharacter.class);
+        binder.forField(strField).bind(c -> c.getAbilityScores().getStrength().getDefaultBaseValue(), (c, v) -> pc.getAbilityScores().getStrength().setDefaultBaseValue(v));
+        binder.forField(conField).bind(c -> c.getAbilityScores().getConstitution().getDefaultBaseValue(), (c, v) -> pc.getAbilityScores().getConstitution().setDefaultBaseValue(v));
 
-        binder.readBean(attributes);
+        binder.readBean(pc);
     }
 
     public void update() {
         try {
-            binder.writeBean(attributes);
+            binder.writeBean(pc);
         } catch (ValidationException e) {
             throw new RuntimeException(e);
         }

@@ -32,6 +32,10 @@ public class Registration {
         return bus.unregister(listener);
     }
 
+    public boolean unregisterAll() {
+        return bus.unregisterAll(listener);
+    }
+
     /**
      * Checks if the listener (the registration of which returned this object) is still subscribed to the corresponding
      * event bus.
@@ -40,5 +44,30 @@ public class Registration {
      */
     public boolean isActive() {
         return bus.isSubscribed(listener);
+    }
+
+    public static Registration getInvalid() {
+        return new InvalidRegistration();
+    }
+
+    private static class InvalidRegistration extends Registration {
+        public InvalidRegistration() {
+            super(null, null);
+        }
+
+        @Override
+        public boolean unregister() {
+            return false;
+        }
+
+        @Override
+        public boolean unregisterAll() {
+            return false;
+        }
+
+        @Override
+        public boolean isActive() {
+            return false;
+        }
     }
 }

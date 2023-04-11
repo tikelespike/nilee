@@ -1,6 +1,9 @@
-package com.tikelespike.nilee.app.views.character;
+package com.tikelespike.nilee.app.views.character.sheet;
 
-import com.tikelespike.nilee.core.data.entity.PlayerCharacter;
+import com.tikelespike.nilee.app.components.HeaderComponent;
+import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
+import com.tikelespike.nilee.app.views.character.CharacterSaver;
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
@@ -10,7 +13,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -27,12 +29,15 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private final CharacterSanityChecker sanityChecker;
 
+    private final User currentUser;
+
     private PlayerCharacter pc;
+    private CharacterSaver characterSaver;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService) {
         this.characterService = characterService;
-        User currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
+        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
             "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
 
@@ -48,15 +53,12 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        setPlayerCharacter(characterService.get(parameter).get());
+        initWithCharacter(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
     }
 
-    public void setPlayerCharacter(PlayerCharacter pc) {
+    private void initWithCharacter(PlayerCharacter pc) {
         this.pc = pc;
-        init();
-    }
-
-    private void init() {
+        this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
         removeAll();
         setPadding(true);
         Component header = createHeader();
@@ -86,21 +88,13 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         tabSheet.add("Tab 1", new Scroller(placeholderText));
         tabSheet.add("Tab 2", new Scroller(placeholderText2));
         tabSheet.add("Tab 3", new Scroller(placeholderText3));
-        tabSheet.add("Strength Demo", new Scroller(new Text("" + pc.getAbilityScores().getStrengthProperty().getValue())));
+        tabSheet.add("Strength Demo", new Scroller(new Text("" + pc.getAbilityScores().getStrength().getValue())));
         tabSheet.addThemeVariants(TabSheetVariant.LUMO_TABS_EQUAL_WIDTH_TABS);
         return tabSheet;
     }
 
     private Component createHeader() {
-        HorizontalLayout header = new HorizontalLayout();
-        header.setWidthFull();
-        header.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        header.setAlignItems(Alignment.CENTER);
-        // set the style of the header so it always stays at the top of the page
-        header.getStyle().set("position", "sticky");
-        header.getStyle().set("top", "0");
-        header.getStyle().set("z-index", "99");
-        header.getStyle().set("background-color", "var(--lumo-base-color)");
+        HeaderComponent header = new HeaderComponent();
 
         Button backButton = new Button(getTranslation("character_sheet.header.back"));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterListView.class)));
@@ -110,11 +104,12 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
-        Button hitPointsButton = new Button(pc.getHitPoints() + "/" + pc.getMaxHitPoints() + " HP");
 
-        HorizontalLayout rightElements = new HorizontalLayout(editButton, hitPointsButton);
+        HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints(), characterSaver);
 
-        header.add(backButton, nameTitle, rightElements);
+        header.addLeft(backButton, editButton);
+        header.addCenter(nameTitle);
+        header.addRight(hpDisplay);
         return header;
     }
 
