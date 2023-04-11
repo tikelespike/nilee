@@ -156,7 +156,7 @@ public class HitPoints extends AbstractEntity {
      * @param listener the listener to register
      * @return a {@link Registration} object that can be used to unregister the listener
      */
-    public Registration registerCurrentHPChangeListener(@NotNull EventListener<CurrentHPChangeEvent> listener) {
+    public Registration registerCurrentHPChangeListener(@NotNull EventListener<? super CurrentHPChangeEvent> listener) {
         return bus.registerListener(CurrentHPChangeEvent.class, listener);
     }
 
@@ -167,7 +167,7 @@ public class HitPoints extends AbstractEntity {
      * @param listener the listener to register
      * @return a {@link Registration} object that can be used to unregister the listener
      */
-    public Registration registerTempHPChangeListener(@NotNull EventListener<TempHPChangeEvent> listener) {
+    public Registration registerTempHPChangeListener(@NotNull EventListener<? super TempHPChangeEvent> listener) {
         return bus.registerListener(TempHPChangeEvent.class, listener);
     }
 

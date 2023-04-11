@@ -11,4 +11,12 @@ public class SimpleListener implements EventListener<Event> {
     public int getNumCalls() {
         return numCalls;
     }
+
+    public boolean wasCalled() {
+        return numCalls > 0;
+    }
+
+    public void reset() {
+        numCalls = 0;
+    }
 }
