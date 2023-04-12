@@ -155,18 +155,22 @@ public class HitPointsDialog extends Dialog {
         IntegerField deltaField = new IntegerField(getTranslation("character_sheet.hit_points.section.heal_damage.amount"));
         deltaField.setStepButtonsVisible(true);
         deltaField.setMin(0);
+        deltaField.setValue(1);
+        deltaField.addValueChangeListener(e -> {
+            if (e.getValue() == null) deltaField.setValue(1);
+        });
 
         Button damageButton = new Button(getTranslation("character_sheet.hit_points.section.heal_damage.damage"));
         damageButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
         damageButton.addClickListener(e -> {
-            hitPoints.takeDamage(deltaField.getValue());
+            hitPoints.takeDamage(deltaField.getValue() == null ? 0 : deltaField.getValue());
             deltaField.setValue(deltaField.getEmptyValue());
         });
 
         Button healButton = new Button(getTranslation("character_sheet.hit_points.section.heal_damage.heal"));
         healButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
         healButton.addClickListener(e -> {
-            hitPoints.heal(deltaField.getValue());
+            hitPoints.heal(deltaField.getValue() == null ? 0 : deltaField.getValue());
             deltaField.setValue(deltaField.getEmptyValue());
         });
 
