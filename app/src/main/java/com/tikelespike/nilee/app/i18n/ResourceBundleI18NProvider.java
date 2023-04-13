@@ -26,17 +26,13 @@ public class ResourceBundleI18NProvider implements I18NProvider {
         }
 
         final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PREFIX, locale);
-        final ResourceBundle fallbackBundle = ResourceBundle.getBundle(BUNDLE_PREFIX, Locale.ENGLISH);
 
-        String value;
-        if (bundle.containsKey(key)) {
-            value = bundle.getString(key);
-        } else if (fallbackBundle.containsKey(key)) {
-            value = fallbackBundle.getString(key);
-        } else {
+        if (!bundle.containsKey(key)) {
             LoggerFactory.getLogger(ResourceBundleI18NProvider.class.getName()).warn("Missing resource: " + key);
             return "!" + locale.getLanguage() + ": " + key;
         }
+
+        String value = bundle.getString(key);
         if (params.length > 0) {
             value = MessageFormat.format(value, params);
         }
