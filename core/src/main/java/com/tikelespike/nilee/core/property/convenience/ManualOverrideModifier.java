@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyModifier;
 
 /**
@@ -44,17 +45,17 @@ public class ManualOverrideModifier<T> extends PropertyModifier<T> {
     }
 
     @Override
-    public String getAbstractDescription() {
-        return "-> override value";
+    public LocalizedString getAbstractDescription() {
+        return t -> t.translate("core.character.modifier.override.operator", t.translate("core.character.modifier.override.value"));
     }
 
     @Override
-    public String getConcreteDescription() {
-        return "-> " + overrideValue;
+    public LocalizedString getConcreteDescription() {
+        return t -> t.translate("core.character.modifier.override.operator", overrideValue);
     }
 
     @Override
-    public String getSourceName() {
-        return "Custom Override";
+    public LocalizedString getSourceName() {
+        return t -> t.translate("core.character.modifier.override.source");
     }
 }

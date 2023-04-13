@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 import javax.validation.constraints.NotNull;
@@ -29,12 +30,12 @@ public class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
+    public LocalizedString getAbstractDescription() {
         return abilityScore.getShortName();
     }
 
     @Override
-    public String getSourceName() {
+    public LocalizedString getSourceName() {
         return abilityScore.getLongName();
     }
 

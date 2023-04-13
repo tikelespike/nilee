@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.character.stats.hitpoints;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
@@ -34,12 +35,12 @@ public class HPMaxBaseSupplier extends PropertyBaseSupplier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
-        return "CON + rolled hit dice";
+    public LocalizedString getAbstractDescription() {
+        return t -> t.translate("core.character.ability.con") + " + " + t.translate("core.character.hit_points.max.rolled_hit_dice");
     }
 
     @Override
-    public String getSourceName() {
-        return "Base Hit Point Max";
+    public LocalizedString getSourceName() {
+        return t -> t.translate("core.character.hit_points.max.base");
     }
 }

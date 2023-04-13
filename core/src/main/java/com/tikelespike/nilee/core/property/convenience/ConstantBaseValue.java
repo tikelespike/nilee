@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.property.convenience;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
+import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
@@ -8,7 +10,7 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
 
     private Integer defaultBaseValue;
-    private String sourceName;
+    private LocalizedString sourceName;
 
     /**
      * Creates a new {@code ConstantBaseValue} with the given base value and source name. The base value is the value
@@ -17,7 +19,7 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      * @param defaultBaseValue the base value to wrap
      * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
      */
-    public ConstantBaseValue(int defaultBaseValue, String sourceName) {
+    public ConstantBaseValue(int defaultBaseValue, LocalizedString sourceName) {
         this.defaultBaseValue = defaultBaseValue;
         this.sourceName = sourceName;
     }
@@ -38,12 +40,12 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
-        return defaultBaseValue.toString();
+    public LocalizedString getAbstractDescription() {
+        return t -> defaultBaseValue.toString();
     }
 
     @Override
-    public String getSourceName() {
+    public LocalizedString getSourceName() {
         return sourceName;
     }
 
@@ -54,7 +56,7 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      *
      * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
      */
-    public void setSourceName(String sourceName) {
+    public void setSourceName(LocalizedString sourceName) {
         this.sourceName = sourceName;
         update();
     }

@@ -1,5 +1,7 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
+import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
 
 import javax.validation.constraints.NotNull;
@@ -19,8 +21,8 @@ import java.util.Objects;
  */
 public class AbilityScore extends ConstantBaseProperty {
 
-    private final String longName;
-    private final String shortName;
+    private final LocalizedString longName;
+    private final LocalizedString shortName;
 
     /**
      * Creates a new ability score with the given default base value, long name, and short name.
@@ -29,9 +31,10 @@ public class AbilityScore extends ConstantBaseProperty {
      * @param longName    the name of this ability score (e.g. "Strength")
      * @param shortName   the abbreviated name of this ability score (e.g. "STR", usually referring to the modifier)
      */
-    public AbilityScore(int defaultBase, @NotNull String longName, @NotNull String shortName) {
+    public AbilityScore(int defaultBase, @NotNull LocalizedString longName, @NotNull LocalizedString shortName) {
         super(defaultBase, longName);
-        Objects.requireNonNull(longName, shortName);
+        Objects.requireNonNull(longName);
+        Objects.requireNonNull(shortName);
         this.longName = longName;
         this.shortName = shortName;
     }
@@ -52,7 +55,7 @@ public class AbilityScore extends ConstantBaseProperty {
      *
      * @return the abbreviated name of this ability score (e.g. "STR", usually referring to the modifier)
      */
-    public String getShortName() {
+    public LocalizedString getShortName() {
         return shortName;
     }
 
@@ -61,7 +64,7 @@ public class AbilityScore extends ConstantBaseProperty {
      *
      * @return the name of this ability score
      */
-    public String getLongName() {
+    public LocalizedString getLongName() {
         return longName;
     }
 }

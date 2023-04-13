@@ -3,6 +3,7 @@ package com.tikelespike.nilee.core.character;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.entity.User;
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -47,7 +48,6 @@ public class PlayerCharacter {
      */
     protected PlayerCharacter() {
         abilityScores = new AbilityScores();
-        name = getDefaultName();
         hitPoints = new HitPoints(abilityScores.getConstitution());
     }
 
@@ -191,7 +191,12 @@ public class PlayerCharacter {
         return loadedFromVersion;
     }
 
-    private String getDefaultName() {
-        return "Unnamed Character #" + id;
+    /**
+     * Creates a default name for this character as a placeholder if the user does not specify a name.
+     *
+     * @return a default name for this character (like "Unnamed Character #42")
+     */
+    public LocalizedString getDefaultName() {
+        return t -> t.translate("core.character.name.default", id);
     }
 }

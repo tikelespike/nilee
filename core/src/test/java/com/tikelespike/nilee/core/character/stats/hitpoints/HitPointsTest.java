@@ -4,9 +4,9 @@ import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.events.SimpleListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.scanner.ScannerImpl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HitPointsTest {
 
@@ -22,7 +22,7 @@ class HitPointsTest {
 
     @BeforeEach
     void setUp() {
-        hitPoints = new HitPoints(new AbilityScore(TEST_CONSTITUTION, "Constitution", "CON"));
+        hitPoints = new HitPoints(new AbilityScore(TEST_CONSTITUTION, t -> "Constitution", t -> "CON"));
         hitPoints.setCurrentHitPoints(0);
         maxHitPoints = hitPoints.getMaxHitPoints().getValue();
         hpListener = new SimpleListener();

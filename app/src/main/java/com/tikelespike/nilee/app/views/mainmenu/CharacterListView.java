@@ -7,6 +7,7 @@ import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
+import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
@@ -36,18 +37,19 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     private final UserService userService;
     private final PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
+    private final TranslationProvider translationProvider;
 
     private User currentUser;
 
 
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
-                             UserService userService) {
+                             UserService userService, TranslationProvider translationProvider) {
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
             "authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
-
+        this.translationProvider = translationProvider;
 
         this.characterGrid = createCharacterGrid();
         updateCharacterGrid();
@@ -78,7 +80,10 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     private Button createAddCharacterButton() {
         Button button = new Button(getTranslation("character_list.new_character.button.label"));
         button.addClickShortcut(Key.ENTER);
-        button.addClickListener(e -> addPC(new PlayerCharacter(newCharacterNameTF.getValue(), currentUser)));
+        PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
+        String name = newCharacterNameTF.getValue() == "" ? newCharacter.getDefaultName().getTranslation(translationProvider) : newCharacterNameTF.getValue();
+        newCharacter.setName(name);
+        button.addClickListener(e -> addPC(newCharacter));
         return button;
     }
 

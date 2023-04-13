@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.core.character.stats;
 
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
@@ -26,12 +27,12 @@ public class DefaultAC extends PropertyBaseSupplier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
-        return "10 + DEX";
+    public LocalizedString getAbstractDescription() {
+        return t -> "10 + " + t.translate("core.character.ability.dex");
     }
 
     @Override
-    public String getSourceName() {
-        return "Default AC";
+    public LocalizedString getSourceName() {
+        return t -> t.translate("core.character.armor_class.default");
     }
 }

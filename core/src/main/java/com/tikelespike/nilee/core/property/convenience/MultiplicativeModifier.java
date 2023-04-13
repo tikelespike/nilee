@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyModifier;
 
 /**
@@ -8,7 +9,7 @@ import com.tikelespike.nilee.core.property.PropertyModifier;
 public class MultiplicativeModifier extends PropertyModifier<Integer> {
 
     private int factor;
-    private String source;
+    private LocalizedString source;
 
     /**
      * Creates a new {@link MultiplicativeModifier} with the given factor and source.
@@ -16,7 +17,7 @@ public class MultiplicativeModifier extends PropertyModifier<Integer> {
      * @param factor how much to multiply the value of the property by. Can be negative.
      * @param source a short description of the source of the factor (e.g. "Feline agility" doubling movement speed)
      */
-    public MultiplicativeModifier(int factor, String source) {
+    public MultiplicativeModifier(int factor, LocalizedString source) {
         this.factor = factor;
         this.source = source;
     }
@@ -27,18 +28,25 @@ public class MultiplicativeModifier extends PropertyModifier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
+    public LocalizedString getAbstractDescription() {
         return getConcreteDescription();
     }
 
     @Override
-    public String getConcreteDescription() {
-        return "* " + factor;
+    public LocalizedString getConcreteDescription() {
+        return t -> t.translate("core.character.modifier.multiplicative.operator", factor);
     }
 
     @Override
-    public String getSourceName() {
+    public LocalizedString getSourceName() {
         return source;
+    }
+
+    /**
+     * @return the factor this modifier multiplies the property by
+     */
+    public int getFactor() {
+        return factor;
     }
 
     /**
@@ -50,16 +58,9 @@ public class MultiplicativeModifier extends PropertyModifier<Integer> {
     }
 
     /**
-     * @return the factor this modifier multiplies the property by
-     */
-    public int getFactor() {
-        return factor;
-    }
-
-    /**
      * @param source a short description of the source of the modifier (e.g. "Feline agility" doubling movement speed)
      */
-    public void setSource(String source) {
+    public void setSource(LocalizedString source) {
         this.source = source;
         update();
     }

@@ -21,8 +21,8 @@ public class AbilityScores extends AbstractEntity {
      * Creates a new ability score group with default values for all six scores.
      */
     public AbilityScores() {
-        this.strength = new AbilityScore(DEFAULT_VALUE, "Strength", "STR");
-        this.constitution = new AbilityScore(DEFAULT_VALUE, "Constitution", "CON");
+        this.strength = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.strength"), t -> t.translate("core.character.ability.str"));
+        this.constitution = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.constitution"), t -> t.translate("core.character.ability.con"));
     }
 
     /**

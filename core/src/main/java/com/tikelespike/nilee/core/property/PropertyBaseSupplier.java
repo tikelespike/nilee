@@ -1,9 +1,10 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.i18n.LocalizedString;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.UpdateSubject;
 
 /**
  * Provides a base value for a property, and a description of where the value comes from and how it is calculated.
@@ -44,16 +45,16 @@ public abstract class PropertyBaseSupplier<T> extends UpdateSubject {
      *
      * @return a description of the base value computation (e.g. "10 + DEX")
      */
-    public abstract String getAbstractDescription();
+    public abstract LocalizedString getAbstractDescription();
 
     /**
      * Returns a short name describing the implementing class. This name should be suitable for display in a user
      * interface and provides information for the user on where the provided base value comes from.
      * For example, a base value that computes an armor's base AC may return "Leather Armor".
-     *
+     * <p>
      * The description returned must be constant, that is, subsequent calls to this method must return the same value.
      *
      * @return a short name describing the implementing class (e.g. "Leather Armor")
      */
-    public abstract String getSourceName();
+    public abstract LocalizedString getSourceName();
 }

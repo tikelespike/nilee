@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyModifier;
 
 /**
@@ -8,15 +9,15 @@ import com.tikelespike.nilee.core.property.PropertyModifier;
 public class AdditiveModifier extends PropertyModifier<Integer> {
 
     private int bonus;
-    private String source;
+    private LocalizedString source;
 
     /**
      * Creates a new {@link AdditiveModifier} with the given bonus and source.
      *
-     * @param bonus how much to add to the value of the property. Can be negative.
+     * @param bonus  how much to add to the value of the property. Can be negative.
      * @param source a short name describing the source of the bonus, e.g. "Racial bonus"
      */
-    public AdditiveModifier(int bonus, String source) {
+    public AdditiveModifier(int bonus, LocalizedString source) {
         this.bonus = bonus;
         this.source = source;
     }
@@ -27,17 +28,17 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
     }
 
     @Override
-    public String getAbstractDescription() {
+    public LocalizedString getAbstractDescription() {
         return getConcreteDescription();
     }
 
     @Override
-    public String getConcreteDescription() {
-        return "+ " + bonus;
+    public LocalizedString getConcreteDescription() {
+        return t -> t.translate("core.character.modifier.additive.operator", bonus);
     }
 
     @Override
-    public String getSourceName() {
+    public LocalizedString getSourceName() {
         return source;
     }
 
@@ -65,7 +66,7 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
      *
      * @param source a short description for the source of the bonus, e.g. "Racial bonus"
      */
-    public void setSource(String source) {
+    public void setSource(LocalizedString source) {
         this.source = source;
         update();
     }
@@ -75,7 +76,7 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
      *
      * @return a short description for the source of the bonus, e.g. "Racial bonus"
      */
-    public String getSource() {
+    public LocalizedString getSource() {
         return source;
     }
 }

@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
+import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
 
 /**
@@ -17,7 +18,7 @@ public class ConstantBaseProperty extends Property<Integer> {
      * @param defaultBase the standard base value of the property (for example, the strength score of a character set during character creation)
      * @param description a short description of the source of the default value, e.g. "Base score"
      */
-    public ConstantBaseProperty(int defaultBase, String description) {
+    public ConstantBaseProperty(int defaultBase, LocalizedString description) {
         constantBaseValue = new ConstantBaseValue(defaultBase, description);
         addBaseValueSupplier(constantBaseValue);
     }

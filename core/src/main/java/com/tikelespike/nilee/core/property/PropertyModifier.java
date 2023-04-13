@@ -1,9 +1,10 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.property.events.UpdateSubject;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.i18n.LocalizedString;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.UpdateSubject;
 
 /**
  * Modifies the value of a {@link Property} by applying a transformation to it.
@@ -55,7 +56,7 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      * @return a description of the transformation applied by the implementing class which may contain variable names
      * (e.g. "+ DEX")
      */
-    public abstract String getAbstractDescription();
+    public abstract LocalizedString getAbstractDescription();
 
     /**
      * A concrete description of the transformation applied by the implementing class. This description should be
@@ -75,7 +76,7 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      * @return a description of the transformation applied by the implementing class that does not contain variable
      * names (e.g. "+ 2")
      */
-    public abstract String getConcreteDescription();
+    public abstract LocalizedString getConcreteDescription();
 
     /**
      * Returns a short name describing the semantics of the implementing class.
@@ -88,5 +89,5 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      *
      * @return a short name describing the implementing class (e.g. "Leather Armor")
      */
-    public abstract String getSourceName();
+    public abstract LocalizedString getSourceName();
 }
