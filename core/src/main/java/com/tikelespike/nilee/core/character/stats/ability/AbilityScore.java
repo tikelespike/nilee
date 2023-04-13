@@ -1,7 +1,8 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
+import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.i18n.TranslationProvider;
+import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,8 @@ public class AbilityScore extends ConstantBaseProperty {
     private final LocalizedString longName;
     private final LocalizedString shortName;
 
+    private final Property<DiceExpression> checkRoll = new Property<>(new DefaultAbilityCheckRoll(this));
+
     /**
      * Creates a new ability score with the given default base value, long name, and short name.
      *
@@ -37,6 +40,17 @@ public class AbilityScore extends ConstantBaseProperty {
         Objects.requireNonNull(shortName);
         this.longName = longName;
         this.shortName = shortName;
+    }
+
+    /**
+     * Returns the property describing the dice expression used to calculate the result of a check roll using this
+     * ability score. (For example, a check roll using the "Strength" ability score would be "{@code 1d20 + STR}"
+     * by default.)
+     *
+     * @return the property describing the dice expression used to calculate the result of a check roll using this ability score
+     */
+    public Property<DiceExpression> getCheckRoll() {
+        return checkRoll;
     }
 
     /**

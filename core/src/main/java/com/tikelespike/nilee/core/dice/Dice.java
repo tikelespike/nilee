@@ -9,13 +9,17 @@ public class Dice extends DiceExpression {
     private int sides;
     private int diceCount;
 
-    public Dice(int sides, int diceCount) {
+    public Dice(int diceCount, int sides) {
         this.sides = sides;
         this.diceCount = diceCount;
     }
 
+    public Dice(int sides) {
+        this(1, sides);
+    }
+
     @Override
-    int evaluate() {
+    public int evaluate() {
         int result = 0;
         for (int i = 0; i < diceCount; i++) {
             result += (int) (Math.random() * sides) + 1;
@@ -45,7 +49,7 @@ public class Dice extends DiceExpression {
     }
 
     @Override
-    LocalizedString toLocalizedString() {
+    public LocalizedString toLocalizedString() {
         return t -> t.translate("dice.atomic_dice_expression", diceCount, sides);
     }
 

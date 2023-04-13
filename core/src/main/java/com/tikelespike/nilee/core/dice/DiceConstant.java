@@ -11,7 +11,7 @@ public class DiceConstant extends DiceExpression {
     }
 
     @Override
-    int evaluate() {
+    public int evaluate() {
         return value;
     }
 
@@ -21,7 +21,7 @@ public class DiceConstant extends DiceExpression {
     }
 
     @Override
-    LocalizedString toLocalizedString() {
+    public LocalizedString toLocalizedString() {
         return t -> String.valueOf(value);
     }
 }

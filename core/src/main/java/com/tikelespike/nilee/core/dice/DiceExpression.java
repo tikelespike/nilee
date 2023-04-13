@@ -4,8 +4,8 @@ import com.tikelespike.nilee.core.i18n.LocalizedString;
 
 public abstract class DiceExpression {
 
-    abstract int evaluate();
+    public abstract int evaluate();
 
-    abstract LocalizedString toLocalizedString();
+    public abstract LocalizedString toLocalizedString();
 
 }
