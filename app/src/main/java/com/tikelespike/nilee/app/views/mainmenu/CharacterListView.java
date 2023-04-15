@@ -4,6 +4,7 @@ import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
@@ -25,6 +26,7 @@ import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.security.PermitAll;
+import java.util.Objects;
 
 @Route(value = "characters", layout = MainLayout.class)
 @PermitAll
@@ -45,7 +47,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
                              UserService userService, TranslationProvider translationProvider) {
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
-            "authenticated"));
+                "authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
@@ -65,9 +67,12 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
     private Grid<PlayerCharacter> createCharacterGrid() {
         Grid<PlayerCharacter> grid = new Grid<>(PlayerCharacter.class, false);
-        grid.addColumn(PlayerCharacter::getName).setHeader(getTranslation("character_list.list.headings.name")).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton)).setHeader(getTranslation("character_list.list.headings.open"));
-        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton)).setHeader(getTranslation("character_list.list.headings.delete"));
+        grid.addColumn(PlayerCharacter::getName).setHeader(
+                getTranslation("character_list.list.headings.name")).setAutoWidth(true).setFlexGrow(0);
+        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton)).setHeader(
+                getTranslation("character_list.list.headings.open"));
+        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton)).setHeader(
+                getTranslation("character_list.list.headings.delete"));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addSelectionListener(e -> {
             if (e.getFirstSelectedItem().isPresent()) {
@@ -80,17 +85,23 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     private Button createAddCharacterButton() {
         Button button = new Button(getTranslation("character_list.new_character.button.label"));
         button.addClickShortcut(Key.ENTER);
-        PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
-        String name = newCharacterNameTF.getValue() == "" ? newCharacter.getDefaultName().getTranslation(translationProvider) : newCharacterNameTF.getValue();
-        newCharacter.setName(name);
-        button.addClickListener(e -> addPC(newCharacter));
+        button.addClickListener(e -> {
+            PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
+            savePC(newCharacter);
+            String name = Objects.equals(newCharacterNameTF.getValue(),
+                    "") ? newCharacter.getDefaultName().getTranslation(
+                    translationProvider) : newCharacterNameTF.getValue();
+            newCharacter.setName(name);
+            savePC(newCharacter);
+        });
         return button;
     }
 
-    private void addPC(PlayerCharacter character) {
-        characterService.update(character.createSnapshot());
+    private void savePC(PlayerCharacter character) {
+        PlayerCharacterSnapshot saved = characterService.update(character.createSnapshot());
         updateUserInfo();
         updateCharacterGrid();
+        character.restoreSnapshot(saved);
     }
 
     private Button createOpenPCButton(PlayerCharacter pc) {
@@ -143,7 +154,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
     private void updateUserInfo() {
         currentUser = userService.get(currentUser.getId()).orElseThrow(() -> new IllegalStateException("User not " +
-            "found"));
+                "found"));
     }
 
     @Override

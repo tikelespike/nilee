@@ -197,6 +197,6 @@ public class PlayerCharacter {
      * @return a default name for this character (like "Unnamed Character #42")
      */
     public LocalizedString getDefaultName() {
-        return t -> t.translate("core.character.name.default", id);
+        return t -> t.translate("core.character.name.default", Long.toString(id));
     }
 }
