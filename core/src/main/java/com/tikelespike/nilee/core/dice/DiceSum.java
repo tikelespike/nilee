@@ -32,20 +32,31 @@ public class DiceSum extends DiceExpression {
     }
 
     @Override
+    public DiceExpression evaluatePartially() {
+        DiceSum result = new DiceSum();
+        for (DiceExpression summand : summands) {
+            result.addSummands(summand.evaluatePartially());
+        }
+        return result;
+    }
+
+    @Override
     public String toString() {
         return String.join(" + ", summands.stream().map(Object::toString).toArray(String[]::new));
     }
 
     @Override
-    public LocalizedString toLocalizedString() {
-        // special case 1d20 + const for attack rolls etc.
-        if (summands.size() == 2
+    public LocalizedString toLocalizedString(boolean abbreviateD20) {
+        // special case 1d20 + const for attack rolls etc. (+ 5 vs. 1d20 + 5)
+        if (abbreviateD20
+                && summands.size() == 2
                 && summands.get(0) instanceof Dice dice && dice.getDiceCount() == 1 && dice.getSides() == 20
                 && summands.get(1) instanceof DiceConstant constant) {
             return t -> t.translate("dice.sum.operator") + " " + constant.toLocalizedString().getTranslation(t);
         }
 
         return t -> String.join(" " + t.translate("dice.sum.operator") + " ",
-                summands.stream().map(DiceExpression::toLocalizedString).map(l -> l.getTranslation(t)).toArray(String[]::new));
+                summands.stream().map(DiceExpression::toLocalizedString).map(l -> l.getTranslation(t)).toArray(
+                        String[]::new));
     }
 }

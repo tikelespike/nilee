@@ -16,12 +16,17 @@ public class DiceConstant extends DiceExpression {
     }
 
     @Override
+    public DiceExpression evaluatePartially() {
+        return this;
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(value);
     }
 
     @Override
-    public LocalizedString toLocalizedString() {
+    public LocalizedString toLocalizedString(boolean abbreviateD20) {
         return t -> String.valueOf(value);
     }
 }

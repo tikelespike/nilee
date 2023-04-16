@@ -27,6 +27,11 @@ public class Dice extends DiceExpression {
         return result;
     }
 
+    @Override
+    public DiceExpression evaluatePartially() {
+        return new DiceConstant(evaluate());
+    }
+
     public int getSides() {
         return sides;
     }
@@ -49,7 +54,7 @@ public class Dice extends DiceExpression {
     }
 
     @Override
-    public LocalizedString toLocalizedString() {
+    public LocalizedString toLocalizedString(boolean abbreviateD20) {
         return t -> t.translate("dice.atomic_dice_expression", diceCount, sides);
     }
 
