@@ -20,7 +20,7 @@ public class AbilityScoreBox extends VerticalLayout {
                 t -> abilityScore.getLongName().getTranslation(t) + " Check");
         skillCheckButton.addThemeVariants(ButtonVariant.LUMO_LARGE);
         skillCheckButton.setMinWidth("130px");
-        skillCheckButton.setMinHeight("100px");
+        skillCheckButton.setMinHeight("80px");
         // increase font size
         skillCheckButton.getStyle().set("font-size", "1.75em");
 
