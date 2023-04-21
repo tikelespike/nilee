@@ -2,6 +2,9 @@ package com.tikelespike.nilee.core.character.stats.ability;
 
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * Groups the specific six {@link AbilityScore}s used in the 5th edition of Dungeons & Dragons, namely
  * Strength, Dexterity, Constitution, Intelligence, Wisdom and Charisma, into one entity.
@@ -21,8 +24,10 @@ public class AbilityScores extends AbstractEntity {
      * Creates a new ability score group with default values for all six scores.
      */
     public AbilityScores() {
-        this.strength = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.strength"), t -> t.translate("core.character.ability.str"));
-        this.constitution = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.constitution"), t -> t.translate("core.character.ability.con"));
+        this.strength = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.strength"),
+                t -> t.translate("core.character.ability.str"));
+        this.constitution = new AbilityScore(DEFAULT_VALUE, t -> t.translate("core.character.ability.constitution"),
+                t -> t.translate("core.character.ability.con"));
     }
 
     /**
@@ -43,5 +48,15 @@ public class AbilityScores extends AbstractEntity {
      */
     public AbilityScore getConstitution() {
         return constitution;
+    }
+
+    /**
+     * Returns an unmodifiable collection of all ability scores (strength, dexterity, constitution, intelligence,
+     * wisdom and charisma) grouped in this entity.
+     *
+     * @return an unmodifiable collection of all ability scores
+     */
+    public Collection<AbilityScore> getAll() {
+        return Arrays.asList(strength, constitution);
     }
 }
