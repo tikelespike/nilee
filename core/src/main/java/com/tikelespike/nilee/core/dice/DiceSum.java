@@ -52,7 +52,9 @@ public class DiceSum extends DiceExpression {
                 && summands.size() == 2
                 && summands.get(0) instanceof Dice dice && dice.getDiceCount() == 1 && dice.getSides() == 20
                 && summands.get(1) instanceof DiceConstant constant) {
-            return t -> t.translate("dice.sum.operator") + " " + constant.toLocalizedString().getTranslation(t);
+            return t -> (constant.evaluate() < 0 ? "" : t.translate(
+                    "dice.sum.operator")) + " " + constant.toLocalizedString().getTranslation(
+                    t);
         }
 
         return t -> String.join(" " + t.translate("dice.sum.operator") + " ",

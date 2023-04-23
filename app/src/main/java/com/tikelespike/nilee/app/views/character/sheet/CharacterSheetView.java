@@ -101,7 +101,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         for (AbilityScore score : pc.getAbilityScores().getAll()) {
             layout.add(new AbilityScoreBox(score, translationProvider));
         }
-        layout.setJustifyContentMode(JustifyContentMode.AROUND);
+        layout.setJustifyContentMode(JustifyContentMode.CENTER);
         Scroller scroller = new Scroller(layout);
         Tab tab = new Tab("Tab 1");
         TabSheet tabSheet = new TabSheet();

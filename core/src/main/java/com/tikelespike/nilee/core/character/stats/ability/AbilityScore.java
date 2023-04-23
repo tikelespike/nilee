@@ -61,7 +61,7 @@ public class AbilityScore extends ConstantBaseProperty {
      * @return the modifier of this ability score
      */
     public int getModifier() {
-        return (getValue() - 10) / 2;
+        return Math.floorDiv(getValue() - 10, 2);
     }
 
     /**
