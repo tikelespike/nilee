@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
+import com.tikelespike.nilee.app.views.character.sheet.dice.RollManager;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
@@ -9,28 +10,33 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+/**
+ * A box containing relevant information to an {@link AbilityScore}, including the name and value of the score
+ * as well as a button to roll a check with the score.
+ */
 public class AbilityScoreBox extends VerticalLayout {
 
     private static final String CHECK_BUTTON_CLASS = "ability-score-check-button";
     private static final String VALUE_BUTTON_CLASS = "ability-score-value-button";
     private static final String INNER_BOX_CLASS = "ability-score-inner-box";
 
-    public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider) {
+    /**
+     * Creates a new {@link AbilityScoreBox} based on a given ability.
+     *
+     * @param abilityScore        the ability score to base the box on
+     * @param translationProvider the translation provider to use for displaying internalized
+     *                            (language-independent) strings
+     */
+    public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider, RollManager rollManager) {
         configureStyle();
 
-        Component skillCheckButton = createCheckButton(abilityScore, translationProvider);
+        Component skillCheckButton = createCheckButton(abilityScore, translationProvider, rollManager);
         Component scoreValueButton = createScoreValueButton(abilityScore);
         Component label = createScoreLabel(abilityScore, translationProvider);
 
         VerticalLayout innerContentBox = createInnerContentBox(label, skillCheckButton);
 
         add(innerContentBox, scoreValueButton);
-    }
-
-    private void configureStyle() {
-        getStyle().set("position", "relative");
-        setWidth(null);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
     }
 
     private static Button createScoreValueButton(AbilityScore abilityScore) {
@@ -56,9 +62,9 @@ public class AbilityScoreBox extends VerticalLayout {
         return innerContentBox;
     }
 
-    private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider) {
+    private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider, RollManager rollManager) {
         Button skillCheckButton = new RollButton(abilityScore.getCheckRoll(), translationProvider,
-                t -> abilityScore.getLongName().getTranslation(t) + " Check");
+                t -> abilityScore.getLongName().getTranslation(t) + " Check", rollManager);
         skillCheckButton.addThemeVariants(ButtonVariant.LUMO_LARGE);
         skillCheckButton.addClassName(CHECK_BUTTON_CLASS);
 
@@ -66,5 +72,11 @@ public class AbilityScoreBox extends VerticalLayout {
         skillCheckButton.setWidthFull();
         skillCheckButton.setHeightFull();
         return skillCheckButton;
+    }
+
+    private void configureStyle() {
+        getStyle().set("position", "relative");
+        setWidth(null);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
     }
 }
