@@ -65,6 +65,8 @@ public class AbilityScoreBox extends VerticalLayout {
     private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider, RollManager rollManager) {
         Button skillCheckButton = new RollButton(abilityScore.getCheckRoll(), translationProvider,
                 t -> abilityScore.getLongName().getTranslation(t) + " Check", rollManager);
+        skillCheckButton.setText(
+                (abilityScore.getModifier() >= 0 ? "+ " : "- ") + Math.abs(abilityScore.getModifier()));
         skillCheckButton.addThemeVariants(ButtonVariant.LUMO_LARGE);
         skillCheckButton.addClassName(CHECK_BUTTON_CLASS);
 

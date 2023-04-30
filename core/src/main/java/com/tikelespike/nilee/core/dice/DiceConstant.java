@@ -26,7 +26,7 @@ public class DiceConstant extends DiceExpression {
     }
 
     @Override
-    public LocalizedString toLocalizedString(boolean abbreviateD20) {
-        return t -> String.valueOf(value);
+    public LocalizedString toLocalizedString() {
+        return t -> value < 0 ? "- " + Math.abs(value) : String.valueOf(value);
     }
 }

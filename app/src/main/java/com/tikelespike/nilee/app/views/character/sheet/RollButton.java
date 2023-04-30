@@ -28,7 +28,7 @@ public class RollButton extends Button {
         Objects.requireNonNull(rollProperty);
         Objects.requireNonNull(translationProvider);
         Objects.requireNonNull(rollManager);
-        setText(rollProperty.getValue().toLocalizedString(true).getTranslation(translationProvider));
+        setText(rollProperty.getValue().toLocalizedString().getTranslation(translationProvider));
         addClickListener(e -> rollManager.makeRoll(rollProperty, rollDescription));
     }
 

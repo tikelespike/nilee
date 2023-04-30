@@ -21,8 +21,8 @@ public class Dice extends DiceExpression {
     @Override
     public int evaluate() {
         int result = 0;
-        for (int i = 0; i < diceCount; i++) {
-            result += (int) (Math.random() * sides) + 1;
+        for (int i = 0; i < Math.abs(diceCount); i++) {
+            result += (int) Math.signum(diceCount) * ((Math.random() * sides) + 1);
         }
         return result;
     }
@@ -54,8 +54,9 @@ public class Dice extends DiceExpression {
     }
 
     @Override
-    public LocalizedString toLocalizedString(boolean abbreviateD20) {
-        return t -> t.translate("dice.atomic_dice_expression", diceCount, sides);
+    public LocalizedString toLocalizedString() {
+        return t -> t.translate("dice.atomic_dice_expression", (diceCount < 0 ? "- " : "") + Math.abs(diceCount),
+                sides);
     }
 
     @Override

@@ -8,9 +8,5 @@ public abstract class DiceExpression {
 
     public abstract DiceExpression evaluatePartially();
 
-    public abstract LocalizedString toLocalizedString(boolean abbreviateD20);
-
-    public final LocalizedString toLocalizedString() {
-        return toLocalizedString(false);
-    }
+    public abstract LocalizedString toLocalizedString();
 }
