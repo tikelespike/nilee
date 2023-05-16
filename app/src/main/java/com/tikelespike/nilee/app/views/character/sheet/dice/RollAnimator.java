@@ -2,6 +2,9 @@ package com.tikelespike.nilee.app.views.character.sheet.dice;
 
 import com.tikelespike.nilee.core.dice.DiceConstant;
 import com.tikelespike.nilee.core.dice.DiceExpression;
+import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.game.RollBus;
+import com.tikelespike.nilee.core.game.RollEvent;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.property.Property;
@@ -17,9 +20,9 @@ import java.util.*;
 /**
  * Manages the rolling of dice and the display of the results as notifications.
  */
-public class RollManager extends Div {
+public class RollAnimator extends Div implements EventListener<RollEvent> {
 
-    // TODO: Singleton pattern? Since UI also uses singleton and it probably makes sense to have only one roll manager per ui
+    // TODO: Singleton pattern? Since UI also uses singleton and it probably makes sense to have only one roll animator per UI
 
     /**
      * How long the instant response notification announcing that a roll is being made is shown in milliseconds
@@ -42,9 +45,24 @@ public class RollManager extends Div {
      *
      * @param translationProvider translation provider used to translate rolling notifications
      */
-    public RollManager(@NotNull TranslationProvider translationProvider) {
+    public RollAnimator(@NotNull TranslationProvider translationProvider, RollBus rollBus) {
         Objects.requireNonNull(translationProvider);
         this.translationProvider = translationProvider;
+        rollBus.registerRollListener(this);
+    }
+
+    @Override
+    public void onEvent(RollEvent event) {
+        LocalizedString nullSafeDescription = event.getDescription() == null ? t -> t.translate(
+                "character_sheet.dice.default_roll_description") : event.getDescription();
+        showRollingAnimation();
+        Notification resultNotification = createResultNotification(event.getRoll(), event.getPartialResult(),
+                event.getResult(), nullSafeDescription);
+
+        executeDelayed(() -> {
+            minimizeOpenNotifications();
+            resultNotification.open();
+        }, ROLL_RESULT_DELAY_MS);
     }
 
     /**
@@ -56,15 +74,7 @@ public class RollManager extends Div {
      */
     public void makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription) {
         Objects.requireNonNull(rollProperty);
-        LocalizedString nullSafeDescription = rollDescription == null ? t -> t.translate(
-                "character_sheet.dice.default_roll_description") : rollDescription;
-        showRollingAnimation();
-        Notification resultNotification = createResultNotification(rollProperty, nullSafeDescription);
 
-        executeDelayed(() -> {
-            minimizeOpenNotifications();
-            resultNotification.open();
-        }, ROLL_RESULT_DELAY_MS);
     }
 
     private void minimizeOpenNotifications() {
@@ -83,11 +93,7 @@ public class RollManager extends Div {
         notification.open();
     }
 
-    private Notification createResultNotification(Property<DiceExpression> rollProperty, LocalizedString rollDescription) {
-        DiceExpression roll = rollProperty.getValue();
-        DiceExpression partialResult = roll.evaluatePartially();
-        int result = partialResult.evaluate();
-
+    private Notification createResultNotification(DiceExpression roll, DiceExpression partialResult, int result, LocalizedString rollDescription) {
         RollResult rollResult = new RollResult(rollDescription, translationProvider, roll, partialResult,
                 new DiceConstant(result));
         VerticalLayout resultLayout = new VerticalLayout(rollResult.getDetailedLayout());

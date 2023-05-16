@@ -5,12 +5,13 @@ import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.app.views.character.editor.CharacterEditorView;
-import com.tikelespike.nilee.app.views.character.sheet.dice.RollManager;
+import com.tikelespike.nilee.app.views.character.sheet.dice.RollAnimator;
 import com.tikelespike.nilee.app.views.mainmenu.CharacterListView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
+import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -99,9 +100,11 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
                                 20));
         HorizontalLayout layout = new HorizontalLayout();
-        RollManager rollManager = new RollManager(translationProvider);
+        RollBus rollBus = new RollBus();
+        RollAnimator rollAnimator = new RollAnimator(translationProvider, rollBus);
+        add(rollAnimator);
         for (AbilityScore score : pc.getAbilityScores().getAll()) {
-            layout.add(new AbilityScoreBox(score, translationProvider, rollManager));
+            layout.add(new AbilityScoreBox(score, translationProvider, rollBus));
         }
         layout.setJustifyContentMode(JustifyContentMode.CENTER);
         Scroller scroller = new Scroller(layout);
