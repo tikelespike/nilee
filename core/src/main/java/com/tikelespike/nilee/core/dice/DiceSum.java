@@ -6,22 +6,45 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Multiple dice expressions added together. For example, "2d6 + 1d4 + 3" is a dice sum with three summands.
+ */
 public class DiceSum extends DiceExpression {
 
     private final List<DiceExpression> summands = new ArrayList<>();
 
+    /**
+     * Creates a new dice sum.
+     *
+     * @param summands the summands of this dice sum.
+     */
     public DiceSum(DiceExpression... summands) {
         this.summands.addAll(Arrays.asList(summands));
     }
 
+    /**
+     * Creates a new dice sum.
+     *
+     * @param summands the summands of this dice sum.
+     */
     public DiceSum(List<DiceExpression> summands) {
         this.summands.addAll(summands);
     }
 
+    /**
+     * Adds the given summands to this dice sum.
+     *
+     * @param summands the summands to add to this dice sum.
+     */
     public void addSummands(DiceExpression... summands) {
         this.summands.addAll(Arrays.asList(summands));
     }
 
+    /**
+     * Returns a copy of the summands of this dice sum.
+     *
+     * @return copy of the summands of this dice sum.
+     */
     public List<DiceExpression> getSummands() {
         return new ArrayList<>(summands);
     }

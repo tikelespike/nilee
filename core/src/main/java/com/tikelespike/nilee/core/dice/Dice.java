@@ -4,16 +4,33 @@ import com.tikelespike.nilee.core.i18n.LocalizedString;
 
 import java.util.Objects;
 
+/**
+ * A number of dice with the same number of sides each. Represents what is commonly expressed as, for example, "2d8",
+ * meaning "roll two eight-sided dice". The results of each die are summed.
+ *
+ * @see <a href="https://www.dndbeyond.com/sources/phb/introduction#GameDice">Dice notation</a>
+ */
 public class Dice extends DiceExpression {
 
     private int sides;
     private int diceCount;
 
+    /**
+     * Create a dice object representing the expression "<i>[diceCount]</i>d<i>[sides]</i>".
+     *
+     * @param diceCount the number of dice. Must be greater than zero.
+     * @param sides     the number of sides of each die. If negative, treated as {@code -(Dice(diceCount, -sides))}.
+     */
     public Dice(int diceCount, int sides) {
         this.sides = sides;
         this.diceCount = diceCount;
     }
 
+    /**
+     * Convenience constructor for a single die. Creates a dice object representing the expression "1d<i>[sides]</i>".
+     *
+     * @param sides the number of sides of each die. If negative, treated as {@code -(Dice(-sides))}.
+     */
     public Dice(int sides) {
         this(1, sides);
     }
@@ -32,21 +49,6 @@ public class Dice extends DiceExpression {
         return new DiceConstant(evaluate());
     }
 
-    public int getSides() {
-        return sides;
-    }
-
-    public void setSides(int sides) {
-        this.sides = sides;
-    }
-
-    public int getDiceCount() {
-        return diceCount;
-    }
-
-    public void setDiceCount(int diceCount) {
-        this.diceCount = diceCount;
-    }
 
     @Override
     public String toString() {
