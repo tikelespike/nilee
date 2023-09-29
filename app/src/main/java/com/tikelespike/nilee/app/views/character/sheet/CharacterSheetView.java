@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
+import com.tikelespike.nilee.app.components.BarComponent;
 import com.tikelespike.nilee.app.components.HeaderComponent;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
@@ -10,20 +11,26 @@ import com.tikelespike.nilee.app.views.mainmenu.CharacterListView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
+import com.tikelespike.nilee.core.game.GameSession;
+import com.tikelespike.nilee.core.game.GameSessionManager;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.TabSheetVariant;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 
 import javax.annotation.security.PermitAll;
+import java.util.UUID;
 
 @Route(value = "sheet")
 @PermitAll
@@ -36,6 +43,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private final User currentUser;
 
+    private GameSession gameSession = null;
+
     private PlayerCharacter pc;
     private CharacterSaver characterSaver;
 
@@ -47,6 +56,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                 "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         this.translationProvider = translationProvider;
+        this.gameSession = GameSessionManager.getInstance().newSession();
 
         // initialization happens in setParameter based on the given character
         add(getTranslation("error.character_not_found"));
@@ -73,6 +83,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
         TabSheet tabSheet = createTabSheet();
         add(tabSheet);
+
+        Notification.show("Session: " + gameSession.getId().toString(), 8000, Notification.Position.BOTTOM_START);
     }
 
     private TabSheet createTabSheet() {
@@ -97,7 +109,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
                                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
                                 20));
-        RollBus rollBus = new RollBus();
+        RollBus rollBus = gameSession.getRollBus();
         RollAnimator rollAnimator = new RollAnimator(translationProvider, rollBus);
         add(rollAnimator);
 
@@ -115,20 +127,38 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     }
 
     private Component createHeader() {
-        HeaderComponent header = new HeaderComponent();
+        BarComponent header = new HeaderComponent();
 
         Button backButton = new Button(getTranslation("character_sheet.header.back"));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(CharacterListView.class)));
 
-        H3 nameTitle = new H3(pc.getName());
-        nameTitle.getElement().getStyle().set("margin-top", "0.5em");
-
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
+        Button sessionButton = new Button("Session");
+        sessionButton.addClickListener(e -> {
+            Dialog dialog = new Dialog();
+            dialog.add(new Text("Session"));
+            TextField sessionIDField = new TextField("Session ID");
+            dialog.add(sessionIDField);
+            Button joinButton = new Button("Join");
+            joinButton.addClickListener(e1 -> {
+                UUID sessionID = UUID.fromString(sessionIDField.getValue());
+                this.gameSession = GameSessionManager.getInstance().getSession(sessionID).get();
+                dialog.close();
+                initWithCharacter(this.pc);
+            });
+            dialog.add(joinButton);
+            dialog.open();
+        });
+        sessionButton.setText("Session " + gameSession.getId().toString());
+
+        H3 nameTitle = new H3(pc.getName());
+        nameTitle.getElement().getStyle().set("margin-top", "0.5em");
+
         HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints(), characterSaver);
 
-        header.addLeft(backButton, editButton);
+        header.addLeft(backButton, editButton, sessionButton);
         header.addCenter(nameTitle);
         header.addRight(hpDisplay);
         return header;

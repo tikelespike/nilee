@@ -1,10 +1,9 @@
 package com.tikelespike.nilee.app.components;
 
-public class HeaderComponent extends BarComponent {
-
-    public HeaderComponent() {
+public class FooterComponent extends BarComponent {
+    public FooterComponent() {
         super();
         getStyle().set("background-color", "var(--lumo-base-color)");
-        getStyle().set("top", "0");
+        getStyle().set("bottom", "0");
     }
 }

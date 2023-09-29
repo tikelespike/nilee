@@ -6,6 +6,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class GameSessionManager {
+
+    private static final GameSessionManager INSTANCE = new GameSessionManager();
+
+    public static GameSessionManager getInstance() {
+        return INSTANCE;
+    }
+
+
     private final Map<UUID, GameSession> sessions = new HashMap<>();
 
     public GameSession newSession() {

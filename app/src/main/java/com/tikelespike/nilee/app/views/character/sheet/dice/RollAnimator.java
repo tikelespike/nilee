@@ -38,6 +38,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
 
     private final List<Pair<RollResult, VerticalLayout>> openNotificationLayouts = new ArrayList<>();
     private final TranslationProvider translationProvider;
+    private UI ui;
 
     /**
      * Creates a new roll manager.
@@ -47,6 +48,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
      */
     public RollAnimator(@NotNull TranslationProvider translationProvider, RollBus rollBus) {
         Objects.requireNonNull(translationProvider);
+        this.ui = UI.getCurrent();
         this.translationProvider = translationProvider;
         rollBus.registerRollListener(this);
     }
@@ -55,7 +57,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     public void onEvent(RollEvent event) {
         LocalizedString nullSafeDescription = event.getDescription() == null ? t -> t.translate(
                 "character_sheet.dice.default_roll_description") : event.getDescription();
-        showRollingAnimation();
+        execute(this::showRollingAnimation);
         Notification resultNotification = createResultNotification(event.getRoll(), event.getPartialResult(),
                 event.getResult(), nullSafeDescription);
 
@@ -100,8 +102,11 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
         return resultNotification;
     }
 
+    private void execute(Runnable task) {
+        executeDelayed(task, 0);
+    }
+
     private void executeDelayed(Runnable task, long delayMs) {
-        UI ui = UI.getCurrent();
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
