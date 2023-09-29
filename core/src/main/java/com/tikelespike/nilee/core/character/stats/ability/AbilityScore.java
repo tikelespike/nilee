@@ -1,7 +1,8 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
+import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.i18n.TranslationProvider;
+import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,8 @@ public class AbilityScore extends ConstantBaseProperty {
     private final LocalizedString longName;
     private final LocalizedString shortName;
 
+    private final Property<DiceExpression> checkRoll = new Property<>(new DefaultAbilityCheckRoll(this));
+
     /**
      * Creates a new ability score with the given default base value, long name, and short name.
      *
@@ -40,6 +43,17 @@ public class AbilityScore extends ConstantBaseProperty {
     }
 
     /**
+     * Returns the property describing the dice expression used to calculate the result of a check roll using this
+     * ability score. (For example, a check roll using the "Strength" ability score would be "{@code 1d20 + STR}"
+     * by default.)
+     *
+     * @return the property describing the dice expression used to calculate the result of a check roll using this ability score
+     */
+    public Property<DiceExpression> getCheckRoll() {
+        return checkRoll;
+    }
+
+    /**
      * Calculates the modifier of this ability score, which is equal to {@code (score value - 10) / 2}. For example,
      * a score of 8 or 9 has a modifier of -1, 10 or 11 of 0, 12 or 13 of 1,
      * and so on.
@@ -47,7 +61,7 @@ public class AbilityScore extends ConstantBaseProperty {
      * @return the modifier of this ability score
      */
     public int getModifier() {
-        return (getValue() - 10) / 2;
+        return Math.floorDiv(getValue() - 10, 2);
     }
 
     /**

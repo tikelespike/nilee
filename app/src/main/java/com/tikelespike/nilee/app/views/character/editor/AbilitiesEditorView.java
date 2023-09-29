@@ -26,8 +26,18 @@ public class AbilitiesEditorView extends FormLayout {
 
         // maps the UI fields to the attributes object
         binder = new Binder<>(PlayerCharacter.class);
-        binder.forField(strField).bind(c -> c.getAbilityScores().getStrength().getDefaultBaseValue(), (c, v) -> pc.getAbilityScores().getStrength().setDefaultBaseValue(v));
-        binder.forField(conField).bind(c -> c.getAbilityScores().getConstitution().getDefaultBaseValue(), (c, v) -> pc.getAbilityScores().getConstitution().setDefaultBaseValue(v));
+        binder.forField(strField).bind(c -> c.getAbilityScores().getStrength().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getStrength().setDefaultBaseValue(v));
+        binder.forField(dexField).bind(c -> c.getAbilityScores().getDexterity().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getDexterity().setDefaultBaseValue(v));
+        binder.forField(conField).bind(c -> c.getAbilityScores().getConstitution().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getConstitution().setDefaultBaseValue(v));
+        binder.forField(intField).bind(c -> c.getAbilityScores().getIntelligence().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getIntelligence().setDefaultBaseValue(v));
+        binder.forField(wisField).bind(c -> c.getAbilityScores().getWisdom().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getWisdom().setDefaultBaseValue(v));
+        binder.forField(chaField).bind(c -> c.getAbilityScores().getCharisma().getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().getCharisma().setDefaultBaseValue(v));
 
         binder.readBean(pc);
     }

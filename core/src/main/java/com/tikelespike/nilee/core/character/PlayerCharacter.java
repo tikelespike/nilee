@@ -101,7 +101,11 @@ public class PlayerCharacter {
         snapshot.setOwner(this.getOwner());
         snapshot.setName(this.getName());
         snapshot.setStrength(this.getAbilityScores().getStrength().getDefaultBaseValue());
+        snapshot.setDexterity(this.getAbilityScores().getDexterity().getDefaultBaseValue());
         snapshot.setConstitution(this.getAbilityScores().getConstitution().getDefaultBaseValue());
+        snapshot.setIntelligence(this.getAbilityScores().getIntelligence().getDefaultBaseValue());
+        snapshot.setWisdom(this.getAbilityScores().getWisdom().getDefaultBaseValue());
+        snapshot.setCharisma(this.getAbilityScores().getCharisma().getDefaultBaseValue());
         snapshot.setHitPoints(this.getHitPoints().getCurrentHitPoints());
         snapshot.setTemporaryHitPoints(this.getHitPoints().getTemporaryHitPoints());
         snapshot.setHitPointMaxOverride(this.getHitPoints().getMaxHitPoints().getOverride());
@@ -121,7 +125,11 @@ public class PlayerCharacter {
         owner = snapshot.getOwner();
         name = snapshot.getName();
         abilityScores.getStrength().setDefaultBaseValue(snapshot.getStrength());
+        abilityScores.getDexterity().setDefaultBaseValue(snapshot.getDexterity());
         abilityScores.getConstitution().setDefaultBaseValue(snapshot.getConstitution());
+        abilityScores.getIntelligence().setDefaultBaseValue(snapshot.getIntelligence());
+        abilityScores.getWisdom().setDefaultBaseValue(snapshot.getWisdom());
+        abilityScores.getCharisma().setDefaultBaseValue(snapshot.getCharisma());
         hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
         hitPoints.setCurrentHitPoints(snapshot.getHitPoints());
         hitPoints.setTemporaryHitPoints(snapshot.getTemporaryHitPoints());
@@ -197,6 +205,6 @@ public class PlayerCharacter {
      * @return a default name for this character (like "Unnamed Character #42")
      */
     public LocalizedString getDefaultName() {
-        return t -> t.translate("core.character.name.default", id);
+        return t -> t.translate("core.character.name.default", Long.toString(id));
     }
 }
