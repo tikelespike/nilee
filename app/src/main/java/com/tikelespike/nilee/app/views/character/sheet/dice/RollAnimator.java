@@ -7,7 +7,6 @@ import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.game.RollEvent;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
-import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.util.Pair;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
@@ -44,6 +43,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
      * Creates a new roll manager.
      *
      * @param translationProvider translation provider used to translate rolling notifications
+     * @param rollBus             the "channel" the rolls to visualize are made on
      */
     public RollAnimator(@NotNull TranslationProvider translationProvider, RollBus rollBus) {
         Objects.requireNonNull(translationProvider);
@@ -63,18 +63,6 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
             minimizeOpenNotifications();
             resultNotification.open();
         }, ROLL_RESULT_DELAY_MS);
-    }
-
-    /**
-     * Make a dice roll based on the given dice expression property.
-     *
-     * @param rollProperty    describes which dice to roll
-     * @param rollDescription describes the in-game semantics of what is rolled for (e.g. "Attack Roll"),
-     *                        will be displayed in the notification
-     */
-    public void makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription) {
-        Objects.requireNonNull(rollProperty);
-
     }
 
     private void minimizeOpenNotifications() {

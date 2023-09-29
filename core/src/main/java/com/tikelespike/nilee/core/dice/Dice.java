@@ -39,7 +39,7 @@ public class Dice extends DiceExpression {
     public int evaluate() {
         int result = 0;
         for (int i = 0; i < Math.abs(diceCount); i++) {
-            result += (int) Math.signum(diceCount) * ((Math.random() * sides) + 1);
+            result += (int) ((int) Math.signum(diceCount) * ((Math.random() * sides) + 1));
         }
         return result;
     }
