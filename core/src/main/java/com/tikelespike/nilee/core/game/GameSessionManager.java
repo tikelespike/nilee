@@ -1,32 +1,56 @@
 package com.tikelespike.nilee.core.game;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.tikelespike.nilee.core.data.entity.User;
+
 import java.util.Optional;
 import java.util.UUID;
 
-public class GameSessionManager {
+/**
+ * Manages {@link GameSession GameSessions}, a way for players to play together. Can be used to create new sessions,
+ * retrieve existing sessions, and end sessions.
+ */
+public interface GameSessionManager {
 
-    private static final GameSessionManager INSTANCE = new GameSessionManager();
+    /**
+     * Opens a new game session, which is assigned a random ID.
+     *
+     * @return the newly created game session
+     */
+    GameSession newSession();
 
-    public static GameSessionManager getInstance() {
-        return INSTANCE;
+    /**
+     * Retrieves an existing game session by its ID, if it exists.
+     *
+     * @param id the ID of the session to retrieve
+     * @return an optional containing the session with the given ID, or an empty optional if no such session exists
+     */
+    Optional<GameSession> getSession(UUID id);
+
+    /**
+     * Checks if a session with the given ID exists.
+     *
+     * @param id the ID of the session to check
+     * @return true if a session with the given ID exists, false otherwise
+     */
+    default boolean hasSession(UUID id) {
+        return getSession(id).isPresent();
     }
 
+    /**
+     * Add a user to an existing session.
+     *
+     * @param id   the ID of the session to join
+     * @param user the user joining the session
+     * @throws IllegalArgumentException if the session does not exist
+     */
+    void joinSession(UUID id, User user);
 
-    private final Map<UUID, GameSession> sessions = new HashMap<>();
-
-    public GameSession newSession() {
-        GameSession session = new GameSession();
-        sessions.put(session.getId(), session);
-        return session;
-    }
-
-    public Optional<GameSession> getSession(UUID id) {
-        return Optional.ofNullable(sessions.get(id));
-    }
-
-    public void endSession(UUID id) {
-        sessions.remove(id);
-    }
+    /**
+     * Remove a user from an existing session. Will do nothing if the user is not in the session.
+     *
+     * @param id   the ID of the session to join
+     * @param user the user joining the session
+     * @throws IllegalArgumentException if the session does not exist
+     */
+    void leaveSession(UUID id, User user);
 }

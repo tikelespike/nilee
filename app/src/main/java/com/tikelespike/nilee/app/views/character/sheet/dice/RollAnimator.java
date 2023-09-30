@@ -21,8 +21,6 @@ import java.util.*;
  */
 public class RollAnimator extends Div implements EventListener<RollEvent> {
 
-    // TODO: Singleton pattern? Since UI also uses singleton and it probably makes sense to have only one roll animator per UI
-
     /**
      * How long the instant response notification announcing that a roll is being made is shown in milliseconds
      */
@@ -52,6 +50,17 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
         this.translationProvider = translationProvider;
         rollBus.registerRollListener(this);
     }
+
+    /**
+     * Sets the UI on which to show the notifications. By default, the UI that was active when the roll animator was
+     * created is used.
+     *
+     * @param ui the ui on which to show the notifications
+     */
+    public void setUi(UI ui) {
+        this.ui = ui;
+    }
+
 
     @Override
     public void onEvent(RollEvent event) {

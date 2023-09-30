@@ -1,5 +1,9 @@
 package com.tikelespike.nilee.core.game;
 
+import com.tikelespike.nilee.core.data.entity.User;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -12,9 +16,11 @@ public class GameSession {
     private final UUID id = java.util.UUID.randomUUID();
     private final RollBus rollBus = new RollBus();
 
+    private final List<User> participants = new ArrayList<>();
+
     /**
-     * Creates a new game session. Should only be used by {@link GameSessionManager}. Use
-     * {@link GameSessionManager#newSession()} to create a new session.
+     * Creates a new game session. Should only be used by {@link MapSessionManager}. Use
+     * {@link MapSessionManager#newSession()} to create a new session.
      */
     protected GameSession() {
     }
@@ -31,5 +37,26 @@ public class GameSession {
      */
     public UUID getId() {
         return id;
+    }
+
+    /**
+     * @param participant the user to add to this session
+     */
+    protected void addParticipant(User participant) {
+        participants.add(participant);
+    }
+
+    /**
+     * @param participant the user to remove from this session
+     */
+    protected void removeParticipant(User participant) {
+        participants.remove(participant);
+    }
+
+    /**
+     * @return an unmodifiable copy of the list of all participants in this session
+     */
+    public List<User> getParticipants() {
+        return List.copyOf(participants);
     }
 }

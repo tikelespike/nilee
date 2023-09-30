@@ -3,6 +3,8 @@ package com.tikelespike.nilee.app.views.character.sheet;
 import com.tikelespike.nilee.app.components.BarComponent;
 import com.tikelespike.nilee.app.components.HeaderComponent;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
+import com.tikelespike.nilee.app.sessions.PlayerSessionManager;
+import com.tikelespike.nilee.app.sessions.SessionManagerWrapper;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.app.views.character.editor.CharacterEditorView;
@@ -11,8 +13,6 @@ import com.tikelespike.nilee.app.views.mainmenu.CharacterListView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
-import com.tikelespike.nilee.core.game.GameSession;
-import com.tikelespike.nilee.core.game.GameSessionManager;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
@@ -43,20 +43,22 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private final User currentUser;
 
-    private GameSession gameSession = null;
+    private final PlayerSessionManager playerSessionManager;
 
     private PlayerCharacter pc;
     private CharacterSaver characterSaver;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService,
-                              TranslationProvider translationProvider) {
+                              TranslationProvider translationProvider,
+                              SessionManagerWrapper sessionManagerWrapper,
+                              PlayerSessionManager playerSessionManager) {
         this.characterService = characterService;
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
                 "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         this.translationProvider = translationProvider;
-        this.gameSession = GameSessionManager.getInstance().newSession();
+        this.playerSessionManager = playerSessionManager;
 
         // initialization happens in setParameter based on the given character
         add(getTranslation("error.character_not_found"));
@@ -76,6 +78,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private void initWithCharacter(PlayerCharacter pc) {
         this.pc = pc;
         this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
+
         removeAll();
         setPadding(true);
         Component header = createHeader();
@@ -84,17 +87,11 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         TabSheet tabSheet = createTabSheet();
         add(tabSheet);
 
-        Notification.show("Session: " + gameSession.getId().toString(), 8000, Notification.Position.BOTTOM_START);
+        Notification.show("Session: " + playerSessionManager.getCurrentSession().getId().toString(), 10000,
+                Notification.Position.BOTTOM_START);
     }
 
     private TabSheet createTabSheet() {
-        Text placeholderText =
-                new Text(
-                        ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt" +
-                                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco " +
-                                "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
-                                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
-                                20));
         Text placeholderText2 =
                 new Text(
                         ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt" +
@@ -109,7 +106,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
                                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
                                 20));
-        RollBus rollBus = gameSession.getRollBus();
+        RollBus rollBus = playerSessionManager.getCurrentSession().getRollBus();
         RollAnimator rollAnimator = new RollAnimator(translationProvider, rollBus);
         add(rollAnimator);
 
@@ -144,14 +141,14 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
             Button joinButton = new Button("Join");
             joinButton.addClickListener(e1 -> {
                 UUID sessionID = UUID.fromString(sessionIDField.getValue());
-                this.gameSession = GameSessionManager.getInstance().getSession(sessionID).get();
+                this.playerSessionManager.joinSession(sessionID);
                 dialog.close();
                 initWithCharacter(this.pc);
             });
             dialog.add(joinButton);
             dialog.open();
         });
-        sessionButton.setText("Session " + gameSession.getId().toString());
+        sessionButton.setText("Session " + playerSessionManager.getCurrentSession().getId().toString());
 
         H3 nameTitle = new H3(pc.getName());
         nameTitle.getElement().getStyle().set("margin-top", "0.5em");
@@ -173,4 +170,5 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     public String getPageTitle() {
         return pc == null ? "My Characters" : getTranslation("character_sheet.title", pc.getName());
     }
+
 }
