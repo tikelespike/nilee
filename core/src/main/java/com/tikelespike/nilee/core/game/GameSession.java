@@ -19,8 +19,8 @@ public class GameSession {
     private final List<User> participants = new ArrayList<>();
 
     /**
-     * Creates a new game session. Should only be used by {@link MapSessionManager}. Use
-     * {@link MapSessionManager#newSession()} to create a new session.
+     * Creates a new game session. Should only be used by implementations of {@link GameSessionManager}. Use
+     * {@link GameSessionManager#newSession()} to create a new session.
      */
     protected GameSession() {
     }
@@ -47,10 +47,13 @@ public class GameSession {
     }
 
     /**
+     * Removes a user from this session. Will do nothing if the user is not in this session in the first place.
+     *
      * @param participant the user to remove from this session
+     * @return true if and only if the participant was in this session before calling this method
      */
-    protected void removeParticipant(User participant) {
-        participants.remove(participant);
+    protected boolean removeParticipant(User participant) {
+        return participants.remove(participant);
     }
 
     /**

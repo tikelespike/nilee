@@ -24,17 +24,22 @@ public class SessionManagerWrapper implements GameSessionManager {
     }
 
     @Override
-    public void joinSession(UUID id, User user) {
-        gameSessionManager.joinSession(id, user);
-    }
-
-    @Override
-    public void leaveSession(UUID id, User user) {
-        gameSessionManager.leaveSession(id, user);
-    }
-
-    @Override
     public Optional<GameSession> getSession(UUID id) {
         return gameSessionManager.getSession(id);
+    }
+
+    @Override
+    public GameSession getSessionOf(User user) {
+        return gameSessionManager.getSessionOf(user);
+    }
+
+    @Override
+    public void joinSession(User user, UUID id) {
+        gameSessionManager.joinSession(user, id);
+    }
+
+    @Override
+    public void leaveSession(User user) {
+        gameSessionManager.leaveSession(user);
     }
 }
