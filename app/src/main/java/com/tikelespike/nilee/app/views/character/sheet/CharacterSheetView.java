@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
 import com.tikelespike.nilee.app.components.BarComponent;
+import com.tikelespike.nilee.app.components.FooterComponent;
 import com.tikelespike.nilee.app.components.HeaderComponent;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
@@ -11,24 +12,27 @@ import com.tikelespike.nilee.app.views.mainmenu.CharacterListView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
+import com.tikelespike.nilee.core.game.GameSession;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.TabSheetVariant;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.*;
 
 import javax.annotation.security.PermitAll;
-import java.util.UUID;
 
 @Route(value = "sheet")
 @PermitAll
@@ -43,6 +47,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private PlayerCharacter pc;
     private CharacterSaver characterSaver;
+
+    private Icon sessionIcon;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService,
@@ -80,8 +86,49 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         TabSheet tabSheet = createTabSheet();
         add(tabSheet);
 
-        Notification.show("Session: " + currentUser.getSession().getId().toString(), 10000,
-                Notification.Position.BOTTOM_START);
+        Div expander = new Div();
+        expand(expander);
+        add(expander);
+
+        BarComponent footer = createFooter();
+        add(footer);
+
+        setHeightFull();
+    }
+
+    private BarComponent createFooter() {
+        BarComponent footer = new FooterComponent();
+        footer.getStyle().set("background-color", "transparent");
+        footer.getStyle().set("padding-bottom", "1em");
+        footer.getStyle().set("padding-left", "1em");
+        footer.getStyle().set("padding-right", "1em");
+
+        sessionIcon = new Icon(VaadinIcon.CONNECT);
+        sessionIcon.setSize("2.5em");
+        sessionIcon.getStyle().set("margin", "1em");
+        sessionIcon.setColor("var(--lumo-tint-20pct)");
+        Button sessionButton = new Button(sessionIcon);
+        sessionButton.setHeightFull();
+        sessionButton.addThemeVariants(ButtonVariant.LUMO_ICON);
+        sessionButton.addClickListener(e -> {
+            SessionDialog dialog = new SessionDialog(currentUser);
+            dialog.addSessionJoinedListener(this::onSessionJoined);
+            dialog.open();
+        });
+        footer.addLeft(sessionButton);
+
+        return footer;
+    }
+
+    private void onSessionJoined(SessionDialog.SessionJoinedEvent event) {
+        GameSession session = event.getNewSession();
+        initWithCharacter(pc);
+        if (session.getParticipants().size() > 1) sessionIcon.setColor("var(--lumo-success-color)");
+        // show success notification
+        Notification notification = new Notification("Success", 3000);
+        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        notification.open();
     }
 
     private TabSheet createTabSheet() {
@@ -125,30 +172,12 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
-        Button sessionButton = new Button("Session");
-        sessionButton.addClickListener(e -> {
-            Dialog dialog = new Dialog();
-            dialog.add(new Text("Session"));
-            TextField sessionIDField = new TextField("Session ID");
-            dialog.add(sessionIDField);
-            Button joinButton = new Button("Join");
-            joinButton.addClickListener(e1 -> {
-                UUID sessionID = UUID.fromString(sessionIDField.getValue());
-                currentUser.joinSession(sessionID);
-                dialog.close();
-                initWithCharacter(this.pc);
-            });
-            dialog.add(joinButton);
-            dialog.open();
-        });
-        sessionButton.setText("Session " + currentUser.getSession().getId().toString());
-
         H3 nameTitle = new H3(pc.getName());
         nameTitle.getElement().getStyle().set("margin-top", "0.5em");
 
         HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints(), characterSaver);
 
-        header.addLeft(backButton, editButton, sessionButton);
+        header.addLeft(backButton, editButton);
         header.addCenter(nameTitle);
         header.addRight(hpDisplay);
         return header;

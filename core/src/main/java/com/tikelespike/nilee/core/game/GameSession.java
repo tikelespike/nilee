@@ -62,4 +62,9 @@ public class GameSession {
     public List<User> getParticipants() {
         return List.copyOf(participants);
     }
+
+    @Override
+    public String toString() {
+        return getId().toString();
+    }
 }

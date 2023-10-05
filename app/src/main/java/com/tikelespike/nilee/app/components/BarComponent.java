@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 /**
- * A component that can be used to display a sticky header at the top of the page. The header is
+ * A component that can be used to display a sticky bar. The bar is
  * divided into three sections: left, center and right. Components can be added to these sections individually.
  */
 public class BarComponent extends HorizontalLayout {
@@ -21,7 +21,6 @@ public class BarComponent extends HorizontalLayout {
         setJustifyContentMode(JustifyContentMode.BETWEEN);
         setAlignItems(Alignment.CENTER);
 
-        // set the style of the header, so it always stays at the top of the page
         getStyle().set("position", "sticky");
         getStyle().set("z-index", "99");
 

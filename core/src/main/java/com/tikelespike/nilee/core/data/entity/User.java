@@ -103,6 +103,11 @@ public class User extends AbstractEntity implements PlayerSessionManager {
     }
 
     @Override
+    public boolean canJoin(UUID id) {
+        return gameSessionManager.hasSession(id);
+    }
+
+    @Override
     public GameSession getSession() {
         if (gameSessionManager == null) throw new IllegalStateException("Not connected to game session management");
         return gameSessionManager.getSessionOf(this);

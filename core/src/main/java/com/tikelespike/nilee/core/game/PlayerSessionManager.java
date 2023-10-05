@@ -16,6 +16,14 @@ public interface PlayerSessionManager {
     void joinSession(UUID id);
 
     /**
+     * Checks if a session with the given ID exists and can be joined.
+     *
+     * @param id the ID of the session to check
+     * @return true if a session with the given ID exists, false otherwise
+     */
+    boolean canJoin(UUID id);
+
+    /**
      * Retrieve the session the user is currently participating in. A user is always in exactly one session.
      *
      * @return the session the player is currently in
