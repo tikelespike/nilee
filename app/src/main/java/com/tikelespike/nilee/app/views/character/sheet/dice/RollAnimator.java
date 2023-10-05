@@ -3,6 +3,7 @@ package com.tikelespike.nilee.app.views.character.sheet.dice;
 import com.tikelespike.nilee.core.dice.DiceConstant;
 import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.events.Registration;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.game.RollEvent;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
@@ -37,18 +38,17 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     private final List<Pair<RollResult, VerticalLayout>> openNotificationLayouts = new ArrayList<>();
     private final TranslationProvider translationProvider;
     private UI ui;
+    private Registration lastRollBusRegistration;
 
     /**
      * Creates a new roll manager.
      *
      * @param translationProvider translation provider used to translate rolling notifications
-     * @param rollBus             the "channel" the rolls to visualize are made on
      */
-    public RollAnimator(@NotNull TranslationProvider translationProvider, RollBus rollBus) {
+    public RollAnimator(@NotNull TranslationProvider translationProvider) {
         Objects.requireNonNull(translationProvider);
         this.ui = UI.getCurrent();
         this.translationProvider = translationProvider;
-        rollBus.registerRollListener(this);
     }
 
     /**
@@ -59,6 +59,18 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
      */
     public void setUi(UI ui) {
         this.ui = ui;
+    }
+
+    /**
+     * Sets the rolls of which bus are to be displayed as notifications.
+     *
+     * @param rollBus the roll bus to listen to
+     */
+    public void setRollBus(RollBus rollBus) {
+        if (lastRollBusRegistration != null) {
+            lastRollBusRegistration.unregister();
+        }
+        lastRollBusRegistration = rollBus.registerRollListener(this);
     }
 
 

@@ -3,6 +3,7 @@ package com.tikelespike.nilee.app.views.character.sheet;
 import com.tikelespike.nilee.app.components.BarComponent;
 import com.tikelespike.nilee.app.components.FooterComponent;
 import com.tikelespike.nilee.app.components.HeaderComponent;
+import com.tikelespike.nilee.app.components.RemoteUIManager;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
@@ -49,6 +50,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private CharacterSaver characterSaver;
 
     private Icon sessionIcon;
+    private final RemoteUIManager remote = new RemoteUIManager();
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService,
@@ -77,6 +79,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private void initWithCharacter(PlayerCharacter pc) {
         this.pc = pc;
         this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
+
+        currentUser.getSession().addUserJoinedListener(this::onOtherUserJoined);
+        currentUser.getSession().addUserLeftListener(this::onUserLeft);
 
         removeAll();
         setPadding(true);
@@ -123,12 +128,32 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private void onSessionJoined(SessionDialog.SessionJoinedEvent event) {
         GameSession session = event.getNewSession();
         initWithCharacter(pc);
-        if (session.getParticipants().size() > 1) sessionIcon.setColor("var(--lumo-success-color)");
-        // show success notification
+        updateSessionIcon();
         Notification notification = new Notification("Success", 3000);
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         notification.setPosition(Notification.Position.TOP_CENTER);
-        notification.open();
+        remote.open(notification);
+    }
+
+    private void onOtherUserJoined(GameSession.UserJoinedEvent event) {
+        Notification notification = new Notification("User " + event.getNewUser().getName() + " joined!", 3000);
+        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        remote.open(notification);
+        updateSessionIcon();
+    }
+
+    private void onUserLeft(GameSession.UserLeftEvent event) {
+        // TODO: the leaving user will receive this. Unsubscribe from session events when leaving etc. And dont show
+        //  notifications for own actions
+    }
+
+    private void updateSessionIcon() {
+        if (currentUser.getSession().getParticipants().size() > 1) {
+            remote.execute(() -> sessionIcon.setColor("var(--lumo-success-color)"));
+        } else {
+            remote.execute(() -> sessionIcon.setColor("var(--lumo-tint-20pct)"));
+        }
     }
 
     private TabSheet createTabSheet() {
@@ -147,7 +172,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
                                 20));
         RollBus rollBus = currentUser.getSession().getRollBus();
-        RollAnimator rollAnimator = new RollAnimator(translationProvider, rollBus);
+        RollAnimator rollAnimator = new RollAnimator(translationProvider);
+        rollAnimator.setRollBus(rollBus);
         add(rollAnimator);
 
         Component abilities = new AbilitiesView(rollBus, translationProvider, pc);
