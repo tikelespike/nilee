@@ -2,10 +2,10 @@ package com.tikelespike.nilee.core.game;
 
 import com.tikelespike.nilee.core.data.entity.User;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Manages {@link GameSession GameSessions} via a simple {@link Map} between ids and sessions and keeps
@@ -14,8 +14,8 @@ import java.util.UUID;
  */
 public class MapSessionManager implements GameSessionManager {
 
-    private final Map<UUID, GameSession> sessions = new HashMap<>();
-    private final Map<User, UUID> lastUserSessions = new HashMap<>();
+    private final Map<UUID, GameSession> sessions = new ConcurrentHashMap<>();
+    private final Map<User, UUID> lastUserSessions = new ConcurrentHashMap<>();
 
     @Override
     public GameSession newSession() {
@@ -26,7 +26,7 @@ public class MapSessionManager implements GameSessionManager {
     }
 
     @Override
-    public void joinSession(User user, UUID id) {
+    public synchronized void joinSession(User user, UUID id) {
         ensureSessionValidity(id);
         UUID lastSession = lastUserSessions.get(user);
         if (hasSession(lastSession)) removeUserFromSession(lastSession, user);
@@ -35,22 +35,22 @@ public class MapSessionManager implements GameSessionManager {
     }
 
     @Override
-    public void leaveSession(User user) {
+    public synchronized void leaveSession(User user) {
         initUser(user);
     }
 
     @Override
-    public GameSession getSessionOf(User user) {
+    public synchronized GameSession getSessionOf(User user) {
         return getSession(lastUserSessions.get(user)).orElseGet(() -> initUser(user));
     }
 
     @Override
-    public Optional<GameSession> getSession(UUID id) {
+    public synchronized Optional<GameSession> getSession(UUID id) {
         if (id == null) return Optional.empty();
         return Optional.ofNullable(sessions.get(id));
     }
 
-    private void removeUserFromSession(UUID id, User user) {
+    private synchronized void removeUserFromSession(UUID id, User user) {
         ensureSessionValidity(id);
         sessions.get(id).removeParticipant(user);
         if (sessions.get(id).getParticipants().isEmpty()) {
@@ -68,7 +68,7 @@ public class MapSessionManager implements GameSessionManager {
         sessions.remove(id);
     }
 
-    private GameSession initUser(User user) {
+    private synchronized GameSession initUser(User user) {
         GameSession session = newSession();
         joinSession(user, session.getId());
         return session;
