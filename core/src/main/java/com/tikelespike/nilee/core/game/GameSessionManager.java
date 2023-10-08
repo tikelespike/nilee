@@ -1,8 +1,8 @@
 package com.tikelespike.nilee.core.game;
 
 import com.tikelespike.nilee.core.data.entity.User;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 

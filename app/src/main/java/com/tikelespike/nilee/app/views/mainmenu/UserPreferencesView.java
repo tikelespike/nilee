@@ -1,8 +1,8 @@
 package com.tikelespike.nilee.app.views.mainmenu;
 
+import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.UserService;
-import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -11,8 +11,8 @@ import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import jakarta.annotation.security.PermitAll;
 
-import javax.annotation.security.PermitAll;
 import java.util.Locale;
 
 @Route(value = "preferences", layout = MainLayout.class)

@@ -4,8 +4,8 @@ import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**

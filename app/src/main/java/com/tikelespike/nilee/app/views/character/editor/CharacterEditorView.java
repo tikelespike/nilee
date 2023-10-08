@@ -16,8 +16,7 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
-
-import javax.annotation.security.PermitAll;
+import jakarta.annotation.security.PermitAll;
 
 @Route(value = "editor")
 @PermitAll
@@ -35,7 +34,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
         this.characterService = characterService;
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
-            "authenticated"));
+                "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         add(getTranslation("error.character_not_found"));
     }

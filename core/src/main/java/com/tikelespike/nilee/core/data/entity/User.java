@@ -5,8 +5,8 @@ import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.game.GameSession;
 import com.tikelespike.nilee.core.game.GameSessionManager;
 import com.tikelespike.nilee.core.game.PlayerSessionManager;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;

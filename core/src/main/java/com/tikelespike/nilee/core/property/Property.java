@@ -1,13 +1,13 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.property.convenience.FirstValueSelector;
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
-import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
+import com.tikelespike.nilee.core.property.convenience.FirstValueSelector;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
+import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -95,7 +95,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
         if (getBaseValueSuppliers().isEmpty())
             throw new IllegalStateException("No base value suppliers has been defined for this property");
         Optional<T> opt =
-                baseValueSelector.select(getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+                baseValueSelector.select(
+                        getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
         //noinspection OptionalGetWithoutIsPresent - optional may only be empty if the list is empty
         return opt.get();
     }

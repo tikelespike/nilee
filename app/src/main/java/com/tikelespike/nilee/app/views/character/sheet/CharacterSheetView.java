@@ -32,8 +32,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.TabSheetVariant;
 import com.vaadin.flow.router.*;
-
-import javax.annotation.security.PermitAll;
+import jakarta.annotation.security.PermitAll;
 
 @Route(value = "sheet")
 @PermitAll

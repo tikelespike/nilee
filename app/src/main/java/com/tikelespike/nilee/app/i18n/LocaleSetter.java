@@ -5,11 +5,10 @@ import com.tikelespike.nilee.core.data.entity.User;
 import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.security.AuthenticationContext;
-import org.slf4j.LoggerFactory;
+import jakarta.servlet.ServletContext;
 import org.springframework.security.web.context.support.SecurityWebApplicationContextUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.ServletContext;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class LocaleSetter implements UIInitListener, VaadinServiceInitListener {
         // Don't fully understand this, security risk? Was sort of recommended to me by GitHub Copilot
         ServletContext servletContext = VaadinServlet.getCurrent().getServletContext();
         WebApplicationContext context =
-            SecurityWebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+                SecurityWebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         AuthenticatedUser authUser = context.getBean(AuthenticatedUser.class);
         Optional<User> currentUser = authUser.get();
 

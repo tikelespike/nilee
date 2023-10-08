@@ -72,7 +72,6 @@ public class AbilityScoreBox extends VerticalLayout {
 
         // make skillCheckButton content take up as much space as needed
         skillCheckButton.setWidthFull();
-        skillCheckButton.setHeightFull();
         return skillCheckButton;
     }
 

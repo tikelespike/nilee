@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.core.events;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +39,7 @@ public class EventBus {
     public <T extends Event> Registration registerListener(@NotNull Class<? extends T> eventType,
                                                            @NotNull EventListener<T> listener) {
         TypedEventListener<T> typedListener = new TypedEventListener<>(Objects.requireNonNull(eventType),
-            Objects.requireNonNull(listener));
+                Objects.requireNonNull(listener));
         typedEventListeners.add(typedListener);
         return new Registration(this, typedListener);
     }

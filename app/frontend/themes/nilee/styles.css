@@ -26,6 +26,10 @@
     padding-bottom: var(--lumo-space-xs);
 }
 
+.vaadin-dialog-overlay::part(footer).success-footer {
+    background-color: var(--lumo-success-color-10pct);
+}
+
 html {
     --lumo-line-height-m: 1.8;
     --lumo-line-height-s: 1.5;

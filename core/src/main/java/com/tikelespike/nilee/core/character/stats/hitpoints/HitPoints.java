@@ -7,8 +7,8 @@ import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -172,6 +172,7 @@ public class HitPoints extends AbstractEntity {
     }
 
     private void init() {
-        maxHitPoints.addValueChangeListener(event -> setCurrentHitPoints(Math.min(currentHitPoints, event.getNewValue())));
+        maxHitPoints.addValueChangeListener(
+                event -> setCurrentHitPoints(Math.min(currentHitPoints, event.getNewValue())));
     }
 }

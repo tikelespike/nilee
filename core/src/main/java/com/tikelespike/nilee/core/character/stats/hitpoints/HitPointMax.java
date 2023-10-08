@@ -5,8 +5,8 @@ import com.tikelespike.nilee.core.character.stats.ability.AbilityScoreBaseSuppli
 import com.tikelespike.nilee.core.property.OverridableProperty;
 import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
