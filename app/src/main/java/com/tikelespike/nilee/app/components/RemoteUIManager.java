@@ -35,7 +35,7 @@ public class RemoteUIManager extends Div {
      * @param notification the notification to show
      */
     public void open(Notification notification) {
-        ui.access(notification::open);
+        open(notification, 0);
     }
 
     /**
@@ -49,7 +49,7 @@ public class RemoteUIManager extends Div {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                open(notification);
+                ui.access(notification::open);
             }
         };
         timer.schedule(timerTask, delayMs);

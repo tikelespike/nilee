@@ -138,7 +138,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Notification notification = new Notification("User " + event.getNewUser().getName() + " joined!", 3000);
         notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
         notification.setPosition(Notification.Position.TOP_CENTER);
-        remote.open(notification);
+        // for some reason the notification instantly disappears if not delayed since vaadin 24
+        // giving it a slight delay seems to fix this issue
+        remote.open(notification, 1);
         updateSessionIcon();
     }
 
