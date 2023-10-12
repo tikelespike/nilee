@@ -56,6 +56,16 @@ public class EventBus {
         return typedEventListeners.remove(Objects.requireNonNull(listener));
     }
 
+    /**
+     * Removes all registrations of a listener from this event bus. This is useful because a listener can be registered
+     * multiple times (which will result in it getting called multiple times when an event is fired).
+     * Should only be called by the {@link Registration}
+     * object, which should be used to unsubscribe listeners.
+     *
+     * @param listener the listener to be removed
+     * @param <T>      the type of the event the listener processes
+     * @return true if the listener was removed at least once, false if it was not registered
+     */
     protected <T extends Event> boolean unregisterAll(@NotNull TypedEventListener<T> listener) {
         Objects.requireNonNull(listener);
         boolean removed = typedEventListeners.contains(listener);

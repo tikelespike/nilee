@@ -32,6 +32,8 @@ public class MapSessionManager implements GameSessionManager {
         if (hasSession(lastSession)) removeUserFromSession(lastSession, user);
         sessions.get(id).addParticipant(user);
         lastUserSessions.put(user, id);
+        getSession(lastSession).ifPresent(s -> s.onParticipantRemoved(user));
+        getSession(id).ifPresent(s -> s.onParticipantAdded(user));
     }
 
     @Override

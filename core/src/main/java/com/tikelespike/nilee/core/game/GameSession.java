@@ -48,6 +48,15 @@ public class GameSession {
      */
     protected void addParticipant(User participant) {
         participants.add(participant);
+    }
+
+    /**
+     * Notifies all listeners that a user has joined this session. Separate from {@link #addParticipant(User)} because
+     * consistency invariants need to be assured by the current {@link GameSessionManager} before calling listeners.
+     *
+     * @param participant the user added to this session
+     */
+    protected void onParticipantAdded(User participant) {
         eventBus.fireEvent(new UserJoinedEvent(participant));
     }
 
@@ -58,13 +67,23 @@ public class GameSession {
      * @return true if and only if the participant was in this session before calling this method
      */
     protected boolean removeParticipant(User participant) {
-        boolean removed = participants.remove(participant);
-        if (removed) eventBus.fireEvent(new UserLeftEvent(participant));
-        return removed;
+        return participants.remove(participant);
     }
 
     /**
-     * Registers a listener to be notified when a user joins this session.
+     * Notifies all listeners that a user has left this session. Separate from {@link #removeParticipant(User)} because
+     * consistency invariants need to be assured by the current {@link GameSessionManager} before calling listeners.
+     *
+     * @param participant the user removed from this session
+     */
+    protected void onParticipantRemoved(User participant) {
+        eventBus.fireEvent(new UserLeftEvent(participant));
+    }
+
+    /**
+     * Registers a listener to be notified when a user joins this session. At the time this listener will be called,
+     * the user will have left their old session, joined this session, and listeners of the old session have
+     * been notified of the user leaving.
      *
      * @param listener the listener to register
      * @return a registration object that can be used to unregister the listener
@@ -74,7 +93,9 @@ public class GameSession {
     }
 
     /**
-     * Registers a listener to be notified when a user leaves this session.
+     * Registers a listener to be notified when a user leaves this session. This listener will be notified
+     * after the user has left the session (and joined their next session), but before listeners listening to the new
+     * session of the user are notified of them joining.
      *
      * @param listener the listener to register
      * @return a registration object that can be used to unregister the listener
