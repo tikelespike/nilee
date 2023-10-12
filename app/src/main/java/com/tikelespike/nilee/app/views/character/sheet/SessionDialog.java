@@ -6,6 +6,7 @@ import com.tikelespike.nilee.core.events.Event;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.avatar.AvatarGroup;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -92,6 +93,7 @@ public class SessionDialog extends Dialog {
         joinSessionTF.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
         joinSessionTF.setPattern(UUID_REGEX);
         joinSessionTF.setAutoselect(true);
+        joinSessionTF.focus();
         joinLayout.add(joinSessionTF);
 
         Button joinButton = new Button("Join");
@@ -110,6 +112,7 @@ public class SessionDialog extends Dialog {
             eventBus.fireEvent(new JoinClickedEvent(sessionId));
             joinDialog.close();
         });
+        joinButton.addClickShortcut(Key.ENTER);
         joinLayout.add(joinButton);
 
         joinDialog.add(joinLayout);
