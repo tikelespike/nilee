@@ -57,7 +57,7 @@ public class GameSession {
      * @param participant the user added to this session
      */
     protected void onParticipantAdded(User participant) {
-        eventBus.fireEvent(new UserJoinedEvent(participant));
+        eventBus.fireEvent(new UserJoinedEvent(this, participant));
     }
 
     /**
@@ -77,7 +77,7 @@ public class GameSession {
      * @param participant the user removed from this session
      */
     protected void onParticipantRemoved(User participant) {
-        eventBus.fireEvent(new UserLeftEvent(participant));
+        eventBus.fireEvent(new UserLeftEvent(this, participant));
     }
 
     /**
@@ -121,14 +121,17 @@ public class GameSession {
      */
     public static class UserJoinedEvent extends Event {
         private final User newUser;
+        private final GameSession session;
 
         /**
          * Creates a new event informing about a new user having joined a session.
          *
          * @param newUser the user that joined the session
+         * @param session the session the user joined
          */
-        public UserJoinedEvent(User newUser) {
+        public UserJoinedEvent(GameSession session, User newUser) {
             this.newUser = newUser;
+            this.session = session;
         }
 
         /**
@@ -137,6 +140,13 @@ public class GameSession {
         public User getNewUser() {
             return newUser;
         }
+
+        /**
+         * @return the session the user joined
+         */
+        public GameSession getSession() {
+            return session;
+        }
     }
 
     /**
@@ -144,14 +154,16 @@ public class GameSession {
      */
     public static class UserLeftEvent extends Event {
         private final User user;
+        private final GameSession session;
 
         /**
          * Creates a new event informing about a user having left a session.
          *
          * @param newUser the user that left the session
          */
-        public UserLeftEvent(User newUser) {
+        public UserLeftEvent(GameSession session, User newUser) {
             this.user = newUser;
+            this.session = session;
         }
 
         /**
@@ -159,6 +171,13 @@ public class GameSession {
          */
         public User getUser() {
             return user;
+        }
+
+        /**
+         * @return the session the user left
+         */
+        public GameSession getSession() {
+            return session;
         }
     }
 }

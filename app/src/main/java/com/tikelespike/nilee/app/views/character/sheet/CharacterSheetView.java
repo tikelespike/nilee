@@ -13,6 +13,7 @@ import com.tikelespike.nilee.app.views.mainmenu.CharacterListView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
+import com.tikelespike.nilee.core.events.Registration;
 import com.tikelespike.nilee.core.game.GameSession;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
@@ -44,12 +45,16 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private final TranslationProvider translationProvider;
 
     private final User currentUser;
+    private final RemoteUIManager ui = new RemoteUIManager();
 
     private PlayerCharacter pc;
     private CharacterSaver characterSaver;
 
     private Icon sessionIcon;
-    private final RemoteUIManager remote = new RemoteUIManager();
+
+    private Registration userJoinedRegistration;
+    private Registration userLeftRegistration;
+    private SessionDialog sessionDialog;
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService,
@@ -66,21 +71,20 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         // prevent scrolling down so the header disappears
         getStyle().set("position", "sticky");
         getStyle().set("top", "0");
+
+        register();
     }
 
 
     @Override
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
-        initWithCharacter(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
+        update(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
     }
 
-    private void initWithCharacter(PlayerCharacter pc) {
+    private void update(PlayerCharacter pc) {
         this.pc = pc;
         this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
-
-        currentUser.getSession().addUserJoinedListener(this::onOtherUserJoined);
-        currentUser.getSession().addUserLeftListener(this::onUserLeft);
 
         removeAll();
         setPadding(true);
@@ -98,6 +102,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         add(footer);
 
         setHeightFull();
+
+        if (sessionDialog != null) sessionDialog.update();
     }
 
     private BarComponent createFooter() {
@@ -115,23 +121,37 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         sessionButton.setHeightFull();
         sessionButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         sessionButton.addClickListener(e -> {
-            SessionDialog dialog = new SessionDialog(currentUser);
-            dialog.addSessionJoinedListener(this::onSessionJoined);
-            dialog.open();
+            sessionDialog = new SessionDialog(currentUser);
+            sessionDialog.addJoinClickedListener(this::joinSession);
+            sessionDialog.addLeaveClickedListener(this::leaveSession);
+            sessionDialog.addNewSessionClickedListener(this::newSession);
+            sessionDialog.open();
         });
+        updateSessionIcon();
         footer.addLeft(sessionButton);
 
         return footer;
     }
 
-    private void onSessionJoined(SessionDialog.SessionJoinedEvent event) {
-        GameSession session = event.getNewSession();
-        initWithCharacter(pc);
-        updateSessionIcon();
-        Notification notification = new Notification("Success", 3000);
-        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        notification.setPosition(Notification.Position.TOP_CENTER);
-        remote.open(notification);
+    private void joinSession(SessionDialog.JoinClickedEvent event) {
+        unregister();
+        currentUser.joinSession(event.getNewSessionID());
+        update(pc);
+        register();
+    }
+
+    private void leaveSession(SessionDialog.LeaveClickedEvent event) {
+        unregister();
+        currentUser.leaveCurrentSession();
+        update(pc);
+        register();
+    }
+
+    private void newSession(SessionDialog.NewSessionClickedEvent event) {
+        unregister();
+        currentUser.leaveCurrentSession();
+        update(pc);
+        register();
     }
 
     private void onOtherUserJoined(GameSession.UserJoinedEvent event) {
@@ -140,20 +160,33 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         notification.setPosition(Notification.Position.TOP_CENTER);
         // for some reason the notification instantly disappears if not delayed since vaadin 24
         // giving it a slight delay seems to fix this issue
-        remote.open(notification, 1);
-        updateSessionIcon();
+        ui.open(notification, 1);
+        ui.execute(() -> update(pc));
     }
 
-    private void onUserLeft(GameSession.UserLeftEvent event) {
-        // TODO: the leaving user will receive this. Unsubscribe from session events when leaving etc. And dont show
-        //  notifications for own actions
+    private void onOtherUserLeft(GameSession.UserLeftEvent event) {
+        Notification notification = new Notification("User " + event.getUser().getName() + " left!", 3000);
+        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        ui.open(notification, 1);
+        ui.execute(() -> update(pc));
+    }
+
+    private void unregister() {
+        if (userJoinedRegistration != null) userJoinedRegistration.unregisterAll();
+        if (userLeftRegistration != null) userLeftRegistration.unregisterAll();
+    }
+
+    private void register() {
+        userJoinedRegistration = currentUser.getSession().addUserJoinedListener(this::onOtherUserJoined);
+        userLeftRegistration = currentUser.getSession().addUserLeftListener(this::onOtherUserLeft);
     }
 
     private void updateSessionIcon() {
         if (currentUser.getSession().getParticipants().size() > 1) {
-            remote.execute(() -> sessionIcon.setColor("var(--lumo-success-color)"));
+            ui.execute(() -> sessionIcon.setColor("var(--lumo-success-color)"));
         } else {
-            remote.execute(() -> sessionIcon.setColor("var(--lumo-tint-20pct)"));
+            ui.execute(() -> sessionIcon.setColor("var(--lumo-tint-20pct)"));
         }
     }
 

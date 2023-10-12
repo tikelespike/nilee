@@ -6,7 +6,6 @@ import com.tikelespike.nilee.core.events.Event;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
-import com.tikelespike.nilee.core.game.GameSession;
 import com.vaadin.flow.component.avatar.AvatarGroup;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -36,13 +35,9 @@ public class SessionDialog extends Dialog {
     public SessionDialog(User user) {
         this.user = user;
         update();
-        user.getSession().addUserJoinedListener(e -> remoteUIManager.execute(this::update));
-        user.getSession().addUserLeftListener(e -> {
-            if (!user.equals(e.getUser())) remoteUIManager.execute(this::update);
-        });
     }
 
-    private void update() {
+    public void update() {
         removeAll();
         getFooter().removeAll();
 
@@ -69,22 +64,18 @@ public class SessionDialog extends Dialog {
         layout.add(avatarGroup);
 
 
-        Button leaveButton = new Button();
-        leaveButton.addClickListener(e -> {
-            user.leaveCurrentSession();
-            update();
-        });
-
-
         if (user.getSession().getParticipants().size() > 1) {
+            Button leaveButton = new Button("Leave session");
+            leaveButton.addClickListener(e -> eventBus.fireEvent(new LeaveClickedEvent()));
             addClassName("success-footer");
-            leaveButton.setText("Leave session");
             layout.add(leaveButton);
         } else {
             Button joinButton = new Button("Join session");
             joinButton.addClickListener(e -> openJoinDialog());
-            leaveButton.setText("New session");
-            layout.add(leaveButton, joinButton);
+
+            Button newSessionButton = new Button("New session");
+            newSessionButton.addClickListener(e -> eventBus.fireEvent(new NewSessionClickedEvent()));
+            layout.add(newSessionButton, joinButton);
         }
 
         return layout;
@@ -107,19 +98,17 @@ public class SessionDialog extends Dialog {
         joinButton.addClickListener(e -> {
             if (!joinSessionTF.getValue().matches(UUID_REGEX)) {
                 joinSessionTF.setInvalid(true);
-                showErrorMessage("Invalid session ID Format");
+                joinSessionTF.setHelperText("Invalid session ID Format");
                 return;
             }
             UUID sessionId = UUID.fromString(joinSessionTF.getValue());
             if (!user.canJoin(sessionId)) {
                 joinSessionTF.setInvalid(true);
-                showErrorMessage("Session does not exist");
+                joinSessionTF.setHelperText("Session does not exist");
                 return;
             }
-            user.joinSession(sessionId);
+            eventBus.fireEvent(new JoinClickedEvent(sessionId));
             joinDialog.close();
-            update();
-            eventBus.fireEvent(new SessionJoinedEvent(user.getSession()));
         });
         joinLayout.add(joinButton);
 
@@ -127,8 +116,23 @@ public class SessionDialog extends Dialog {
         joinDialog.open();
     }
 
-    public Registration addSessionJoinedListener(EventListener<SessionJoinedEvent> listener) {
-        return eventBus.registerListener(SessionJoinedEvent.class, listener);
+    private void showErrorMessage(String errorMessage) {
+        Notification notification = new Notification(errorMessage, 3000);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        notification.open();
+    }
+
+    public Registration addJoinClickedListener(EventListener<JoinClickedEvent> listener) {
+        return eventBus.registerListener(JoinClickedEvent.class, listener);
+    }
+
+    public Registration addLeaveClickedListener(EventListener<LeaveClickedEvent> listener) {
+        return eventBus.registerListener(LeaveClickedEvent.class, listener);
+    }
+
+    public Registration addNewSessionClickedListener(EventListener<NewSessionClickedEvent> listener) {
+        return eventBus.registerListener(NewSessionClickedEvent.class, listener);
     }
 
     private HorizontalLayout createCurrentSessionLayout() {
@@ -153,22 +157,22 @@ public class SessionDialog extends Dialog {
         return currentSessionLayout;
     }
 
-    private static void showErrorMessage(String text) {
-        Notification errorMessage = new Notification(text, 3000);
-        errorMessage.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        errorMessage.setPosition(Notification.Position.TOP_CENTER);
-        errorMessage.open();
+    public static class JoinClickedEvent extends Event {
+
+        private final UUID newSessionID;
+
+        public JoinClickedEvent(UUID newSessionID) {
+            this.newSessionID = newSessionID;
+        }
+
+        public UUID getNewSessionID() {
+            return newSessionID;
+        }
     }
 
-    public static class SessionJoinedEvent extends Event {
-        private final GameSession newSession;
+    public static class LeaveClickedEvent extends Event {
+    }
 
-        public SessionJoinedEvent(GameSession newSession) {
-            this.newSession = newSession;
-        }
-
-        public GameSession getNewSession() {
-            return newSession;
-        }
+    public static class NewSessionClickedEvent extends Event {
     }
 }

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Manages {@link GameSession GameSessions} via a simple {@link Map} between ids and sessions and keeps
  * track of the session a user is currently in via another Map. Keeps the invariant that every user is always in
- * exactly one session, as well as removing empty sessions.
+ * exactly one session. Sessions without users are garbage collected. This class is thread-safe.
  */
 public class MapSessionManager implements GameSessionManager {
 
@@ -29,11 +29,12 @@ public class MapSessionManager implements GameSessionManager {
     public synchronized void joinSession(User user, UUID id) {
         ensureSessionValidity(id);
         UUID lastSession = lastUserSessions.get(user);
-        if (hasSession(lastSession)) removeUserFromSession(lastSession, user);
+        getSession(lastSession).ifPresent(s -> s.removeParticipant(user));
         sessions.get(id).addParticipant(user);
         lastUserSessions.put(user, id);
         getSession(lastSession).ifPresent(s -> s.onParticipantRemoved(user));
         getSession(id).ifPresent(s -> s.onParticipantAdded(user));
+        if (hasSession(lastSession) && sessions.get(lastSession).getParticipants().isEmpty()) endSession(lastSession);
     }
 
     @Override
@@ -50,14 +51,6 @@ public class MapSessionManager implements GameSessionManager {
     public synchronized Optional<GameSession> getSession(UUID id) {
         if (id == null) return Optional.empty();
         return Optional.ofNullable(sessions.get(id));
-    }
-
-    private synchronized void removeUserFromSession(UUID id, User user) {
-        ensureSessionValidity(id);
-        sessions.get(id).removeParticipant(user);
-        if (sessions.get(id).getParticipants().isEmpty()) {
-            endSession(id);
-        }
     }
 
     private void ensureSessionValidity(UUID id) {
