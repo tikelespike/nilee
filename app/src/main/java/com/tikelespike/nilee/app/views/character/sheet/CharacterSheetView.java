@@ -46,6 +46,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private final User currentUser;
     private final RemoteUIManager ui = new RemoteUIManager();
+    private final RollAnimator rollAnimator;
 
     private PlayerCharacter pc;
     private CharacterSaver characterSaver;
@@ -73,6 +74,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         getStyle().set("top", "0");
 
         register();
+        rollAnimator = new RollAnimator(translationProvider);
     }
 
 
@@ -206,9 +208,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
                                 20));
         RollBus rollBus = currentUser.getSession().getRollBus();
-        RollAnimator rollAnimator = new RollAnimator(translationProvider);
         rollAnimator.setRollBus(rollBus);
-        add(rollAnimator);
 
         Component abilities = new AbilitiesView(rollBus, translationProvider, pc);
 
