@@ -140,6 +140,11 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.joinSession(event.getNewSessionID());
         update(pc);
         register();
+        sessionDialog.close();
+        Notification successNotification = new Notification("Joined shared session!", 3000);
+        successNotification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        successNotification.setPosition(Notification.Position.TOP_CENTER);
+        ui.open(successNotification);
     }
 
     private void leaveSession(SessionDialog.LeaveClickedEvent event) {
@@ -147,6 +152,10 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.leaveCurrentSession();
         update(pc);
         register();
+        Notification leftNotification = new Notification("Left shared session!", 3000);
+        leftNotification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+        leftNotification.setPosition(Notification.Position.TOP_CENTER);
+        ui.open(leftNotification);
     }
 
     private void newSession(SessionDialog.NewSessionClickedEvent event) {
@@ -154,11 +163,15 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.leaveCurrentSession();
         update(pc);
         register();
+        Notification notification = new Notification("Switched to new session.", 3000);
+        notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
+        notification.setPosition(Notification.Position.TOP_CENTER);
+        ui.open(notification);
     }
 
     private void onOtherUserJoined(GameSession.UserJoinedEvent event) {
         Notification notification = new Notification("User " + event.getNewUser().getName() + " joined!", 3000);
-        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         // for some reason the notification instantly disappears if not delayed since vaadin 24
         // giving it a slight delay seems to fix this issue
@@ -168,7 +181,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private void onOtherUserLeft(GameSession.UserLeftEvent event) {
         Notification notification = new Notification("User " + event.getUser().getName() + " left!", 3000);
-        notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(notification, 1);
         ui.execute(() -> update(pc));
