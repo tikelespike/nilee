@@ -124,7 +124,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         sessionButton.setHeightFull();
         sessionButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         sessionButton.addClickListener(e -> {
-            sessionDialog = new SessionDialog(currentUser);
+            sessionDialog = new SessionDialog(translationProvider, currentUser);
             sessionDialog.addJoinClickedListener(this::joinSession);
             sessionDialog.addLeaveClickedListener(this::leaveSession);
             sessionDialog.addNewSessionClickedListener(this::newSession);
@@ -142,7 +142,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         update(pc);
         register();
         sessionDialog.close();
-        Notification successNotification = new Notification("Joined shared session!", 3000);
+        Notification successNotification = new Notification(
+                translationProvider.translate("character_sheet.sessions.join_message"), 3000);
         successNotification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         successNotification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(successNotification);
@@ -154,7 +155,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         update(pc);
         register();
         sessionDialog.close();
-        Notification leftNotification = new Notification("Left shared session!", 3000);
+        Notification leftNotification = new Notification(
+                translationProvider.translate("character_sheet.sessions.leave_message"), 3000);
         leftNotification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         leftNotification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(leftNotification);
@@ -165,14 +167,17 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.leaveCurrentSession();
         update(pc);
         register();
-        Notification notification = new Notification("Switched to new session.", 3000);
+        Notification notification = new Notification(
+                translationProvider.translate("character_sheet.sessions.new_message"), 3000);
         notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(notification);
     }
 
     private void onOtherUserJoined(GameSession.UserJoinedEvent event) {
-        Notification notification = new Notification("User " + event.getNewUser().getName() + " joined!", 3000);
+        Notification notification = new Notification(
+                translationProvider.translate("character_sheet.sessions.other_joined_message",
+                        event.getNewUser().getName()), 3000);
         notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         // for some reason the notification instantly disappears if not delayed since vaadin 24
@@ -182,7 +187,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     }
 
     private void onOtherUserLeft(GameSession.UserLeftEvent event) {
-        Notification notification = new Notification("User " + event.getUser().getName() + " left!", 3000);
+        Notification notification = new Notification(
+                translationProvider.translate("character_sheet.sessions.other_left_message", event.getUser().getName()),
+                3000);
         notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(notification, 1);
