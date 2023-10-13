@@ -2,8 +2,8 @@ package com.tikelespike.nilee.core.character.stats.ability;
 
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**

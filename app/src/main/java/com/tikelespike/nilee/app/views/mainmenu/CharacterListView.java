@@ -24,8 +24,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import jakarta.annotation.security.PermitAll;
 
-import javax.annotation.security.PermitAll;
 import java.util.Objects;
 
 @Route(value = "characters", layout = MainLayout.class)

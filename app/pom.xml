@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.8</version>
+        <version>3.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -21,12 +21,12 @@
 
     <properties>
         <!-- this parameter is needed as spring-boot bom overwrites it -->
-        <selenium.version>4.5.3</selenium.version>
+        <!--        <selenium.version>4.5.3</selenium.version>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>23.3.6</vaadin.version>
-        <java.version>16</java.version>
-        <maven.compiler.target>16</maven.compiler.target>
-        <maven.compiler.source>16</maven.compiler.source>
+        <vaadin.version>24.1.12</vaadin.version>
+        <java.version>21</java.version>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
     </properties>
 
     <repositories>
@@ -137,6 +137,12 @@
             <groupId>com.tikelespike.nilee</groupId>
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

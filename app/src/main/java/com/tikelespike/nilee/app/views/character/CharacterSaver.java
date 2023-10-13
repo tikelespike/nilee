@@ -5,9 +5,9 @@ import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.dao.OptimisticLockingFailureException;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -54,7 +54,7 @@ public class CharacterSaver extends Div {
     /**
      * Creates a new saver for the given character.
      *
-     * @param playerCharacter the character to save and discard
+     * @param playerCharacter  the character to save and discard
      * @param characterService the service to use to save and load the character
      * @param sanityChecker    the sanity checker to use to check if the character is sane upon saving
      */
@@ -74,7 +74,8 @@ public class CharacterSaver extends Div {
      * immediately.
      */
     public void save() {
-        save(r -> {});
+        save(r -> {
+        });
     }
 
     /**
@@ -88,7 +89,8 @@ public class CharacterSaver extends Div {
      */
     public void save(Consumer<SaveResult> andThen) {
         sanityChecker.ensureSanity(playerCharacter);
-        Consumer<SaveResult> nullSafeAndThen = andThen == null ? r -> {} : andThen;
+        Consumer<SaveResult> nullSafeAndThen = andThen == null ? r -> {
+        } : andThen;
 
         sanityChecker.ensureSanity(playerCharacter.getId());
         try {

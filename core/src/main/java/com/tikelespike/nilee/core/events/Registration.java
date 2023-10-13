@@ -32,6 +32,13 @@ public class Registration {
         return bus.unregister(listener);
     }
 
+    /**
+     * Unregisters all registrations of the listener (the registration of which returned this object) from the
+     * corresponding event bus. This is useful because a listener can be registered multiple times (resulting in it
+     * getting called multiple times upon an event), and this method removes all registrations.
+     *
+     * @return true if the listener was removed at least once, false if it was not registered
+     */
     public boolean unregisterAll() {
         return bus.unregisterAll(listener);
     }

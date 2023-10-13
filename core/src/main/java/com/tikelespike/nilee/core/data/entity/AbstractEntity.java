@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.data.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * Base class for all database entities. Provides an id and version field. By default, entities are equal if and only if

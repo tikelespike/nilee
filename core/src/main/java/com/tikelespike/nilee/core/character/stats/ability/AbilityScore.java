@@ -4,8 +4,8 @@ import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**

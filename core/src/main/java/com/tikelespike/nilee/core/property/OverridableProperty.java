@@ -1,8 +1,7 @@
 package com.tikelespike.nilee.core.property;
 
 import com.tikelespike.nilee.core.property.convenience.ManualOverrideModifier;
-
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A {@link Property} that can be overridden (usually by the user) with a fixed value. This is done by adding a
@@ -48,8 +47,7 @@ public class OverridableProperty<T> extends Property<T> {
         } else {
             if (isOverridden()) {
                 overrideModifier.setOverrideValue(override);
-            }
-            else {
+            } else {
                 overrideModifier.setOverrideValue(override);
                 addModifier(overrideModifier);
             }

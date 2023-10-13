@@ -3,12 +3,11 @@ package com.tikelespike.nilee.core.character;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.User;
-
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A memento class of a {@link PlayerCharacter} that can stored in the database. Player character snapshots can be used

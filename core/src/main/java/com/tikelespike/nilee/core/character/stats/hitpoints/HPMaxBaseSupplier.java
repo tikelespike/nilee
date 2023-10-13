@@ -3,8 +3,8 @@ package com.tikelespike.nilee.core.character.stats.hitpoints;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
@@ -36,7 +36,8 @@ public class HPMaxBaseSupplier extends PropertyBaseSupplier<Integer> {
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return t -> t.translate("core.character.ability.con") + " + " + t.translate("core.character.hit_points.max.rolled_hit_dice");
+        return t -> t.translate("core.character.ability.con") + " + " + t.translate(
+                "core.character.hit_points.max.rolled_hit_dice");
     }
 
     @Override

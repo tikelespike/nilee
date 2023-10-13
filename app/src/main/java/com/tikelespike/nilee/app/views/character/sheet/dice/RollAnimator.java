@@ -3,6 +3,7 @@ package com.tikelespike.nilee.app.views.character.sheet.dice;
 import com.tikelespike.nilee.core.dice.DiceConstant;
 import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.events.EventListener;
+import com.tikelespike.nilee.core.events.Registration;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.game.RollEvent;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
@@ -12,16 +13,14 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
  * Manages the rolling of dice and the display of the results as notifications.
  */
 public class RollAnimator extends Div implements EventListener<RollEvent> {
-
-    // TODO: Singleton pattern? Since UI also uses singleton and it probably makes sense to have only one roll animator per UI
 
     /**
      * How long the instant response notification announcing that a roll is being made is shown in milliseconds
@@ -38,24 +37,48 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
 
     private final List<Pair<RollResult, VerticalLayout>> openNotificationLayouts = new ArrayList<>();
     private final TranslationProvider translationProvider;
+    private UI ui;
+    private Registration lastRollBusRegistration;
 
     /**
      * Creates a new roll manager.
      *
      * @param translationProvider translation provider used to translate rolling notifications
-     * @param rollBus             the "channel" the rolls to visualize are made on
      */
-    public RollAnimator(@NotNull TranslationProvider translationProvider, RollBus rollBus) {
+    public RollAnimator(@NotNull TranslationProvider translationProvider) {
         Objects.requireNonNull(translationProvider);
+        this.ui = UI.getCurrent();
         this.translationProvider = translationProvider;
-        rollBus.registerRollListener(this);
     }
+
+    /**
+     * Sets the UI on which to show the notifications. By default, the UI that was active when the roll animator was
+     * created is used.
+     *
+     * @param ui the ui on which to show the notifications
+     */
+    public void setUi(UI ui) {
+        this.ui = ui;
+    }
+
+    /**
+     * Sets the rolls of which bus are to be displayed as notifications.
+     *
+     * @param rollBus the roll bus to listen to
+     */
+    public void setRollBus(RollBus rollBus) {
+        if (lastRollBusRegistration != null) {
+            lastRollBusRegistration.unregister();
+        }
+        lastRollBusRegistration = rollBus.registerRollListener(this);
+    }
+
 
     @Override
     public void onEvent(RollEvent event) {
         LocalizedString nullSafeDescription = event.getDescription() == null ? t -> t.translate(
                 "character_sheet.dice.default_roll_description") : event.getDescription();
-        showRollingAnimation();
+        execute(this::showRollingAnimation);
         Notification resultNotification = createResultNotification(event.getRoll(), event.getPartialResult(),
                 event.getResult(), nullSafeDescription);
 
@@ -100,8 +123,11 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
         return resultNotification;
     }
 
+    private void execute(Runnable task) {
+        executeDelayed(task, 0);
+    }
+
     private void executeDelayed(Runnable task, long delayMs) {
-        UI ui = UI.getCurrent();
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
