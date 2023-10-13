@@ -74,6 +74,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         getStyle().set("top", "0");
 
         register();
+        addDetachListener(e -> unregister());
         rollAnimator = new RollAnimator(translationProvider);
     }
 
