@@ -1,6 +1,5 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
-import com.tikelespike.nilee.app.components.RemoteUIManager;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.events.Event;
 import com.tikelespike.nilee.core.events.EventBus;
@@ -9,9 +8,9 @@ import com.tikelespike.nilee.core.events.Registration;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.avatar.AvatarGroup;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -29,10 +28,6 @@ public class SessionDialog extends Dialog {
 
     private final EventBus eventBus = new EventBus();
 
-    private HorizontalLayout footerContent;
-
-    private final RemoteUIManager remoteUIManager = new RemoteUIManager();
-
     public SessionDialog(User user) {
         this.user = user;
         update();
@@ -41,11 +36,17 @@ public class SessionDialog extends Dialog {
     public void update() {
         removeAll();
         getFooter().removeAll();
+        getHeader().removeAll();
 
         setHeaderTitle("Connect to other players");
+
+        Button closeButton = new Button(new Icon("lumo", "cross"), e -> close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        getHeader().add(closeButton);
+
         HorizontalLayout currentSessionLayout = createCurrentSessionLayout();
         add(currentSessionLayout);
-        footerContent = createFooter();
+        HorizontalLayout footerContent = createFooter();
         getFooter().add(footerContent);
     }
 
@@ -68,11 +69,12 @@ public class SessionDialog extends Dialog {
         if (user.getSession().getParticipants().size() > 1) {
             Button leaveButton = new Button("Leave session");
             leaveButton.addClickListener(e -> eventBus.fireEvent(new LeaveClickedEvent()));
-            addClassName("success-footer");
+            leaveButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             layout.add(leaveButton);
         } else {
             Button joinButton = new Button("Join session");
             joinButton.addClickListener(e -> openJoinDialog());
+            joinButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
             Button newSessionButton = new Button("New session");
             newSessionButton.addClickListener(e -> eventBus.fireEvent(new NewSessionClickedEvent()));
@@ -88,9 +90,13 @@ public class SessionDialog extends Dialog {
         HorizontalLayout joinLayout = new HorizontalLayout();
         joinLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
 
+        Button closeButton = new Button(new Icon("lumo", "cross"), e -> joinDialog.close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        joinDialog.getHeader().add(closeButton);
+
         TextField joinSessionTF = new TextField("Session ID");
         joinSessionTF.setWidth("25em");
-        joinSessionTF.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+        joinSessionTF.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER, TextFieldVariant.LUMO_HELPER_ABOVE_FIELD);
         joinSessionTF.setPattern(UUID_REGEX);
         joinSessionTF.setAutoselect(true);
         joinSessionTF.focus();
@@ -113,17 +119,11 @@ public class SessionDialog extends Dialog {
             joinDialog.close();
         });
         joinButton.addClickShortcut(Key.ENTER);
+        joinButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SUCCESS);
         joinLayout.add(joinButton);
 
         joinDialog.add(joinLayout);
         joinDialog.open();
-    }
-
-    private void showErrorMessage(String errorMessage) {
-        Notification notification = new Notification(errorMessage, 3000);
-        notification.setPosition(Notification.Position.TOP_CENTER);
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        notification.open();
     }
 
     public Registration addJoinClickedListener(EventListener<JoinClickedEvent> listener) {

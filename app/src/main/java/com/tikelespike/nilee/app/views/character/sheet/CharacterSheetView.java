@@ -152,6 +152,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.leaveCurrentSession();
         update(pc);
         register();
+        sessionDialog.close();
         Notification leftNotification = new Notification("Left shared session!", 3000);
         leftNotification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         leftNotification.setPosition(Notification.Position.TOP_CENTER);
