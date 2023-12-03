@@ -142,6 +142,6 @@ jobs:
           script: |
             cd ${{ secrets.APP_PATH }}
             git pull
-            docker-compose down
+            docker compose down
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            docker-compose up -d
+            docker compose up -d
