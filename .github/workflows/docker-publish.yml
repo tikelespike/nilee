@@ -89,7 +89,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: app
-          path: app/target/*.jar
+          path: app/target/app.jar
 
 
       # Build and push Docker image with Buildx (don't push on PR)
