@@ -135,12 +135,12 @@ jobs:
       - name: Pull on remote server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ HOST }}
-          username: ${{ SSH_USERNAME }}
-          key: ${{ SSH_KEY }}
-          port: ${{ SSH_PORT }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ${{ APP_PATH }}
+            cd ${{ secrets.APP_PATH }}
             git pull
             docker-compose down
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
