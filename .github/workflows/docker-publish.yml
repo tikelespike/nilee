@@ -84,6 +84,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      # Downloads the previously built JAR artifact
+      - name: Download JAR
+        uses: actions/download-artifact@v3
+        with:
+          name: app
+          path: app/target/*.jar
+
+
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
