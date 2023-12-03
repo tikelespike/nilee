@@ -119,3 +119,29 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+  # Connects to the remote server, pulls the latest image and restarts the container
+  deploy-docker-dev:
+    needs: push-docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    environment: bwc-dev
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Pull on remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ HOST }}
+          username: ${{ SSH_USERNAME }}
+          key: ${{ SSH_KEY }}
+          port: ${{ SSH_PORT }}
+          script: |
+            cd ${{ APP_PATH }}
+            git pull
+            docker-compose down
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            docker-compose up -d
