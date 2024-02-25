@@ -3,6 +3,12 @@
 A [Vaadin](https://vaadin.com/)-based digital character sheet application
 for [Dungeons and Dragons](https://dnd.wizards.com/) 5th edition.
 
+## Screenshots
+![grafik](https://github.com/tikelespike/nilee/assets/85690358/9c4cf920-f3c7-40c7-9ea4-2868af5ccb95)
+![grafik](https://github.com/tikelespike/nilee/assets/85690358/b886fd01-238e-40b4-94bb-b794019b874b)
+![grafik](https://github.com/tikelespike/nilee/assets/85690358/17d8e293-5ece-4906-8f9e-ac79d4f9da71)
+![grafik](https://github.com/tikelespike/nilee/assets/85690358/05da4a25-93a2-40aa-bfd4-23c1cdd9a49c)
+
 ## Running the application
 
 This project consists of a Maven application and a PostgreSQL database which is also required. Using the
@@ -26,7 +32,7 @@ You can then build a Docker image using the provided Dockerfile.
 The project currently consists of two modules:
 
 - `core` constitutes the central library containing the game logic, which is then used by the app module
-    - `tikelespike.nilee.core.character` contains the character model, including properties and statistics, modelled as
+    - `tikelespike.nilee.core.character` contains the character model, including properties and statistics, modeled as
       described by the D&D 5e rules.
     - `tikelespike.nilee.core.data` contains code for accessing the database. Currently, persistence is implemented
       using JPA, and persistent data includes application users as well as most information about their characters.
@@ -49,7 +55,6 @@ The project currently consists of two modules:
 
 ## About
 
-This project is currently in a very early stage. Plans for the future include a plugin-based architecture for game
-content, automatic dice rolls & calculations and much more!
+This project is currently in a very early WIP stage and only provides a fraction of the functionality needed for a full character sheet. Also, I will not necessarily prioritize the most crucial features, since this is first and foremost intended as a developer playground for myself.
 
 This project uses Java 21, Vaadin 24.1.12, and Spring Boot 3.
