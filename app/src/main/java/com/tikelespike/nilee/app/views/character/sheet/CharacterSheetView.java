@@ -18,6 +18,8 @@ import com.tikelespike.nilee.core.game.GameSession;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -231,6 +233,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
                                 20));
         RollBus rollBus = currentUser.getSession().getRollBus();
         rollAnimator.setRollBus(rollBus);
+        // disconnect roll animator from roll bus when leaving this view, otherwise rollAnimator will not get garbage
+        // collected because it still subscribes to roll events -> memory leak
+        addDetachListener((ComponentEventListener<DetachEvent>) event -> rollAnimator.setRollBus(null));
 
         Component abilities = new AbilitiesView(rollBus, translationProvider, pc);
 

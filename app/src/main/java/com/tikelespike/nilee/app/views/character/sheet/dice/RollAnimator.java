@@ -64,13 +64,13 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     /**
      * Sets the rolls of which bus are to be displayed as notifications.
      *
-     * @param rollBus the roll bus to listen to
+     * @param rollBus the roll bus to listen to. If null, will detach from roll bus and stop displaying rolls.
      */
     public void setRollBus(RollBus rollBus) {
         if (lastRollBusRegistration != null) {
             lastRollBusRegistration.unregister();
         }
-        lastRollBusRegistration = rollBus.registerRollListener(this);
+        lastRollBusRegistration = rollBus == null ? null : rollBus.registerRollListener(this);
     }
 
 
