@@ -5,14 +5,17 @@ import com.tikelespike.nilee.core.game.RollEvent;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.server.StreamResource;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 /**
@@ -43,15 +46,24 @@ public class RollResult {
      * @return a Vaadin layout that displays the result and its calculation
      */
     public Component getDetailedLayout() {
-        VerticalLayout resultLayout = new VerticalLayout();
+        HorizontalLayout resultLayout = new HorizontalLayout();
+        VerticalLayout contentLayout = new VerticalLayout();
 
-        addHeader(resultLayout);
+        addHeader(contentLayout);
 
         for (int i = 1; i < rollEvent.getComputationSteps().length - 1; i++) {
-            addPartialResult(resultLayout, rollEvent.getComputationSteps()[i]);
+            addPartialResult(contentLayout, rollEvent.getComputationSteps()[i]);
         }
 
-        addResult(resultLayout, rollEvent.getComputationSteps()[rollEvent.getComputationSteps().length - 1]);
+        addResult(contentLayout, rollEvent.getComputationSteps()[rollEvent.getComputationSteps().length - 1]);
+        Avatar avatar = new Avatar(rollEvent.getUserRolling().getName());
+        StreamResource resource = new StreamResource("profile-pic",
+                () -> new ByteArrayInputStream(rollEvent.getUserRolling().getProfilePicture()));
+        avatar.setImageResource(resource);
+
+        Div avatarWrapper = new Div(avatar);
+        avatarWrapper.getStyle().set("padding-top", "var(--lumo-space-m)");
+        resultLayout.add(avatarWrapper, contentLayout);
 
         return resultLayout;
     }
