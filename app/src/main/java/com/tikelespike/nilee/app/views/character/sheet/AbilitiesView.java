@@ -21,10 +21,11 @@ public class AbilitiesView extends VerticalLayout {
         // TODO: Saving throws, passive senses
     }
 
-    private static HorizontalLayout createMainScoreBoxes(RollBus rollBus, TranslationProvider translationProvider, PlayerCharacter pc) {
+    private static HorizontalLayout createMainScoreBoxes(RollBus rollBus, TranslationProvider translationProvider,
+                                                         PlayerCharacter pc) {
         HorizontalLayout abilityScoreBoxes = new HorizontalLayout();
         for (AbilityScore score : pc.getAbilityScores().getAll()) {
-            abilityScoreBoxes.add(new AbilityScoreBox(score, translationProvider, rollBus));
+            abilityScoreBoxes.add(new AbilityScoreBox(score, translationProvider, rollBus, pc));
         }
         abilityScoreBoxes.setJustifyContentMode(JustifyContentMode.CENTER);
         return abilityScoreBoxes;

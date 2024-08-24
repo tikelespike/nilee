@@ -1,5 +1,8 @@
 package com.tikelespike.nilee.core.game;
 
+import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.data.entity.User;
+import com.tikelespike.nilee.core.dice.DiceConstant;
 import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.events.EventBus;
 import com.tikelespike.nilee.core.events.EventListener;
@@ -25,16 +28,39 @@ public class RollBus {
      *
      * @param rollProperty    the property describing which dice to roll
      * @param rollDescription describes the in-game semantics of what will be rolled for, e.g. "Attack Roll"
+     * @param user            the user making the roll
      * @return the final result of the roll
      */
-    public int makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription) {
+    public int makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription,
+                        @NotNull User user) {
+        return makeRoll(rollProperty, rollDescription, Objects.requireNonNull(user), null);
+    }
+
+    /**
+     * Make a roll on this roll bus. The type of dice to roll is determined by the property given,
+     * and all listeners will be notified of the roll.
+     *
+     * @param rollProperty    the property describing which dice to roll
+     * @param rollDescription describes the in-game semantics of what will be rolled for, e.g. "Attack Roll"
+     * @param playerCharacter the player character making the roll. Use
+     *                        {@link #makeRoll(Property, LocalizedString, User)} if not made by a character.
+     * @return the final result of the roll
+     */
+    public int makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription,
+                        @NotNull PlayerCharacter playerCharacter) {
+        return makeRoll(rollProperty, rollDescription, playerCharacter.getOwner(), playerCharacter);
+    }
+
+    private int makeRoll(@NotNull Property<DiceExpression> rollProperty, LocalizedString rollDescription, User user,
+                         PlayerCharacter playerCharacter) {
         Objects.requireNonNull(rollProperty);
 
         DiceExpression roll = rollProperty.getValue();
         DiceExpression partialResult = roll.evaluatePartially();
         int result = partialResult.evaluate();
 
-        eventBus.fireEvent(new RollEvent(roll, partialResult, result, rollDescription));
+        eventBus.fireEvent(
+                new RollEvent(rollDescription, playerCharacter, user, roll, partialResult, new DiceConstant(result)));
 
         return result;
     }

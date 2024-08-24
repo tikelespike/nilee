@@ -1,12 +1,9 @@
 package com.tikelespike.nilee.app.views.character.sheet.dice;
 
-import com.tikelespike.nilee.core.dice.DiceConstant;
-import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.events.Registration;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.game.RollEvent;
-import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.util.Pair;
 import com.vaadin.flow.component.UI;
@@ -33,7 +30,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     /**
      * How long the result notification is shown in milliseconds
      */
-    private static final int ROLL_RESULT_DURATION_MS = 4000;
+    private static final int ROLL_RESULT_DURATION_MS = 40000;
 
     private final List<Pair<RollResult, VerticalLayout>> openNotificationLayouts = new ArrayList<>();
     private final TranslationProvider translationProvider;
@@ -76,11 +73,8 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
 
     @Override
     public void onEvent(RollEvent event) {
-        LocalizedString nullSafeDescription = event.getDescription() == null ? t -> t.translate(
-                "character_sheet.dice.default_roll_description") : event.getDescription();
         execute(this::showRollingAnimation);
-        Notification resultNotification = createResultNotification(event.getRoll(), event.getPartialResult(),
-                event.getResult(), nullSafeDescription);
+        Notification resultNotification = createResultNotification(event);
 
         executeDelayed(() -> {
             minimizeOpenNotifications();
@@ -104,9 +98,8 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
         notification.open();
     }
 
-    private Notification createResultNotification(DiceExpression roll, DiceExpression partialResult, int result, LocalizedString rollDescription) {
-        RollResult rollResult = new RollResult(rollDescription, translationProvider, roll, partialResult,
-                new DiceConstant(result));
+    private Notification createResultNotification(RollEvent rollEvent) {
+        RollResult rollResult = new RollResult(rollEvent, translationProvider);
         VerticalLayout resultLayout = new VerticalLayout(rollResult.getDetailedLayout());
         var pair = new Pair<>(rollResult, resultLayout);
 
