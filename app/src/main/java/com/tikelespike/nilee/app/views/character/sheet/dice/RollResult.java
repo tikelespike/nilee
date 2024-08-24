@@ -71,7 +71,7 @@ public class RollResult {
         Span description = new Span(rollString + ":");
         Span result = new Span(resultString);
         result.getStyle().set("font-weight", "bold");
-        HorizontalLayout resultLayout = new HorizontalLayout(description, result);
+        HorizontalLayout resultLayout = new HorizontalLayout(getAvatar(), description, result);
         resultLayout.expand(description);
         resultLayout.getStyle().set("font-size", "var(--lumo-font-size-xl)");
         return resultLayout;
@@ -79,10 +79,7 @@ public class RollResult {
 
     private void addHeader(VerticalLayout resultLayout) {
         H3 headline = new H3(rollEvent.getDescription().getTranslation(translationProvider));
-        Avatar avatar = new Avatar(rollEvent.getUserRolling().getName());
-        StreamResource resource = new StreamResource("profile-pic",
-                () -> new ByteArrayInputStream(rollEvent.getUserRolling().getProfilePicture()));
-        avatar.setImageResource(resource);
+        Avatar avatar = getAvatar();
 
         Div avatarWrapper = new Div(avatar);
         avatarWrapper.getStyle().set("padding-right", "var(--lumo-space-m)");
@@ -98,6 +95,14 @@ public class RollResult {
         HorizontalLayout rollDescriptor = createRollDescriptor(rollEvent.getComputationSteps()[0]);
 
         resultLayout.add(firstLine, rollDescriptor, new Hr());
+    }
+
+    private Avatar getAvatar() {
+        Avatar avatar = new Avatar(rollEvent.getUserRolling().getName());
+        StreamResource resource = new StreamResource("profile-pic",
+                () -> new ByteArrayInputStream(rollEvent.getUserRolling().getProfilePicture()));
+        avatar.setImageResource(resource);
+        return avatar;
     }
 
     private void addResult(VerticalLayout resultLayout, DiceExpression result) {
