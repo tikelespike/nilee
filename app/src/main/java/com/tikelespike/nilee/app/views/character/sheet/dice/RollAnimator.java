@@ -30,7 +30,7 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     /**
      * How long the result notification is shown in milliseconds
      */
-    private static final int ROLL_RESULT_DURATION_MS = 40000;
+    private static final int ROLL_RESULT_DURATION_MS = 4000;
 
     private final List<Pair<RollResult, VerticalLayout>> openNotificationLayouts = new ArrayList<>();
     private final TranslationProvider translationProvider;
