@@ -46,24 +46,15 @@ public class RollResult {
      * @return a Vaadin layout that displays the result and its calculation
      */
     public Component getDetailedLayout() {
-        HorizontalLayout resultLayout = new HorizontalLayout();
-        VerticalLayout contentLayout = new VerticalLayout();
+        VerticalLayout resultLayout = new VerticalLayout();
 
-        addHeader(contentLayout);
+        addHeader(resultLayout);
 
         for (int i = 1; i < rollEvent.getComputationSteps().length - 1; i++) {
-            addPartialResult(contentLayout, rollEvent.getComputationSteps()[i]);
+            addPartialResult(resultLayout, rollEvent.getComputationSteps()[i]);
         }
 
-        addResult(contentLayout, rollEvent.getComputationSteps()[rollEvent.getComputationSteps().length - 1]);
-        Avatar avatar = new Avatar(rollEvent.getUserRolling().getName());
-        StreamResource resource = new StreamResource("profile-pic",
-                () -> new ByteArrayInputStream(rollEvent.getUserRolling().getProfilePicture()));
-        avatar.setImageResource(resource);
-
-        Div avatarWrapper = new Div(avatar);
-        avatarWrapper.getStyle().set("padding-top", "var(--lumo-space-m)");
-        resultLayout.add(avatarWrapper, contentLayout);
+        addResult(resultLayout, rollEvent.getComputationSteps()[rollEvent.getComputationSteps().length - 1]);
 
         return resultLayout;
     }
@@ -88,11 +79,25 @@ public class RollResult {
 
     private void addHeader(VerticalLayout resultLayout) {
         H3 headline = new H3(rollEvent.getDescription().getTranslation(translationProvider));
+        Avatar avatar = new Avatar(rollEvent.getUserRolling().getName());
+        StreamResource resource = new StreamResource("profile-pic",
+                () -> new ByteArrayInputStream(rollEvent.getUserRolling().getProfilePicture()));
+        avatar.setImageResource(resource);
+
+        Div avatarWrapper = new Div(avatar);
+        avatarWrapper.getStyle().set("padding-right", "var(--lumo-space-m)");
+
         String author = rollEvent.getCharacterRolling() == null ? rollEvent.getUserRolling().getName() : rollEvent.getCharacterRolling().getName();
         H5 subHeadline = new H5(translationProvider.translate("character_sheet.dice.roll_source", author));
+
+        VerticalLayout titleTextLines = new VerticalLayout(headline, subHeadline);
+
+        HorizontalLayout firstLine = new HorizontalLayout(avatar, titleTextLines);
+        firstLine.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+
         HorizontalLayout rollDescriptor = createRollDescriptor(rollEvent.getComputationSteps()[0]);
 
-        resultLayout.add(headline, subHeadline, rollDescriptor, new Hr());
+        resultLayout.add(firstLine, rollDescriptor, new Hr());
     }
 
     private void addResult(VerticalLayout resultLayout, DiceExpression result) {
