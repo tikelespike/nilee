@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.dice.DiceExpression;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
@@ -24,12 +25,13 @@ public class RollButton extends Button {
      * @param rollBus             the "bus" on which the rolls are made.
      */
     public RollButton(@NotNull Property<DiceExpression> rollProperty, @NotNull TranslationProvider translationProvider,
-                      LocalizedString rollDescription, @NotNull RollBus rollBus) {
+                      LocalizedString rollDescription, @NotNull RollBus rollBus,
+                      @NotNull PlayerCharacter characterRolling) {
         Objects.requireNonNull(rollProperty);
         Objects.requireNonNull(translationProvider);
         Objects.requireNonNull(rollBus);
         setText(rollProperty.getValue().toLocalizedString().getTranslation(translationProvider));
-        addClickListener(e -> rollBus.makeRoll(rollProperty, rollDescription));
+        addClickListener(e -> rollBus.makeRoll(rollProperty, rollDescription, characterRolling));
     }
 
 }

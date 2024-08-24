@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.character.sheet;
 
+import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.game.RollBus;
 import com.tikelespike.nilee.core.i18n.TranslationProvider;
@@ -27,10 +28,11 @@ public class AbilityScoreBox extends VerticalLayout {
      * @param translationProvider the translation provider to use for displaying internalized
      *                            (language-independent) strings
      */
-    public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider, RollBus rollBus) {
+    public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider, RollBus rollBus,
+                           PlayerCharacter playerCharacter) {
         configureStyle();
 
-        Component skillCheckButton = createCheckButton(abilityScore, translationProvider, rollBus);
+        Component skillCheckButton = createCheckButton(abilityScore, translationProvider, rollBus, playerCharacter);
         Component scoreValueButton = createScoreValueButton(abilityScore);
         Component label = createScoreLabel(abilityScore, translationProvider);
 
@@ -62,9 +64,12 @@ public class AbilityScoreBox extends VerticalLayout {
         return innerContentBox;
     }
 
-    private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider, RollBus rollBus) {
+    private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider,
+                                            RollBus rollBus,
+                                            PlayerCharacter playerCharacter) {
         Button skillCheckButton = new RollButton(abilityScore.getCheckRoll(), translationProvider,
-                t -> t.translate("character_sheet.dice.check", abilityScore.getLongName().getTranslation(t)), rollBus);
+                t -> t.translate("character_sheet.dice.check", abilityScore.getLongName().getTranslation(t)), rollBus,
+                playerCharacter);
         skillCheckButton.setText(
                 (abilityScore.getModifier() >= 0 ? "+ " : "- ") + Math.abs(abilityScore.getModifier()));
         skillCheckButton.addThemeVariants(ButtonVariant.LUMO_LARGE);
