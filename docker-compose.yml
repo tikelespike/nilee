@@ -10,18 +10,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     ports:
-        - "5432:5432"
+      - "5432:5432"
     volumes:
-        - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
-# For debugging, we will only use docker for the database
-
-#  app:
-#    build: .
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - db
+  app:
+    image: ghcr.io/tikelespike/nilee:main
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
 
 volumes:
-    db_data:
+  db_data:
