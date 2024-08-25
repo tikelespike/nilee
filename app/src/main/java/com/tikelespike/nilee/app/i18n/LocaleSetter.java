@@ -12,6 +12,19 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Locale;
 import java.util.Optional;
 
+/**
+ * Localization is achieved in two ways in Nilee. Vaadin components use the getTranslation() method which uses the
+ * locale associated with the UI instance the components are displayed in. There's also the
+ * {@link com.tikelespike.nilee.core.i18n.TranslationProvider TranslationProvider} and
+ * {@link com.tikelespike.nilee.core.i18n.LocalizedString LocalizedString} interfaces which can be used outside of
+ * vaadin components.
+ * <p>
+ * This class makes sure that the locale of the vaadin UI instances is always set to the current users preferred
+ * locale as set in the users preferences, so that
+ * {@link com.vaadin.flow.component.Component#getTranslation(Object, Object...)} uses the correct locale.
+ * <p>
+ * See {@link UserBasedTranslationProvider} for the translation provider that can be used independently of Vaadin.
+ */
 @SpringComponent
 public class LocaleSetter implements UIInitListener, VaadinServiceInitListener {
 
