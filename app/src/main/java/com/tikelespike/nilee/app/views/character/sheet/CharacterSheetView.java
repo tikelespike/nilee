@@ -4,6 +4,7 @@ import com.tikelespike.nilee.app.components.BarComponent;
 import com.tikelespike.nilee.app.components.FooterComponent;
 import com.tikelespike.nilee.app.components.HeaderComponent;
 import com.tikelespike.nilee.app.components.RemoteUIManager;
+import com.tikelespike.nilee.app.i18n.UserBasedTranslationProvider;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
@@ -34,6 +35,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.TabSheetVariant;
+import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 
@@ -61,12 +63,12 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     public CharacterSheetView(AuthenticatedUser authenticatedUser,
                               PlayerCharacterService characterService,
-                              TranslationProvider translationProvider) {
+                              I18NProvider i18nProvider) {
         this.characterService = characterService;
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
                 "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
-        this.translationProvider = translationProvider;
+        this.translationProvider = new UserBasedTranslationProvider(currentUser, i18nProvider);
 
         // initialization happens in setParameter based on the given character
         add(getTranslation("error.character_not_found"));

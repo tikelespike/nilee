@@ -1,5 +1,6 @@
 package com.tikelespike.nilee.app.views.mainmenu;
 
+import com.tikelespike.nilee.app.i18n.UserBasedTranslationProvider;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
@@ -22,6 +23,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -45,13 +47,13 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
 
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
-                             UserService userService, TranslationProvider translationProvider) {
+                             UserService userService, I18NProvider i18nProvider) {
         this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
                 "authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
-        this.translationProvider = translationProvider;
+        this.translationProvider = new UserBasedTranslationProvider(currentUser, i18nProvider);
 
         this.characterGrid = createCharacterGrid();
         updateCharacterGrid();
