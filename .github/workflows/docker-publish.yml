@@ -143,5 +143,5 @@ jobs:
             cd ${{ secrets.APP_PATH }}
             git pull
             docker compose down
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
             docker compose up -d
