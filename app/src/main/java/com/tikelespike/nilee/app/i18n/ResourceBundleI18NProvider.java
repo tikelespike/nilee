@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import java.text.MessageFormat;
 import java.util.*;
 
+/**
+ * Resolves keys to localized string values given a target locale using {@link ResourceBundle ResourceBundles}.
+ */
 @Component
 public class ResourceBundleI18NProvider implements I18NProvider {
 
