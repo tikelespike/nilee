@@ -10,7 +10,8 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 /**
  * The default way to calculate an ability check roll (for example, a strength check is 1d20 + strength modifier).
  *
- * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#AbilityChecks">Ability Checks</a>
+ * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#AbilityChecks">Ability
+ *         Checks</a>
  */
 public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression> {
 
@@ -32,8 +33,8 @@ public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return t -> new Dice(20).toLocalizedString().getTranslation(t) + " " + t.translate(
-                "dice.sum.operator") + " " + abilityScore.getShortName().getTranslation(t);
+        return t -> new Dice(20).toLocalizedString().getTranslation(t) + " " + t.translate("dice.sum.operator") + " "
+                + abilityScore.getShortName().getTranslation(t);
     }
 
     @Override

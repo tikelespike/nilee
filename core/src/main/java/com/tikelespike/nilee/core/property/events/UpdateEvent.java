@@ -1,12 +1,12 @@
 package com.tikelespike.nilee.core.property.events;
 
-import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 import com.tikelespike.nilee.core.events.Event;
+import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
- * An UpdateEvent signals that something about a subject class changed in way that is of interest to observers.
- * For example, when a {@link PropertyBaseSupplier} changes the value it provides, it should fire an UpdateEvent to
- * notify corresponding properties that their result value may have changed.
+ * An UpdateEvent signals that something about a subject class changed in way that is of interest to observers. For
+ * example, when a {@link PropertyBaseSupplier} changes the value it provides, it should fire an UpdateEvent to notify
+ * corresponding properties that their result value may have changed.
  */
 public class UpdateEvent extends Event {
 }

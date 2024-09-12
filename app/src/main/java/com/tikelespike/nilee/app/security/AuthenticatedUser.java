@@ -17,7 +17,8 @@ public class AuthenticatedUser {
     private final AuthenticationContext authenticationContext;
     private final GameSessionManager gameSessionManager;
 
-    public AuthenticatedUser(AuthenticationContext authenticationContext, UserRepository userRepository, GameSessionManager gameSessionManager) {
+    public AuthenticatedUser(AuthenticationContext authenticationContext, UserRepository userRepository,
+                             GameSessionManager gameSessionManager) {
         this.userRepository = userRepository;
         this.authenticationContext = authenticationContext;
         this.gameSessionManager = gameSessionManager;

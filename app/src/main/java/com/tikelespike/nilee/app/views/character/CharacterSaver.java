@@ -38,9 +38,9 @@ public class CharacterSaver extends Div {
         CANCELLED,
 
         /**
-         * The changes were discarded by the user, either because of clicking the discard button after a conflict
-         * or because they were discarded programmatically due to a call of {@link #discard()}.
-         * The character was not saved and has been reloaded from the database.
+         * The changes were discarded by the user, either because of clicking the discard button after a conflict or
+         * because they were discarded programmatically due to a call of {@link #discard()}. The character was not saved
+         * and has been reloaded from the database.
          */
         CHANGES_DISCARDED
     }
@@ -54,11 +54,12 @@ public class CharacterSaver extends Div {
     /**
      * Creates a new saver for the given character.
      *
-     * @param playerCharacter  the character to save and discard
+     * @param playerCharacter the character to save and discard
      * @param characterService the service to use to save and load the character
-     * @param sanityChecker    the sanity checker to use to check if the character is sane upon saving
+     * @param sanityChecker the sanity checker to use to check if the character is sane upon saving
      */
-    public CharacterSaver(@NotNull PlayerCharacter playerCharacter, @NotNull PlayerCharacterService characterService, @NotNull CharacterSanityChecker sanityChecker) {
+    public CharacterSaver(@NotNull PlayerCharacter playerCharacter, @NotNull PlayerCharacterService characterService,
+                          @NotNull CharacterSanityChecker sanityChecker) {
         Objects.requireNonNull(playerCharacter);
         Objects.requireNonNull(characterService);
         Objects.requireNonNull(sanityChecker);
@@ -82,8 +83,8 @@ public class CharacterSaver extends Div {
      * Saves the character. If the character was changed in the database since it was last loaded, a dialog will be
      * shown to the user to ask what to do. If the character was not changed in the database, it will be saved
      * immediately. The given consumer acts as a callback after the save operation has completed (successfully or not).
-     * For example, upon a saving conflict, it will be called with {@link SaveResult#CANCELLED} if the user clicked
-     * the cancel button in the conflict dialog.
+     * For example, upon a saving conflict, it will be called with {@link SaveResult#CANCELLED} if the user clicked the
+     * cancel button in the conflict dialog.
      *
      * @param andThen the callback to call after the save operation has completed
      */

@@ -13,14 +13,16 @@ import jakarta.validation.constraints.NotNull;
  * A memento class of a {@link PlayerCharacter} that can stored in the database. Player character snapshots can be used
  * to save a characters state, optionally store it to the database and restore it later.
  * <p>
- * This class is not intended to be used directly. Instead, use {@link PlayerCharacter#createSnapshot()} to create a snapshot of
- * the current character state. To restore a character from a snapshot, use {@link PlayerCharacter#restoreSnapshot(PlayerCharacterSnapshot)}.
+ * This class is not intended to be used directly. Instead, use {@link PlayerCharacter#createSnapshot()} to create a
+ * snapshot of the current character state. To restore a character from a snapshot, use
+ * {@link PlayerCharacter#restoreSnapshot(PlayerCharacterSnapshot)}.
  * <p>
- * A snapshot <b>does</b> store all long-term persistent information about a character, such as their name, spell slots, hit points,
- * and other "character-building" information (class choices, ...). (TODO: Note: most of this is not yet implemented.)
+ * A snapshot <b>does</b> store all long-term persistent information about a character, such as their name, spell slots,
+ * hit points, and other "character-building" information (class choices, ...). (TODO: Note: most of this is not yet
+ * implemented.)
  * <p>
- * A snapshot does <b>not</b> store "short-term business object details" such as registered listeners or modifiers applied to
- * properties.
+ * A snapshot does <b>not</b> store "short-term business object details" such as registered listeners or modifiers
+ * applied to properties.
  */
 @Entity
 @Table(name = "application_player_character")

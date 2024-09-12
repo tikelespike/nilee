@@ -72,11 +72,8 @@ public class DiceSum extends DiceExpression {
     public LocalizedString toLocalizedString() {
         return t -> {
             String join = String.join(" ",
-                    summands.stream()
-                            .map(DiceExpression::toLocalizedString)
-                            .map(l -> l.getTranslation(t))
-                            .map(s -> s.startsWith("-") ? s : "+ " + s)
-                            .toArray(String[]::new));
+                    summands.stream().map(DiceExpression::toLocalizedString).map(l -> l.getTranslation(t))
+                            .map(s -> s.startsWith("-") ? s : "+ " + s).toArray(String[]::new));
 
             if (join.startsWith("+ ")) {
                 join = join.substring(2);

@@ -10,8 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * A spring bean wrapper for {@link GameSessionManager}. Allows for easy singleton-style injection of a game
- * session manager.
+ * A spring bean wrapper for {@link GameSessionManager}. Allows for easy singleton-style injection of a game session
+ * manager.
  */
 @Component
 public class SessionManagerWrapper implements GameSessionManager {

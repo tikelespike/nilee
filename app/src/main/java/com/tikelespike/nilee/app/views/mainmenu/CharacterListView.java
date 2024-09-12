@@ -48,8 +48,8 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
                              UserService userService, I18NProvider i18nProvider) {
-        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
-                "authenticated"));
+        this.currentUser =
+                authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " + "authenticated"));
         this.userService = userService;
         this.characterService = playerCharacterService;
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
@@ -69,12 +69,12 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
     private Grid<PlayerCharacter> createCharacterGrid() {
         Grid<PlayerCharacter> grid = new Grid<>(PlayerCharacter.class, false);
-        grid.addColumn(PlayerCharacter::getName).setHeader(
-                getTranslation("character_list.list.headings.name")).setAutoWidth(true).setFlexGrow(0);
-        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton)).setHeader(
-                getTranslation("character_list.list.headings.open"));
-        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton)).setHeader(
-                getTranslation("character_list.list.headings.delete"));
+        grid.addColumn(PlayerCharacter::getName).setHeader(getTranslation("character_list.list.headings.name"))
+                .setAutoWidth(true).setFlexGrow(0);
+        grid.addColumn(new ComponentRenderer<>(this::createOpenPCButton))
+                .setHeader(getTranslation("character_list.list.headings.open"));
+        grid.addColumn(new ComponentRenderer<>(this::createDeletePCButton))
+                .setHeader(getTranslation("character_list.list.headings.delete"));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.addSelectionListener(e -> {
             if (e.getFirstSelectedItem().isPresent()) {
@@ -90,9 +90,8 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         button.addClickListener(e -> {
             PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
             savePC(newCharacter);
-            String name = Objects.equals(newCharacterNameTF.getValue(),
-                    "") ? newCharacter.getDefaultName().getTranslation(
-                    translationProvider) : newCharacterNameTF.getValue();
+            String name = Objects.equals(newCharacterNameTF.getValue(), "") ?
+                    newCharacter.getDefaultName().getTranslation(translationProvider) : newCharacterNameTF.getValue();
             newCharacter.setName(name);
             savePC(newCharacter);
         });
@@ -155,8 +154,8 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
 
     private void updateUserInfo() {
-        currentUser = userService.get(currentUser.getId()).orElseThrow(() -> new IllegalStateException("User not " +
-                "found"));
+        currentUser = userService.get(currentUser.getId())
+                .orElseThrow(() -> new IllegalStateException("User not " + "found"));
     }
 
     @Override

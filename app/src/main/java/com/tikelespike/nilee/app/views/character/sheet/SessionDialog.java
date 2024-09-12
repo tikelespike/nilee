@@ -23,7 +23,8 @@ import java.util.UUID;
 
 public class SessionDialog extends Dialog {
 
-    private static final String UUID_REGEX = "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$";
+    private static final String UUID_REGEX =
+            "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$";
 
     private final TranslationProvider translationProvider;
 
@@ -62,8 +63,8 @@ public class SessionDialog extends Dialog {
         AvatarGroup avatarGroup = new AvatarGroup();
         for (User participant : user.getSession().getParticipants()) {
             AvatarGroup.AvatarGroupItem avatar = new AvatarGroup.AvatarGroupItem(participant.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(participant.getProfilePicture()));
+            StreamResource resource =
+                    new StreamResource("profile-pic", () -> new ByteArrayInputStream(participant.getProfilePicture()));
             avatar.setImageResource(resource);
             avatarGroup.add(avatar);
         }
@@ -71,19 +72,19 @@ public class SessionDialog extends Dialog {
 
 
         if (user.getSession().getParticipants().size() > 1) {
-            Button leaveButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.leave_button"));
+            Button leaveButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.leave_button"));
             leaveButton.addClickListener(e -> eventBus.fireEvent(new LeaveClickedEvent()));
             leaveButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             layout.add(leaveButton);
         } else {
-            Button joinButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.join_button"));
+            Button joinButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.join_button"));
             joinButton.addClickListener(e -> openJoinDialog());
             joinButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
-            Button newSessionButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.new_button"));
+            Button newSessionButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.new_button"));
             newSessionButton.addClickListener(e -> eventBus.fireEvent(new NewSessionClickedEvent()));
             layout.add(newSessionButton, joinButton);
         }
@@ -101,8 +102,8 @@ public class SessionDialog extends Dialog {
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         joinDialog.getHeader().add(closeButton);
 
-        TextField joinSessionTF = new TextField(
-                translationProvider.translate("character_sheet.sessions.join_dialog.id_field.label"));
+        TextField joinSessionTF =
+                new TextField(translationProvider.translate("character_sheet.sessions.join_dialog.id_field.label"));
         joinSessionTF.setWidth("25em");
         joinSessionTF.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER, TextFieldVariant.LUMO_HELPER_ABOVE_FIELD);
         joinSessionTF.setPattern(UUID_REGEX);
@@ -110,8 +111,8 @@ public class SessionDialog extends Dialog {
         joinSessionTF.focus();
         joinLayout.add(joinSessionTF);
 
-        Button joinButton = new Button(
-                translationProvider.translate("character_sheet.sessions.join_dialog.join_button"));
+        Button joinButton =
+                new Button(translationProvider.translate("character_sheet.sessions.join_dialog.join_button"));
         joinButton.addClickListener(e -> {
             if (!joinSessionTF.getValue().matches(UUID_REGEX)) {
                 joinSessionTF.setInvalid(true);
@@ -153,8 +154,8 @@ public class SessionDialog extends Dialog {
         HorizontalLayout currentSessionLayout = new HorizontalLayout();
         currentSessionLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
 
-        TextField currentSessionTF = new TextField(
-                translationProvider.translate("character_sheet.sessions.dialog.current_field.label"));
+        TextField currentSessionTF =
+                new TextField(translationProvider.translate("character_sheet.sessions.dialog.current_field.label"));
         currentSessionTF.setReadOnly(true);
         currentSessionTF.setValue(user.getSession().getId().toString());
         currentSessionTF.setWidth("25em");

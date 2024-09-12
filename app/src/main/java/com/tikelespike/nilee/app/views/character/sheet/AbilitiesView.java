@@ -12,8 +12,7 @@ public class AbilitiesView extends VerticalLayout {
     public AbilitiesView(RollBus rollBus, TranslationProvider translationProvider, PlayerCharacter pc) {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        HorizontalLayout abilityScoreBoxes = createMainScoreBoxes(rollBus,
-                translationProvider, pc);
+        HorizontalLayout abilityScoreBoxes = createMainScoreBoxes(rollBus, translationProvider, pc);
         add(abilityScoreBoxes);
 
         add(new Hr());

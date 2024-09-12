@@ -9,9 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
- * A player character represents a player's representative in the game, their avatar in the D&D world.
- * In the game, a character is a combination of game statistics, role-playing hooks, and the player's imagination.
- * This class tracks all information (mostly game statistics) of one character, such as their
+ * A player character represents a player's representative in the game, their avatar in the D&D world. In the game, a
+ * character is a combination of game statistics, role-playing hooks, and the player's imagination. This class tracks
+ * all information (mostly game statistics) of one character, such as their
  * <ul>
  *     <li>name</li>
  *     <li>owning player</li>
@@ -27,7 +27,8 @@ import java.util.Objects;
  * from a snapshot using {@link #createFromSnapshot(PlayerCharacterSnapshot)}, or an existing character can load a
  * snapshot using {@link #restoreSnapshot(PlayerCharacterSnapshot)}.
  *
- * @see <a href="https://www.dndbeyond.com/sources/basic-rules/step-by-step-characters">Creating a Character (D&D Beyond)</a>
+ * @see <a href="https://www.dndbeyond.com/sources/basic-rules/step-by-step-characters">Creating a Character (D&D
+ *         Beyond)</a>
  */
 public class PlayerCharacter {
 
@@ -65,7 +66,7 @@ public class PlayerCharacter {
     /**
      * Creates a new player character with the given name and owner.
      *
-     * @param name  the name of the character
+     * @param name the name of the character
      * @param owner the user who can control this character
      */
     public PlayerCharacter(@NotNull String name, @NotNull User owner) {
@@ -78,6 +79,7 @@ public class PlayerCharacter {
      * Creates a new player character object from the given snapshot.
      *
      * @param snapshot the snapshot containing stored data with which to initialize the new character
+     *
      * @return a new player character object initialized with the data from the given snapshot
      */
     public static PlayerCharacter createFromSnapshot(@NotNull PlayerCharacterSnapshot snapshot) {
@@ -89,8 +91,8 @@ public class PlayerCharacter {
 
     /**
      * Creates a snapshot storing the data of the current character. This snapshot implements the memento design
-     * pattern, and it can also be persisted to a database.
-     * It can also be used to "undo" changes to the character by restoring the snapshot.
+     * pattern, and it can also be persisted to a database. It can also be used to "undo" changes to the character by
+     * restoring the snapshot.
      *
      * @return a snapshot storing the data of the current character
      */
@@ -151,7 +153,8 @@ public class PlayerCharacter {
     }
 
     /**
-     * Returns the ability scores (strength, dexterity, constitution, intelligence, wisdom, charisma) of this character.
+     * Returns the ability scores (strength, dexterity, constitution, intelligence, wisdom, charisma) of this
+     * character.
      *
      * @return the ability scores of this character
      */
@@ -193,7 +196,7 @@ public class PlayerCharacter {
 
     /**
      * @return the (persistence) version of the snapshot this character was loaded from, or 0 if this character has not
-     * been loaded from a snapshot
+     *         been loaded from a snapshot
      */
     public int getLoadedFromVersion() {
         return loadedFromVersion;

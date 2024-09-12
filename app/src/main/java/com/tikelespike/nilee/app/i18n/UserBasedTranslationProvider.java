@@ -7,8 +7,8 @@ import com.vaadin.flow.i18n.I18NProvider;
 import java.util.Locale;
 
 /**
- * Provides a locale to use based on the currently logged-in user and their preferences set. The actual lookup is
- * then done using an injected {@link I18NProvider}.
+ * Provides a locale to use based on the currently logged-in user and their preferences set. The actual lookup is then
+ * done using an injected {@link I18NProvider}.
  */
 public class UserBasedTranslationProvider implements TranslationProvider {
     private final User user;

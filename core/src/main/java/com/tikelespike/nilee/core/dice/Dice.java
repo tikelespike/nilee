@@ -12,14 +12,15 @@ import java.util.Objects;
  */
 public class Dice extends DiceExpression {
 
-    private int sides;
-    private int diceCount;
+    private final int sides;
+    private final int diceCount;
 
     /**
      * Create a dice object representing the expression "<i>[diceCount]</i>d<i>[sides]</i>".
      *
      * @param diceCount the number of dice. Must be greater than zero.
-     * @param sides     the number of sides of each die. If negative, treated as {@code -(Dice(diceCount, -sides))}.
+     * @param sides the number of sides of each die. If negative, treated as
+     *         {@code -(Dice(diceCount, -sides))}.
      */
     public Dice(int diceCount, int sides) {
         this.sides = sides;
@@ -63,8 +64,12 @@ public class Dice extends DiceExpression {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Dice that = (Dice) o;
         return sides == that.sides && diceCount == that.diceCount;
     }

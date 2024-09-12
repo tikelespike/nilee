@@ -19,8 +19,8 @@ import java.util.Optional;
  * {@link com.tikelespike.nilee.core.i18n.LocalizedString LocalizedString} interfaces which can be used outside of
  * vaadin components.
  * <p>
- * This class makes sure that the locale of the vaadin UI instances is always set to the current users preferred
- * locale as set in the users preferences, so that
+ * This class makes sure that the locale of the vaadin UI instances is always set to the current users preferred locale
+ * as set in the users preferences, so that
  * {@link com.vaadin.flow.component.Component#getTranslation(Object, Object...)} uses the correct locale.
  * <p>
  * See {@link UserBasedTranslationProvider} for the translation provider that can be used independently of Vaadin.

@@ -14,7 +14,7 @@ public class AdditiveModifier extends PropertyModifier<Integer> {
     /**
      * Creates a new {@link AdditiveModifier} with the given bonus and source.
      *
-     * @param bonus  how much to add to the value of the property. Can be negative.
+     * @param bonus how much to add to the value of the property. Can be negative.
      * @param source a short name describing the source of the bonus, e.g. "Racial bonus"
      */
     public AdditiveModifier(int bonus, LocalizedString source) {

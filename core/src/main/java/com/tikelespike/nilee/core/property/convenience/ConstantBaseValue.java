@@ -1,7 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
@@ -17,7 +16,8 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      * that will be returned by {@link #getBaseValue()}.
      *
      * @param defaultBaseValue the base value to wrap
-     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
+     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base
+     *         Strength")
      */
     public ConstantBaseValue(int defaultBaseValue, LocalizedString sourceName) {
         this.defaultBaseValue = defaultBaseValue;
@@ -54,7 +54,8 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      * base value comes from and should be suitable for display in a user interface. It should usually not contain
      * additional characters like parentheses, brackets or colons.
      *
-     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
+     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base
+     *         Strength")
      */
     public void setSourceName(LocalizedString sourceName) {
         this.sourceName = sourceName;

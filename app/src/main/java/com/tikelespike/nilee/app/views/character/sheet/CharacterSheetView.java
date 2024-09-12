@@ -61,12 +61,11 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     private Registration userLeftRegistration;
     private SessionDialog sessionDialog;
 
-    public CharacterSheetView(AuthenticatedUser authenticatedUser,
-                              PlayerCharacterService characterService,
+    public CharacterSheetView(AuthenticatedUser authenticatedUser, PlayerCharacterService characterService,
                               I18NProvider i18nProvider) {
         this.characterService = characterService;
-        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
-                "authenticated"));
+        this.currentUser =
+                authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " + "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         this.translationProvider = new UserBasedTranslationProvider(currentUser, i18nProvider);
 
@@ -110,7 +109,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
         setHeightFull();
 
-        if (sessionDialog != null) sessionDialog.update();
+        if (sessionDialog != null) {
+            sessionDialog.update();
+        }
     }
 
     private BarComponent createFooter() {
@@ -146,8 +147,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         update(pc);
         register();
         sessionDialog.close();
-        Notification successNotification = new Notification(
-                translationProvider.translate("character_sheet.sessions.join_message"), 3000);
+        Notification successNotification =
+                new Notification(translationProvider.translate("character_sheet.sessions.join_message"), 3000);
         successNotification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         successNotification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(successNotification);
@@ -159,8 +160,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         update(pc);
         register();
         sessionDialog.close();
-        Notification leftNotification = new Notification(
-                translationProvider.translate("character_sheet.sessions.leave_message"), 3000);
+        Notification leftNotification =
+                new Notification(translationProvider.translate("character_sheet.sessions.leave_message"), 3000);
         leftNotification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         leftNotification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(leftNotification);
@@ -171,8 +172,8 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         currentUser.leaveCurrentSession();
         update(pc);
         register();
-        Notification notification = new Notification(
-                translationProvider.translate("character_sheet.sessions.new_message"), 3000);
+        Notification notification =
+                new Notification(translationProvider.translate("character_sheet.sessions.new_message"), 3000);
         notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
         notification.setPosition(Notification.Position.TOP_CENTER);
         ui.open(notification);
@@ -201,8 +202,12 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     }
 
     private void unregister() {
-        if (userJoinedRegistration != null) userJoinedRegistration.unregisterAll();
-        if (userLeftRegistration != null) userLeftRegistration.unregisterAll();
+        if (userJoinedRegistration != null) {
+            userJoinedRegistration.unregisterAll();
+        }
+        if (userLeftRegistration != null) {
+            userLeftRegistration.unregisterAll();
+        }
     }
 
     private void register() {
@@ -219,20 +224,22 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     }
 
     private TabSheet createTabSheet() {
-        Text placeholderText2 =
-                new Text(
-                        ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt" +
-                                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco " +
-                                "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
-                                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
-                                20));
-        Text placeholderText3 =
-                new Text(
-                        ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt" +
-                                " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation " + "ullamco " +
-                                "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
-                                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(
-                                20));
+        Text placeholderText2 = new Text(
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt"
+                        + " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+                        + "ullamco "
+                        + "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in "
+                        + "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat "
+                        + "cupidatat non "
+                        + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(20));
+        Text placeholderText3 = new Text(
+                ("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod " + "tempor incididunt"
+                        + " ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+                        + "ullamco "
+                        + "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in "
+                        + "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat "
+                        + "cupidatat non "
+                        + "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.").repeat(20));
         RollBus rollBus = currentUser.getSession().getRollBus();
         rollAnimator.setRollBus(rollBus);
         // disconnect roll animator from roll bus when leaving this view, otherwise rollAnimator will not get garbage

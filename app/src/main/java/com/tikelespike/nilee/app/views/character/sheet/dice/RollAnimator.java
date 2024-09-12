@@ -92,9 +92,9 @@ public class RollAnimator extends Div implements EventListener<RollEvent> {
     }
 
     private void showRollingAnimation() {
-        Notification notification = new Notification(
-                translationProvider.translate("character_sheet.dice.roll_in_progress"), ROLL_IN_PROGRESS_DURATION_MS,
-                Notification.Position.MIDDLE);
+        Notification notification =
+                new Notification(translationProvider.translate("character_sheet.dice.roll_in_progress"),
+                        ROLL_IN_PROGRESS_DURATION_MS, Notification.Position.MIDDLE);
         notification.open();
     }
 

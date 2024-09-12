@@ -33,8 +33,8 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
 
     public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
         this.characterService = characterService;
-        this.currentUser = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " +
-                "authenticated"));
+        this.currentUser =
+                authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " + "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         add(getTranslation("error.character_not_found"));
     }

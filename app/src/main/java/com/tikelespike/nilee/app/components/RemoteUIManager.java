@@ -42,7 +42,7 @@ public class RemoteUIManager extends Div {
      * Opens a notification on the remote UI after a delay.
      *
      * @param notification the notification to show
-     * @param delayMs      the delay in milliseconds before showing the notification
+     * @param delayMs the delay in milliseconds before showing the notification
      */
     public void open(Notification notification, int delayMs) {
         Timer timer = new Timer();
@@ -56,8 +56,8 @@ public class RemoteUIManager extends Div {
     }
 
     /**
-     * Convenience method analogous to {@link Notification#show(String)}, except not
-     * shown on the current UI but on the stored one.
+     * Convenience method analogous to {@link Notification#show(String)}, except not shown on the current UI but on the
+     * stored one.
      *
      * @param text the text to show in the notification
      */
@@ -66,10 +66,10 @@ public class RemoteUIManager extends Div {
     }
 
     /**
-     * Convenience method analogous to {@link Notification#show(String, int, Notification.Position)}, except not
-     * shown on the current UI but on the stored one.
+     * Convenience method analogous to {@link Notification#show(String, int, Notification.Position)}, except not shown
+     * on the current UI but on the stored one.
      *
-     * @param text     the text to show in the notification
+     * @param text the text to show in the notification
      * @param duration the duration in milliseconds to show the notification
      * @param position the position of the notification
      */

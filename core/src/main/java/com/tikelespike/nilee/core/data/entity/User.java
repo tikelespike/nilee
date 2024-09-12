@@ -98,7 +98,9 @@ public class User extends AbstractEntity implements PlayerSessionManager {
 
     @Override
     public void joinSession(UUID id) {
-        if (gameSessionManager == null) throw new IllegalStateException("Not connected to game session management");
+        if (gameSessionManager == null) {
+            throw new IllegalStateException("Not connected to game session management");
+        }
         gameSessionManager.joinSession(this, id);
     }
 
@@ -109,13 +111,17 @@ public class User extends AbstractEntity implements PlayerSessionManager {
 
     @Override
     public GameSession getSession() {
-        if (gameSessionManager == null) throw new IllegalStateException("Not connected to game session management");
+        if (gameSessionManager == null) {
+            throw new IllegalStateException("Not connected to game session management");
+        }
         return gameSessionManager.getSessionOf(this);
     }
 
     @Override
     public void leaveCurrentSession() {
-        if (gameSessionManager == null) throw new IllegalStateException("Not connected to game session management");
+        if (gameSessionManager == null) {
+            throw new IllegalStateException("Not connected to game session management");
+        }
         gameSessionManager.leaveSession(this);
     }
 

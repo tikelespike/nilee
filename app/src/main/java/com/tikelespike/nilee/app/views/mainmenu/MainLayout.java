@@ -2,8 +2,8 @@ package com.tikelespike.nilee.app.views.mainmenu;
 
 import com.tikelespike.nilee.app.components.appnav.AppNav;
 import com.tikelespike.nilee.app.components.appnav.AppNavItem;
-import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
+import com.tikelespike.nilee.core.data.entity.User;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -27,8 +27,8 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
 
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private final AuthenticatedUser authenticatedUser;
+    private final AccessAnnotationChecker accessChecker;
 
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
         this.authenticatedUser = authenticatedUser;
@@ -65,10 +65,12 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         if (accessChecker.hasAccess(CharacterListView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("main.navigation.character_list"), CharacterListView.class, "la la-list"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.character_list"), CharacterListView.class,
+                    "la la-list"));
         }
         if (accessChecker.hasAccess(UserPreferencesView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("main.navigation.preferences"), UserPreferencesView.class, "la la-cog"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.preferences"), UserPreferencesView.class,
+                    "la la-cog"));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
             nav.addItem(new AppNavItem(getTranslation("main.navigation.about"), AboutView.class, "la la-globe"));
@@ -85,8 +87,8 @@ public class MainLayout extends AppLayout {
             User user = maybeUser.get();
 
             Avatar avatar = new Avatar(user.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                () -> new ByteArrayInputStream(user.getProfilePicture()));
+            StreamResource resource =
+                    new StreamResource("profile-pic", () -> new ByteArrayInputStream(user.getProfilePicture()));
             avatar.setImageResource(resource);
             avatar.setThemeName("xsmall");
             avatar.getElement().setAttribute("tabindex", "-1");

@@ -14,8 +14,8 @@ public class DefaultAC extends PropertyBaseSupplier<Integer> {
     /**
      * Creates a new default armor class value supplier.
      *
-     * @param dex the dexterity property to use for computing the armor class, should be the one of the character whose
-     *            armor class this is
+     * @param dex the dexterity property to use for computing the armor class, should be the one of the
+     *         character whose armor class this is
      */
     public DefaultAC(AbilityScore dex) {
         this.dex = dex;

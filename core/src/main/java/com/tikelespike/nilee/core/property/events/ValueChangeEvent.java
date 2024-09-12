@@ -1,7 +1,7 @@
 package com.tikelespike.nilee.core.property.events;
 
-import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.events.Event;
+import com.tikelespike.nilee.core.property.Property;
 
 /**
  * Is fired when a {@link Property} changes its value, or something about the way a value is calculated. Old and new
