@@ -67,10 +67,7 @@ public class EventBus {
      */
     protected <T extends Event> boolean unregisterAll(@NotNull TypedEventListener<T> listener) {
         Objects.requireNonNull(listener);
-        boolean removed = typedEventListeners.contains(listener);
-        while (typedEventListeners.remove(listener)) {
-        }
-        return removed;
+        return typedEventListeners.removeAll(List.of(listener));
     }
 
     /**

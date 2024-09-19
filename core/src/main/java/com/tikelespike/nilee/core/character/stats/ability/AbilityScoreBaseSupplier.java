@@ -10,7 +10,7 @@ import java.util.Objects;
  * A specific {@link PropertyBaseSupplier} that provides the modifier value of a given {@link AbilityScore} as its base
  * value.
  */
-public class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer> {
+public final class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer> {
 
     private final AbilityScore abilityScore;
 

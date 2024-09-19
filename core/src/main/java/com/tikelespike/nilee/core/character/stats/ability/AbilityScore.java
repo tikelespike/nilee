@@ -23,6 +23,7 @@ import java.util.Objects;
  */
 public class AbilityScore extends ConstantBaseProperty {
 
+    private static final int NEUTRAL_SCORE_VALUE = 10;
     private final LocalizedString longName;
     private final LocalizedString shortName;
 
@@ -64,7 +65,7 @@ public class AbilityScore extends ConstantBaseProperty {
      * @return the modifier of this ability score
      */
     public int getModifier() {
-        return Math.floorDiv(getValue() - 10, 2);
+        return Math.floorDiv(getValue() - NEUTRAL_SCORE_VALUE, 2);
     }
 
     /**

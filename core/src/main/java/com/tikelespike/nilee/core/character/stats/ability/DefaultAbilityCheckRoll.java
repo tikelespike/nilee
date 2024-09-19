@@ -28,12 +28,12 @@ public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression
 
     @Override
     public DiceExpression getBaseValue() {
-        return new DiceSum(new Dice(20), new DiceConstant(abilityScore.getModifier()));
+        return new DiceSum(Dice.D20, new DiceConstant(abilityScore.getModifier()));
     }
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return t -> new Dice(20).toLocalizedString().getTranslation(t) + " " + t.translate("dice.sum.operator") + " "
+        return t -> Dice.D20.toLocalizedString().getTranslation(t) + " " + t.translate("dice.sum.operator") + " "
                 + abilityScore.getShortName().getTranslation(t);
     }
 

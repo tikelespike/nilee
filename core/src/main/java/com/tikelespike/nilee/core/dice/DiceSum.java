@@ -34,10 +34,10 @@ public class DiceSum extends DiceExpression {
     /**
      * Adds the given summands to this dice sum.
      *
-     * @param summands the summands to add to this dice sum.
+     * @param newSummands the summands to add to this dice sum.
      */
-    public void addSummands(DiceExpression... summands) {
-        this.summands.addAll(Arrays.asList(summands));
+    public void addSummands(DiceExpression... newSummands) {
+        this.summands.addAll(Arrays.asList(newSummands));
     }
 
     /**

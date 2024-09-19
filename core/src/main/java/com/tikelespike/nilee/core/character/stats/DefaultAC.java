@@ -9,6 +9,7 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
  */
 public class DefaultAC extends PropertyBaseSupplier<Integer> {
 
+    private static final int DEFAULT_ARMOR_CLASS = 10;
     private final AbilityScore dex;
 
     /**
@@ -23,7 +24,7 @@ public class DefaultAC extends PropertyBaseSupplier<Integer> {
 
     @Override
     public Integer getBaseValue() {
-        return 10 + dex.getModifier();
+        return DEFAULT_ARMOR_CLASS + dex.getModifier();
     }
 
     @Override

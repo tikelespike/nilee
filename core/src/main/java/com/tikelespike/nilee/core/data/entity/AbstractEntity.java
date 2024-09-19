@@ -1,6 +1,11 @@
 package com.tikelespike.nilee.core.data.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Version;
 
 /**
  * Base class for all database entities. Provides an id and version field. By default, entities are equal if and only if
@@ -9,10 +14,11 @@ import jakarta.persistence.*;
 @MappedSuperclass
 public abstract class AbstractEntity {
 
+    private static final int INITIAL_ID = 1000;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idgenerator")
     // The initial value is to account for data.sql demo data ids
-    @SequenceGenerator(name = "idgenerator", initialValue = 1000)
+    @SequenceGenerator(name = "idgenerator", initialValue = INITIAL_ID)
     private Long id;
 
     @Version
@@ -43,7 +49,10 @@ public abstract class AbstractEntity {
         return version;
     }
 
-    public void setVersion(int version) {
+    /**
+     * @param version the new version of this entity
+     */
+    public final void setVersion(int version) {
         this.version = version;
     }
 
