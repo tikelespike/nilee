@@ -1,5 +1,5 @@
 /**
- * Contains classes for the application's navigation component.
+ * Contains the application's navigation component.
  *
  * @see com.tikelespike.nilee.app.components.appnav.AppNav
  */
