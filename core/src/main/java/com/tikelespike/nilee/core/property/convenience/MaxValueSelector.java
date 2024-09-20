@@ -7,6 +7,8 @@ import java.util.Optional;
 
 /**
  * A {@link ValueSelector} that always returns the highest value in the list.
+ *
+ * @param <T> the type of the values to select from
  */
 public class MaxValueSelector<T extends Comparable<T>> extends ValueSelector<T> {
 

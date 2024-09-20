@@ -17,16 +17,15 @@ import jakarta.validation.constraints.NotNull;
  * snapshot of the current character state. To restore a character from a snapshot, use
  * {@link PlayerCharacter#restoreSnapshot(PlayerCharacterSnapshot)}.
  * <p>
- * A snapshot <b>does</b> store all long-term persistent information about a character, such as their name, spell slots,
- * hit points, and other "character-building" information (class choices, ...). (TODO: Note: most of this is not yet
- * implemented.)
+ * A snapshot <b>does</b> store all long-term persistent information about a character, such as their name or hit
+ * points.
  * <p>
- * A snapshot does <b>not</b> store "short-term business object details" such as registered listeners or modifiers
+ * A snapshot <b>does not</b> store "short-term business object details" such as registered listeners or modifiers
  * applied to properties.
  */
 @Entity
 @Table(name = "application_player_character")
-public class PlayerCharacterSnapshot extends AbstractEntity {
+public final class PlayerCharacterSnapshot extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -51,94 +50,95 @@ public class PlayerCharacterSnapshot extends AbstractEntity {
      * Creates a new player character snapshot with uninitialized values. A snapshot should only be created by
      * {@link PlayerCharacter#createSnapshot()}.
      */
-    protected PlayerCharacterSnapshot() {
+    public PlayerCharacterSnapshot() {
+        // Constructor should only be used by database framework or the PlayerCharacter class
     }
 
-    protected User getOwner() {
+    User getOwner() {
         return owner;
     }
 
-    protected void setOwner(User owner) {
+    void setOwner(User owner) {
         this.owner = owner;
     }
 
-    protected String getName() {
+    String getName() {
         return name;
     }
 
-    protected void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
-    protected int getStrength() {
+    int getStrength() {
         return strength;
     }
 
-    protected void setStrength(int strength) {
+    void setStrength(int strength) {
         this.strength = strength;
     }
 
-    protected int getDexterity() {
+    int getDexterity() {
         return dexterity;
     }
 
-    protected void setDexterity(int dexterity) {
+    void setDexterity(int dexterity) {
         this.dexterity = dexterity;
     }
 
-    protected int getConstitution() {
+    int getConstitution() {
         return constitution;
     }
 
-    protected void setConstitution(int constitution) {
+    void setConstitution(int constitution) {
         this.constitution = constitution;
     }
 
-    protected int getIntelligence() {
+    int getIntelligence() {
         return intelligence;
     }
 
-    protected void setIntelligence(int intelligence) {
+    void setIntelligence(int intelligence) {
         this.intelligence = intelligence;
     }
 
-    protected int getWisdom() {
+    int getWisdom() {
         return wisdom;
     }
 
-    protected void setWisdom(int wisdom) {
+    void setWisdom(int wisdom) {
         this.wisdom = wisdom;
     }
 
-    protected int getCharisma() {
+    int getCharisma() {
         return charisma;
     }
 
-    protected void setCharisma(int charisma) {
+    void setCharisma(int charisma) {
         this.charisma = charisma;
     }
 
-    protected int getHitPoints() {
+    int getHitPoints() {
         return hitPoints;
     }
 
-    protected void setHitPoints(int hitPoints) {
+    void setHitPoints(int hitPoints) {
         this.hitPoints = hitPoints;
     }
 
-    protected int getTemporaryHitPoints() {
+    int getTemporaryHitPoints() {
         return temporaryHitPoints;
     }
 
-    protected void setTemporaryHitPoints(int temporaryHitPoints) {
+    void setTemporaryHitPoints(int temporaryHitPoints) {
         this.temporaryHitPoints = temporaryHitPoints;
     }
 
-    protected Integer getHitPointMaxOverride() {
+    Integer getHitPointMaxOverride() {
         return hitPointMaxOverride;
     }
 
-    protected void setHitPointMaxOverride(Integer hitPointMaxOverride) {
+    void setHitPointMaxOverride(Integer hitPointMaxOverride) {
         this.hitPointMaxOverride = hitPointMaxOverride;
     }
 }

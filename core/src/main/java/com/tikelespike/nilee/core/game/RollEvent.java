@@ -51,6 +51,13 @@ public class RollEvent extends Event {
         return this.computationSteps[0];
     }
 
+    /**
+     * Returns the initial roll, the final result, and all available intermediary results in between as an array.
+     *
+     * @return all steps from the initial roll to the final result, including the original roll expression, intermediate
+     *         results (if any) and the final result (in that order). May not be empty. If the length is 1, the result
+     *         is assumed to be the original roll expression.
+     */
     public DiceExpression[] getComputationSteps() {
         return this.computationSteps.clone();
     }

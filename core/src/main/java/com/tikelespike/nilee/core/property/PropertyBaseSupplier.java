@@ -1,9 +1,6 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.events.EventBus;
-import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.UpdateSubject;
 
 /**
@@ -15,9 +12,10 @@ import com.tikelespike.nilee.core.property.events.UpdateSubject;
  * 10 + DEX value. Another one may compute the base AC for an armor, which will give a higher value.
  * <p>
  * If the value provided by the implementing class is not constant, it should notify its observers when the value that
- * would be returned on a call to {@link #getBaseValue()} changes. This is done by using an {@link EventBus}, overriding
- * the {@link UpdateSubject#addUpdateListener(EventListener)} method to register listeners to the bus, and firing an
- * {@link UpdateEvent} when the value changes.
+ * would be returned on a call to {@link #getBaseValue()} changes. This is done by using an
+ * {@link com.tikelespike.nilee.core.events.EventBus}, overriding the
+ * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register listeners
+ * to the bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} when the value changes.
  *
  * @param <T> the type of the property value
  */
@@ -26,8 +24,8 @@ public abstract class PropertyBaseSupplier<T> extends UpdateSubject {
     /**
      * Returns a base value as described by the implementing class. This value may be constant or may change over time.
      * If the value changes, the implementing class should notify its observers by overriding the
-     * {@link UpdateSubject#addUpdateListener(EventListener)} method to register listeners to a bus, and firing an
-     * {@link UpdateEvent} on a change.
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to a bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
      *
      * @return the base value. May not be null.
      */
@@ -40,8 +38,9 @@ public abstract class PropertyBaseSupplier<T> extends UpdateSubject {
      * parentheses, brackets or colons.
      * <p>
      * The description returned should be constant. If the description changes, the implementing class should notify its
-     * observers by overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to register listeners
-     * to a bus, and firing an {@link UpdateEvent} on a change.
+     * observers by overriding the
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to a bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
      *
      * @return a description of the base value computation (e.g. "10 + DEX")
      */

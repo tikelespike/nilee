@@ -1,9 +1,6 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.events.EventBus;
-import com.tikelespike.nilee.core.events.EventListener;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.UpdateSubject;
 
 /**
@@ -15,8 +12,9 @@ import com.tikelespike.nilee.core.property.events.UpdateSubject;
  * <p>
  * If the result returned from the modification depends on anything else than the input value, it should notify its
  * observers when the value that would be returned on a call to {@link #apply(Object)} changes for any given input. This
- * is done by using an {@link EventBus}, overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to
- * register listeners to the bus, and firing an {@link UpdateEvent} when the value changes.
+ * is done by using an {@link com.tikelespike.nilee.core.events.EventBus}, overriding the
+ * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register listeners
+ * to the bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} when the value changes.
  *
  * @param <T> the type of the value to modify
  */
@@ -28,8 +26,10 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      * <p>
      * If the result returned from the modification depends on anything else than the input value, it should notify its
      * observers when the value that would be returned changes for any given input. This is done by using an
-     * {@link EventBus}, overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to register
-     * listeners to the bus, and firing an {@link UpdateEvent} when the value changes.
+     * {@link com.tikelespike.nilee.core.events.EventBus}, overriding the
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to the bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} when the value
+     * changes.
      *
      * @param value the value to modify. Not null.
      *
@@ -47,8 +47,9 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      * does not use any game-level variables (character stats etc.).
      * <p>
      * The description returned should be constant. If the description changes, the implementing class should notify its
-     * observers by overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to register listeners
-     * to a bus, and firing an {@link UpdateEvent} on a change.
+     * observers by overriding the
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to a bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
      *
      * @return a description of the transformation applied by the implementing class which may contain variable names
      *         (e.g. "+ DEX")
@@ -66,8 +67,9 @@ public abstract class PropertyModifier<T> extends UpdateSubject {
      * <p>
      * If the result for a given input to {@link #apply(Object)} changes (for example, because the dex modifier of a
      * character changes), the description returned should change with it. If the description changes, the implementing
-     * class should notify its observers by overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method
-     * to register listeners to a bus, and firing an {@link UpdateEvent} on a change.
+     * class should notify its observers by overriding the
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to a bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
      *
      * @return a description of the transformation applied by the implementing class that does not contain variable
      *         names (e.g. "+ 2")

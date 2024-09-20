@@ -8,7 +8,14 @@ import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values provided
@@ -29,7 +36,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
     private final List<PropertyModifier<T>> modifiers = new ArrayList<>();
 
-    protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+    private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
     private final Map<PropertyModifier<T>, Registration> modifierRegistrations = new HashMap<>();
 
@@ -68,11 +75,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getValue() {
-        return getValueOnBase(getBaseValue());
-    }
-
-    public T getValueOnBase(T base) {
-        T value = base;
+        T value = getBaseValue();
         for (PropertyModifier<T> modifier : getModifiers()) {
             value = modifier.apply(value);
         }

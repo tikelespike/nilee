@@ -53,12 +53,18 @@ public class Registration {
         return bus.isSubscribed(listener);
     }
 
+    /**
+     * Factory method for a dummy registration (as in the design pattern null object) that does nothing and is used as a
+     * default guard object.
+     *
+     * @return placeholder registration that is never active and does nothing when {@link #unregister()} is called
+     */
     public static Registration getInvalid() {
         return new InvalidRegistration();
     }
 
-    private static class InvalidRegistration extends Registration {
-        public InvalidRegistration() {
+    private static final class InvalidRegistration extends Registration {
+        private InvalidRegistration() {
             super(null, null);
         }
 

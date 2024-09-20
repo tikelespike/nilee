@@ -162,6 +162,7 @@ public class GameSession {
         /**
          * Creates a new event informing about a user having left a session.
          *
+         * @param session the session that the user left from
          * @param newUser the user that left the session
          */
         public UserLeftEvent(GameSession session, User newUser) {
