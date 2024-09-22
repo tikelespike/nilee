@@ -1,8 +1,5 @@
 package com.tikelespike.nilee.core.property;
 
-import com.tikelespike.nilee.core.events.EventBus;
-import com.tikelespike.nilee.core.events.EventListener;
-import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.UpdateSubject;
 
 import java.util.List;
@@ -16,8 +13,9 @@ import java.util.Optional;
  * returned value should only depend on the input.
  * <p>
  * If the result for a given list of input values does change, the implementing class should notify its observers by
- * using an {@link EventBus}, overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to register
- * listeners to the bus, and firing an {@link UpdateEvent} on a change.
+ * using an {@link com.tikelespike.nilee.core.events.EventBus}, overriding the
+ * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register listeners
+ * to the bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
  *
  * @param <T> the type of the values to select from
  */
@@ -31,8 +29,9 @@ public abstract class ValueSelector<T> extends UpdateSubject {
      * the returned value should only depend on the input.
      * <p>
      * If the result for a given list of input values does change, the implementing class should notify its observers by
-     * using an {@link EventBus}, overriding the {@link UpdateSubject#addUpdateListener(EventListener)} method to
-     * register listeners to the bus, and firing an {@link UpdateEvent} on a change.
+     * using an {@link com.tikelespike.nilee.core.events.EventBus}, overriding the
+     * {@link UpdateSubject#addUpdateListener(com.tikelespike.nilee.core.events.EventListener)} method to register
+     * listeners to the bus, and firing an {@link com.tikelespike.nilee.core.property.events.UpdateEvent} on a change.
      *
      * @param values the list of values to select from. The returned value must be one of these values.
      *
