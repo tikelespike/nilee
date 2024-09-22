@@ -3,9 +3,9 @@ package com.tikelespike.nilee.core.dice;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 
 /**
- * A dice expression that can be evaluated to a number by rolling dice. For example,
- * "2d6 + 1d4 + 3" usually means a dice expression that can be evaluated to a number by rolling two six-sided dice, one
- * four-sided die, adding the results, then adding three.
+ * A dice expression that can be evaluated to a number by rolling dice. For example, "2d6 + 1d4 + 3" usually means a
+ * dice expression that can be evaluated to a number by rolling two six-sided dice, one four-sided die, adding the
+ * results, then adding three.
  */
 public abstract class DiceExpression {
 

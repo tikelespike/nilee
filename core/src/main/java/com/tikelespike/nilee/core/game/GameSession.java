@@ -64,6 +64,7 @@ public class GameSession {
      * Removes a user from this session. Will do nothing if the user is not in this session in the first place.
      *
      * @param participant the user to remove from this session
+     *
      * @return true if and only if the participant was in this session before calling this method
      */
     protected boolean removeParticipant(User participant) {
@@ -81,11 +82,12 @@ public class GameSession {
     }
 
     /**
-     * Registers a listener to be notified when a user joins this session. At the time this listener will be called,
-     * the user will have left their old session, joined this session, and listeners of the old session have
-     * been notified of the user leaving.
+     * Registers a listener to be notified when a user joins this session. At the time this listener will be called, the
+     * user will have left their old session, joined this session, and listeners of the old session have been notified
+     * of the user leaving.
      *
      * @param listener the listener to register
+     *
      * @return a registration object that can be used to unregister the listener
      */
     public Registration addUserJoinedListener(EventListener<UserJoinedEvent> listener) {
@@ -93,11 +95,12 @@ public class GameSession {
     }
 
     /**
-     * Registers a listener to be notified when a user leaves this session. This listener will be notified
-     * after the user has left the session (and joined their next session), but before listeners listening to the new
-     * session of the user are notified of them joining.
+     * Registers a listener to be notified when a user leaves this session. This listener will be notified after the
+     * user has left the session (and joined their next session), but before listeners listening to the new session of
+     * the user are notified of them joining.
      *
      * @param listener the listener to register
+     *
      * @return a registration object that can be used to unregister the listener
      */
     public Registration addUserLeftListener(EventListener<UserLeftEvent> listener) {
@@ -159,6 +162,7 @@ public class GameSession {
         /**
          * Creates a new event informing about a user having left a session.
          *
+         * @param session the session that the user left from
          * @param newUser the user that left the session
          */
         public UserLeftEvent(GameSession session, User newUser) {

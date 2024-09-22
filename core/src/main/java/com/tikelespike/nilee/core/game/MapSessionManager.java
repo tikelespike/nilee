@@ -8,9 +8,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Manages {@link GameSession GameSessions} via a simple {@link Map} between ids and sessions and keeps
- * track of the session a user is currently in via another Map. Keeps the invariant that every user is always in
- * exactly one session. Sessions without users are garbage collected. This class is thread-safe.
+ * Manages {@link GameSession GameSessions} via a simple {@link Map} between ids and sessions and keeps track of the
+ * session a user is currently in via another Map. Keeps the invariant that every user is always in exactly one session.
+ * Sessions without users are garbage collected. This class is thread-safe.
  */
 public class MapSessionManager implements GameSessionManager {
 
@@ -34,7 +34,9 @@ public class MapSessionManager implements GameSessionManager {
         lastUserSessions.put(user, id);
         getSession(lastSession).ifPresent(s -> s.onParticipantRemoved(user));
         getSession(id).ifPresent(s -> s.onParticipantAdded(user));
-        if (hasSession(lastSession) && sessions.get(lastSession).getParticipants().isEmpty()) endSession(lastSession);
+        if (hasSession(lastSession) && sessions.get(lastSession).getParticipants().isEmpty()) {
+            endSession(lastSession);
+        }
     }
 
     @Override
@@ -49,7 +51,9 @@ public class MapSessionManager implements GameSessionManager {
 
     @Override
     public synchronized Optional<GameSession> getSession(UUID id) {
-        if (id == null) return Optional.empty();
+        if (id == null) {
+            return Optional.empty();
+        }
         return Optional.ofNullable(sessions.get(id));
     }
 

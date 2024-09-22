@@ -19,10 +19,11 @@ public class RollButton extends Button {
     /**
      * Creates a new roll button.
      *
-     * @param rollProperty        the property describing which dice to roll
+     * @param rollProperty the property describing which dice to roll
      * @param translationProvider translation provider used for translating and displaying UI strings
-     * @param rollDescription     describes the in-game semantics of what will be rolled for, e.g. "Attack Roll"
-     * @param rollBus             the "bus" on which the rolls are made.
+     * @param rollDescription describes the in-game semantics of what will be rolled for, e.g. "Attack Roll"
+     * @param rollBus the "bus" on which the rolls are made.
+     * @param characterRolling the character that is initiating the roll upon clicking the button
      */
     public RollButton(@NotNull Property<DiceExpression> rollProperty, @NotNull TranslationProvider translationProvider,
                       LocalizedString rollDescription, @NotNull RollBus rollBus,

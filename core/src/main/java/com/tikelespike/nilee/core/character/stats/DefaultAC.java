@@ -9,13 +9,14 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
  */
 public class DefaultAC extends PropertyBaseSupplier<Integer> {
 
+    private static final int DEFAULT_ARMOR_CLASS = 10;
     private final AbilityScore dex;
 
     /**
      * Creates a new default armor class value supplier.
      *
-     * @param dex the dexterity property to use for computing the armor class, should be the one of the character whose
-     *            armor class this is
+     * @param dex the dexterity property to use for computing the armor class, should be the one of the
+     *         character whose armor class this is
      */
     public DefaultAC(AbilityScore dex) {
         this.dex = dex;
@@ -23,7 +24,7 @@ public class DefaultAC extends PropertyBaseSupplier<Integer> {
 
     @Override
     public Integer getBaseValue() {
-        return 10 + dex.getModifier();
+        return DEFAULT_ARMOR_CLASS + dex.getModifier();
     }
 
     @Override

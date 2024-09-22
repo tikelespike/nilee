@@ -2,13 +2,18 @@ package com.tikelespike.nilee.app.views.mainmenu;
 
 import com.tikelespike.nilee.app.components.appnav.AppNav;
 import com.tikelespike.nilee.app.components.appnav.AppNavItem;
-import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
+import com.tikelespike.nilee.core.data.entity.User;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -27,9 +32,15 @@ public class MainLayout extends AppLayout {
 
     private H2 viewTitle;
 
-    private AuthenticatedUser authenticatedUser;
-    private AccessAnnotationChecker accessChecker;
+    private final AuthenticatedUser authenticatedUser;
+    private final AccessAnnotationChecker accessChecker;
 
+    /**
+     * Creates a new main layout.
+     *
+     * @param authenticatedUser the current user (injected by Spring)
+     * @param accessChecker the access checker to use for checking access permissions (injected by Spring)
+     */
     public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
         this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
@@ -65,10 +76,12 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         if (accessChecker.hasAccess(CharacterListView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("main.navigation.character_list"), CharacterListView.class, "la la-list"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.character_list"), CharacterListView.class,
+                    "la la-list"));
         }
         if (accessChecker.hasAccess(UserPreferencesView.class)) {
-            nav.addItem(new AppNavItem(getTranslation("main.navigation.preferences"), UserPreferencesView.class, "la la-cog"));
+            nav.addItem(new AppNavItem(getTranslation("main.navigation.preferences"), UserPreferencesView.class,
+                    "la la-cog"));
         }
         if (accessChecker.hasAccess(AboutView.class)) {
             nav.addItem(new AppNavItem(getTranslation("main.navigation.about"), AboutView.class, "la la-globe"));
@@ -85,8 +98,8 @@ public class MainLayout extends AppLayout {
             User user = maybeUser.get();
 
             Avatar avatar = new Avatar(user.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                () -> new ByteArrayInputStream(user.getProfilePicture()));
+            StreamResource resource =
+                    new StreamResource("profile-pic", () -> new ByteArrayInputStream(user.getProfilePicture()));
             avatar.setImageResource(resource);
             avatar.setThemeName("xsmall");
             avatar.getElement().setAttribute("tabindex", "-1");

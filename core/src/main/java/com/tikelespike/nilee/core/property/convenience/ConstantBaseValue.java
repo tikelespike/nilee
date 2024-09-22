@@ -1,7 +1,6 @@
 package com.tikelespike.nilee.core.property.convenience;
 
 import com.tikelespike.nilee.core.i18n.LocalizedString;
-import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
@@ -9,39 +8,40 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
  */
 public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
 
-    private Integer defaultBaseValue;
+    private Integer baseValue;
     private LocalizedString sourceName;
 
     /**
      * Creates a new {@code ConstantBaseValue} with the given base value and source name. The base value is the value
      * that will be returned by {@link #getBaseValue()}.
      *
-     * @param defaultBaseValue the base value to wrap
-     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
+     * @param baseValue the base value to wrap
+     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base
+     *         Strength")
      */
-    public ConstantBaseValue(int defaultBaseValue, LocalizedString sourceName) {
-        this.defaultBaseValue = defaultBaseValue;
+    public ConstantBaseValue(int baseValue, LocalizedString sourceName) {
+        this.baseValue = baseValue;
         this.sourceName = sourceName;
     }
 
     @Override
     public Integer getBaseValue() {
-        return defaultBaseValue;
+        return baseValue;
     }
 
     /**
      * Sets the base value that will be returned by {@link #getBaseValue()}.
      *
-     * @param defaultBaseValue the new base value
+     * @param baseValue the new base value
      */
-    public void setBaseValue(int defaultBaseValue) {
-        this.defaultBaseValue = defaultBaseValue;
+    public void setBaseValue(int baseValue) {
+        this.baseValue = baseValue;
         update();
     }
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return t -> defaultBaseValue.toString();
+        return t -> baseValue.toString();
     }
 
     @Override
@@ -54,7 +54,8 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      * base value comes from and should be suitable for display in a user interface. It should usually not contain
      * additional characters like parentheses, brackets or colons.
      *
-     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base Strength")
+     * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base
+     *         Strength")
      */
     public void setSourceName(LocalizedString sourceName) {
         this.sourceName = sourceName;

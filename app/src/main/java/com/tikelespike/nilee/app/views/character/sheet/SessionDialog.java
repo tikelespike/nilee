@@ -21,9 +21,16 @@ import com.vaadin.flow.server.StreamResource;
 import java.io.ByteArrayInputStream;
 import java.util.UUID;
 
-public class SessionDialog extends Dialog {
+/**
+ * Dialog component that allows the user to join, leave, or create a shared game session. This UI component does not
+ * handle the actual session management, but only provides a UI for the user to interact with the session. Subscribing
+ * to the events fired by this component allows the application to react to the user's actions (see
+ * {@link #addJoinClickedListener(EventListener)} and similar methods).
+ */
+public final class SessionDialog extends Dialog {
 
-    private static final String UUID_REGEX = "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$";
+    private static final String UUID_REGEX =
+            "^[0-9a-fA-F]{8}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{4}\\b-[0-9a-fA-F]{12}$";
 
     private final TranslationProvider translationProvider;
 
@@ -31,12 +38,21 @@ public class SessionDialog extends Dialog {
 
     private final EventBus eventBus = new EventBus();
 
+    /**
+     * Creates a new session dialog.
+     *
+     * @param translationProvider the translation provider used for translating UI strings
+     * @param user the user for which the session dialog is shown
+     */
     public SessionDialog(TranslationProvider translationProvider, User user) {
         this.translationProvider = translationProvider;
         this.user = user;
         update();
     }
 
+    /**
+     * Re-renders the dialog content.
+     */
     public void update() {
         removeAll();
         getFooter().removeAll();
@@ -62,8 +78,8 @@ public class SessionDialog extends Dialog {
         AvatarGroup avatarGroup = new AvatarGroup();
         for (User participant : user.getSession().getParticipants()) {
             AvatarGroup.AvatarGroupItem avatar = new AvatarGroup.AvatarGroupItem(participant.getName());
-            StreamResource resource = new StreamResource("profile-pic",
-                    () -> new ByteArrayInputStream(participant.getProfilePicture()));
+            StreamResource resource =
+                    new StreamResource("profile-pic", () -> new ByteArrayInputStream(participant.getProfilePicture()));
             avatar.setImageResource(resource);
             avatarGroup.add(avatar);
         }
@@ -71,19 +87,19 @@ public class SessionDialog extends Dialog {
 
 
         if (user.getSession().getParticipants().size() > 1) {
-            Button leaveButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.leave_button"));
+            Button leaveButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.leave_button"));
             leaveButton.addClickListener(e -> eventBus.fireEvent(new LeaveClickedEvent()));
             leaveButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
             layout.add(leaveButton);
         } else {
-            Button joinButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.join_button"));
+            Button joinButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.join_button"));
             joinButton.addClickListener(e -> openJoinDialog());
             joinButton.addThemeVariants(ButtonVariant.LUMO_SUCCESS, ButtonVariant.LUMO_PRIMARY);
 
-            Button newSessionButton = new Button(
-                    translationProvider.translate("character_sheet.sessions.dialog.new_button"));
+            Button newSessionButton =
+                    new Button(translationProvider.translate("character_sheet.sessions.dialog.new_button"));
             newSessionButton.addClickListener(e -> eventBus.fireEvent(new NewSessionClickedEvent()));
             layout.add(newSessionButton, joinButton);
         }
@@ -101,8 +117,8 @@ public class SessionDialog extends Dialog {
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         joinDialog.getHeader().add(closeButton);
 
-        TextField joinSessionTF = new TextField(
-                translationProvider.translate("character_sheet.sessions.join_dialog.id_field.label"));
+        TextField joinSessionTF =
+                new TextField(translationProvider.translate("character_sheet.sessions.join_dialog.id_field.label"));
         joinSessionTF.setWidth("25em");
         joinSessionTF.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER, TextFieldVariant.LUMO_HELPER_ABOVE_FIELD);
         joinSessionTF.setPattern(UUID_REGEX);
@@ -110,8 +126,8 @@ public class SessionDialog extends Dialog {
         joinSessionTF.focus();
         joinLayout.add(joinSessionTF);
 
-        Button joinButton = new Button(
-                translationProvider.translate("character_sheet.sessions.join_dialog.join_button"));
+        Button joinButton =
+                new Button(translationProvider.translate("character_sheet.sessions.join_dialog.join_button"));
         joinButton.addClickListener(e -> {
             if (!joinSessionTF.getValue().matches(UUID_REGEX)) {
                 joinSessionTF.setInvalid(true);
@@ -137,14 +153,35 @@ public class SessionDialog extends Dialog {
         joinDialog.open();
     }
 
+    /**
+     * Subscribes a listener to be notified when the user wants to join a session.
+     *
+     * @param listener the listener to add
+     *
+     * @return a registration that can be used to unregister the listener
+     */
     public Registration addJoinClickedListener(EventListener<JoinClickedEvent> listener) {
         return eventBus.registerListener(JoinClickedEvent.class, listener);
     }
 
+    /**
+     * Subscribes a listener to be notified when the user wants to leave the current session.
+     *
+     * @param listener the listener to add
+     *
+     * @return a registration that can be used to unregister the listener
+     */
     public Registration addLeaveClickedListener(EventListener<LeaveClickedEvent> listener) {
         return eventBus.registerListener(LeaveClickedEvent.class, listener);
     }
 
+    /**
+     * Subscribes a listener to be notified when the user wants to create a new session.
+     *
+     * @param listener the listener to add
+     *
+     * @return a registration that can be used to unregister the listener
+     */
     public Registration addNewSessionClickedListener(EventListener<NewSessionClickedEvent> listener) {
         return eventBus.registerListener(NewSessionClickedEvent.class, listener);
     }
@@ -153,8 +190,8 @@ public class SessionDialog extends Dialog {
         HorizontalLayout currentSessionLayout = new HorizontalLayout();
         currentSessionLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
 
-        TextField currentSessionTF = new TextField(
-                translationProvider.translate("character_sheet.sessions.dialog.current_field.label"));
+        TextField currentSessionTF =
+                new TextField(translationProvider.translate("character_sheet.sessions.dialog.current_field.label"));
         currentSessionTF.setReadOnly(true);
         currentSessionTF.setValue(user.getSession().getId().toString());
         currentSessionTF.setWidth("25em");
@@ -172,22 +209,41 @@ public class SessionDialog extends Dialog {
         return currentSessionLayout;
     }
 
+    /**
+     * Event that is fired when the user initiates a session join action (by clicking the Join-button).
+     */
     public static class JoinClickedEvent extends Event {
 
         private final UUID newSessionID;
 
+        /**
+         * Creates a new join clicked event.
+         *
+         * @param newSessionID the ID of the session the user wants to join
+         */
         public JoinClickedEvent(UUID newSessionID) {
             this.newSessionID = newSessionID;
         }
 
+        /**
+         * Gets the ID of the session the user wants to join.
+         *
+         * @return the ID of the session the user wants to join
+         */
         public UUID getNewSessionID() {
             return newSessionID;
         }
     }
 
+    /**
+     * Event that is fired when the user initiates a session leave action (by clicking the Leave-button).
+     */
     public static class LeaveClickedEvent extends Event {
     }
 
+    /**
+     * Event that is fired when the user initiates a session creation action (by clicking the New-button).
+     */
     public static class NewSessionClickedEvent extends Event {
     }
 }

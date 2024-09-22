@@ -15,7 +15,8 @@ public class ConstantBaseProperty extends Property<Integer> {
     /**
      * Creates a new {@link ConstantBaseProperty} with the given default base value and description.
      *
-     * @param defaultBase the standard base value of the property (for example, the strength score of a character set during character creation)
+     * @param defaultBase the standard base value of the property (for example, the strength score of a
+     *         character set during character creation)
      * @param description a short description of the source of the default value, e.g. "Base score"
      */
     public ConstantBaseProperty(int defaultBase, LocalizedString description) {

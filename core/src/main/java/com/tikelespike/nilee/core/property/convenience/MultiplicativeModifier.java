@@ -15,7 +15,8 @@ public class MultiplicativeModifier extends PropertyModifier<Integer> {
      * Creates a new {@link MultiplicativeModifier} with the given factor and source.
      *
      * @param factor how much to multiply the value of the property by. Can be negative.
-     * @param source a short description of the source of the factor (e.g. "Feline agility" doubling movement speed)
+     * @param source a short description of the source of the factor (e.g. "Feline agility" doubling movement
+     *         speed)
      */
     public MultiplicativeModifier(int factor, LocalizedString source) {
         this.factor = factor;
@@ -58,7 +59,8 @@ public class MultiplicativeModifier extends PropertyModifier<Integer> {
     }
 
     /**
-     * @param source a short description of the source of the modifier (e.g. "Feline agility" doubling movement speed)
+     * @param source a short description of the source of the modifier (e.g. "Feline agility" doubling movement
+     *         speed)
      */
     public void setSource(LocalizedString source) {
         this.source = source;

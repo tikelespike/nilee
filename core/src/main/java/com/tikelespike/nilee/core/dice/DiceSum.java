@@ -34,10 +34,10 @@ public class DiceSum extends DiceExpression {
     /**
      * Adds the given summands to this dice sum.
      *
-     * @param summands the summands to add to this dice sum.
+     * @param newSummands the summands to add to this dice sum.
      */
-    public void addSummands(DiceExpression... summands) {
-        this.summands.addAll(Arrays.asList(summands));
+    public void addSummands(DiceExpression... newSummands) {
+        this.summands.addAll(Arrays.asList(newSummands));
     }
 
     /**
@@ -72,11 +72,8 @@ public class DiceSum extends DiceExpression {
     public LocalizedString toLocalizedString() {
         return t -> {
             String join = String.join(" ",
-                    summands.stream()
-                            .map(DiceExpression::toLocalizedString)
-                            .map(l -> l.getTranslation(t))
-                            .map(s -> s.startsWith("-") ? s : "+ " + s)
-                            .toArray(String[]::new));
+                    summands.stream().map(DiceExpression::toLocalizedString).map(l -> l.getTranslation(t))
+                            .map(s -> s.startsWith("-") ? s : "+ " + s).toArray(String[]::new));
 
             if (join.startsWith("+ ")) {
                 join = join.substring(2);

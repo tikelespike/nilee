@@ -46,7 +46,8 @@ public class ManualOverrideModifier<T> extends PropertyModifier<T> {
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return t -> t.translate("core.character.modifier.override.operator", t.translate("core.character.modifier.override.value"));
+        return t -> t.translate("core.character.modifier.override.operator",
+                t.translate("core.character.modifier.override.value"));
     }
 
     @Override

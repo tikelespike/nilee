@@ -2,8 +2,8 @@ package com.tikelespike.nilee.core.events;
 
 /**
  * A registration stores the information about a listener that is registered to an event bus. It is received upon
- * registering a listener on an event bus using {@link EventBus#registerListener(Class, EventListener)}.
- * A registration can be used to unregister the listener, or to check if it is still registered.
+ * registering a listener on an event bus using {@link EventBus#registerListener(Class, EventListener)}. A registration
+ * can be used to unregister the listener, or to check if it is still registered.
  *
  * @see EventBus#registerListener(Class, EventListener)
  */
@@ -15,7 +15,7 @@ public class Registration {
      * Creates a new registration object. Should only be called by the event bus. Use the event bus to register
      * listeners, which will return a corresponding registration object.
      *
-     * @param bus      the event bus the listener is registered to
+     * @param bus the event bus the listener is registered to
      * @param listener the listener that is registered
      */
     protected Registration(EventBus bus, TypedEventListener<?> listener) {
@@ -53,12 +53,18 @@ public class Registration {
         return bus.isSubscribed(listener);
     }
 
+    /**
+     * Factory method for a dummy registration (as in the design pattern null object) that does nothing and is used as a
+     * default guard object.
+     *
+     * @return placeholder registration that is never active and does nothing when {@link #unregister()} is called
+     */
     public static Registration getInvalid() {
         return new InvalidRegistration();
     }
 
-    private static class InvalidRegistration extends Registration {
-        public InvalidRegistration() {
+    private static final class InvalidRegistration extends Registration {
+        private InvalidRegistration() {
             super(null, null);
         }
 

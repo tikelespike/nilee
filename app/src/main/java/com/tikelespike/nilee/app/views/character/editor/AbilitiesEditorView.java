@@ -6,11 +6,22 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 
+/**
+ * A form for editing the ability scores of a {@link PlayerCharacter}.
+ */
 public class AbilitiesEditorView extends FormLayout {
 
+    private static final int COLUMNS = 6;
+    private static final int MAX_ABILITY_SCORE = 20;
+    private static final int DEFAULT_ABILITY_SCORE = 10;
     private final PlayerCharacter pc;
     private final Binder<PlayerCharacter> binder;
 
+    /**
+     * Creates a new AbilitiesEditorView.
+     *
+     * @param pc the character to edit
+     */
     public AbilitiesEditorView(PlayerCharacter pc) {
         this.pc = pc;
 
@@ -21,7 +32,7 @@ public class AbilitiesEditorView extends FormLayout {
         IntegerField wisField = createStatField(getTranslation("character_editor.abilities.wis.label"));
         IntegerField chaField = createStatField(getTranslation("character_editor.abilities.cha.label"));
 
-        setResponsiveSteps(new ResponsiveStep("0", 6));
+        setResponsiveSteps(new ResponsiveStep("0", COLUMNS));
         add(strField, dexField, conField, intField, wisField, chaField);
 
         // maps the UI fields to the attributes object
@@ -42,6 +53,9 @@ public class AbilitiesEditorView extends FormLayout {
         binder.readBean(pc);
     }
 
+    /**
+     * Updates the character with the values from the form fields.
+     */
     public void update() {
         try {
             binder.writeBean(pc);
@@ -54,8 +68,8 @@ public class AbilitiesEditorView extends FormLayout {
         IntegerField field = new IntegerField(name);
         field.setStepButtonsVisible(true);
         field.setMin(1);
-        field.setMax(20);
-        field.setValue(10);
+        field.setMax(MAX_ABILITY_SCORE);
+        field.setValue(DEFAULT_ABILITY_SCORE);
         return field;
     }
 }

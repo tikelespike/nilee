@@ -10,9 +10,8 @@ import java.util.Objects;
  * A generic subject of the observer pattern. It allows to register listeners for specific event types, and firing
  * events which will be delivered to all listeners that are registered for the event type.
  * <p>
- * If a listener is registered
- * multiple times, it will be called multiple times. Listeners will be called if the event type is an instance of the
- * registered event type as in the {@code instanceof} relation.
+ * If a listener is registered multiple times, it will be called multiple times. Listeners will be called if the event
+ * type is an instance of the registered event type as in the {@code instanceof} relation.
  *
  * @see EventListener
  */
@@ -22,24 +21,23 @@ public class EventBus {
     /**
      * Subscribes an observer to a specific event type.
      * <p>
-     * The listener will be called whenever an event of the given {@code eventType},
-     * or of a subclass of the given type, is fired. For example, a listener of type {@code EventListener<Event>}
-     * can be registered to only receive events of type {@code MyEvent}, where {@code MyEvent extends Event}. It will
-     * then only receive fired events that are an instance of {@code MyEvent}, but it will receive them as {@code Event}
-     * objects.
+     * The listener will be called whenever an event of the given {@code eventType}, or of a subclass of the given type,
+     * is fired. For example, a listener of type {@code EventListener<Event>} can be registered to only receive events
+     * of type {@code MyEvent}, where {@code MyEvent extends Event}. It will then only receive fired events that are an
+     * instance of {@code MyEvent}, but it will receive them as {@code Event} objects.
      * <p>
-     * If a listener is registered multiple times, it will be called
-     * multiple times.
+     * If a listener is registered multiple times, it will be called multiple times.
      *
      * @param eventType the superclass of all events that the listener should be called for
-     * @param listener  the listener to be called when an event of the given type is fired
-     * @param <T>       the type of the event the listener processes (has to be a superclass of {@code eventType})
+     * @param listener the listener to be called when an event of the given type is fired
+     * @param <T> the type of the event the listener processes (has to be a superclass of {@code eventType})
+     *
      * @return a registration object that can be used to unregister the listener
      */
     public <T extends Event> Registration registerListener(@NotNull Class<? extends T> eventType,
                                                            @NotNull EventListener<T> listener) {
-        TypedEventListener<T> typedListener = new TypedEventListener<>(Objects.requireNonNull(eventType),
-                Objects.requireNonNull(listener));
+        TypedEventListener<T> typedListener =
+                new TypedEventListener<>(Objects.requireNonNull(eventType), Objects.requireNonNull(listener));
         typedEventListeners.add(typedListener);
         return new Registration(this, typedListener);
     }
@@ -49,7 +47,8 @@ public class EventBus {
      * should be used to unsubscribe listeners.
      *
      * @param listener the listener to be removed
-     * @param <T>      the type of the event the listener processes
+     * @param <T> the type of the event the listener processes
+     *
      * @return true if the listener was removed, false if it was not registered
      */
     protected <T extends Event> boolean unregister(@NotNull TypedEventListener<T> listener) {
@@ -58,20 +57,17 @@ public class EventBus {
 
     /**
      * Removes all registrations of a listener from this event bus. This is useful because a listener can be registered
-     * multiple times (which will result in it getting called multiple times when an event is fired).
-     * Should only be called by the {@link Registration}
-     * object, which should be used to unsubscribe listeners.
+     * multiple times (which will result in it getting called multiple times when an event is fired). Should only be
+     * called by the {@link Registration} object, which should be used to unsubscribe listeners.
      *
      * @param listener the listener to be removed
-     * @param <T>      the type of the event the listener processes
+     * @param <T> the type of the event the listener processes
+     *
      * @return true if the listener was removed at least once, false if it was not registered
      */
     protected <T extends Event> boolean unregisterAll(@NotNull TypedEventListener<T> listener) {
         Objects.requireNonNull(listener);
-        boolean removed = typedEventListeners.contains(listener);
-        while (typedEventListeners.remove(listener)) {
-        }
-        return removed;
+        return typedEventListeners.removeAll(List.of(listener));
     }
 
     /**
@@ -79,7 +75,8 @@ public class EventBus {
      * Use the registration object to check if a listener is still subscribed.
      *
      * @param listener the listener to check
-     * @param <T>      the type of the event the listener processes
+     * @param <T> the type of the event the listener processes
+     *
      * @return true if the listener is (still) subscribed, false if it is not (no longer) subscribed
      */
     protected <T extends Event> boolean isSubscribed(TypedEventListener<T> listener) {
@@ -87,9 +84,9 @@ public class EventBus {
     }
 
     /**
-     * Dispatches an event to all listeners that are registered for the event type. This will notify all listeners
-     * that are currently registered for the event type, or for a superclass of the event type, on this event bus.
-     * The order in which the listeners are called is undefined.
+     * Dispatches an event to all listeners that are registered for the event type. This will notify all listeners that
+     * are currently registered for the event type, or for a superclass of the event type, on this event bus. The order
+     * in which the listeners are called is undefined.
      *
      * @param event the event to be dispatched
      */
