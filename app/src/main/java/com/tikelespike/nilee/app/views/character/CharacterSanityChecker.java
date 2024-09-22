@@ -32,7 +32,7 @@ public class CharacterSanityChecker extends Div {
     }
 
     /**
-     * Check if the character with the given id exists and its owner is equal to the current user
+     * Check if the character with the given id exists and its owner is equal to the current user.
      *
      * @param characterId the id of the character to check
      *

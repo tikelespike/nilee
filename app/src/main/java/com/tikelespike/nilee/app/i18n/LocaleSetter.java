@@ -2,7 +2,11 @@ package com.tikelespike.nilee.app.i18n;
 
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.core.data.entity.User;
-import com.vaadin.flow.server.*;
+import com.vaadin.flow.server.ServiceInitEvent;
+import com.vaadin.flow.server.UIInitEvent;
+import com.vaadin.flow.server.UIInitListener;
+import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.VaadinServlet;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import jakarta.servlet.ServletContext;
@@ -28,8 +32,14 @@ import java.util.Optional;
 @SpringComponent
 public class LocaleSetter implements UIInitListener, VaadinServiceInitListener {
 
-    AuthenticationContext authenticationContext;
+    private final AuthenticationContext authenticationContext;
 
+    /**
+     * Creates a new locale setter.
+     *
+     * @param authenticationContext the authentication context to use to get the current user (injected by
+     *         Spring)
+     */
     public LocaleSetter(AuthenticationContext authenticationContext) {
         this.authenticationContext = authenticationContext;
     }

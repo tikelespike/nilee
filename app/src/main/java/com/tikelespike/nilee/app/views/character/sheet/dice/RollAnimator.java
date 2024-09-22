@@ -12,7 +12,11 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Manages the rolling of dice and the display of the results as notifications.
@@ -20,15 +24,15 @@ import java.util.*;
 public class RollAnimator extends Div implements EventListener<RollEvent> {
 
     /**
-     * How long the instant response notification announcing that a roll is being made is shown in milliseconds
+     * How long the instant response notification announcing that a roll is being made is shown in milliseconds.
      */
     private static final int ROLL_IN_PROGRESS_DURATION_MS = 700;
     /**
-     * How long after initiating the roll the result is shown in milliseconds
+     * How long after initiating the roll the result is shown in milliseconds.
      */
     private static final int ROLL_RESULT_DELAY_MS = 1200;
     /**
-     * How long the result notification is shown in milliseconds
+     * How long the result notification is shown in milliseconds.
      */
     private static final int ROLL_RESULT_DURATION_MS = 4000;
 

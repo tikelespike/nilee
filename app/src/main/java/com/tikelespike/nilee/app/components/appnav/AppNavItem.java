@@ -226,6 +226,9 @@ public class AppNavItem extends Component {
         return router;
     }
 
+    /**
+     * @return the path this item links to
+     */
     public String getPath() {
         return getElement().getAttribute("path");
     }
@@ -279,6 +282,8 @@ public class AppNavItem extends Component {
      * Sets the expanded status of the item.
      *
      * @param value true to expand the item, false to collapse it
+     *
+     * @return this instance for chaining
      */
     public AppNavItem setExpanded(boolean value) {
         if (value) {

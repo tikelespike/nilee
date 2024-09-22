@@ -6,6 +6,9 @@ package com.tikelespike.nilee.app.components;
  */
 public class HeaderComponent extends BarComponent {
 
+    /**
+     * Creates a new header component.
+     */
     public HeaderComponent() {
         super();
         getStyle().set("background-color", "var(--lumo-base-color)");

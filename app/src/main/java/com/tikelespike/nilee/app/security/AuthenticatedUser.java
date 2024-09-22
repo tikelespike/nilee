@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Provides access to the currently authenticated user.
+ */
 @Component
 public class AuthenticatedUser {
 
@@ -17,6 +20,13 @@ public class AuthenticatedUser {
     private final AuthenticationContext authenticationContext;
     private final GameSessionManager gameSessionManager;
 
+    /**
+     * Creates a new AuthenticatedUser. Should be created by Spring and injected where needed.
+     *
+     * @param authenticationContext the authentication context (injected by Spring)
+     * @param userRepository the user repository (injected by Spring)
+     * @param gameSessionManager the game session manager (injected by Spring)
+     */
     public AuthenticatedUser(AuthenticationContext authenticationContext, UserRepository userRepository,
                              GameSessionManager gameSessionManager) {
         this.userRepository = userRepository;
@@ -24,6 +34,11 @@ public class AuthenticatedUser {
         this.gameSessionManager = gameSessionManager;
     }
 
+    /**
+     * If a user is authenticated, returns the {@link User} object for that user.
+     *
+     * @return the user currently authenticated, if any
+     */
     @Transactional
     public Optional<User> get() {
         Optional<User> userOpt = authenticationContext.getAuthenticatedUser(UserDetails.class)
@@ -32,6 +47,9 @@ public class AuthenticatedUser {
         return userOpt;
     }
 
+    /**
+     * Logs out the currently authenticated user.
+     */
     public void logout() {
         authenticationContext.logout();
     }

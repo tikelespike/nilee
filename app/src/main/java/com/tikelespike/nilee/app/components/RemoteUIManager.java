@@ -7,6 +7,18 @@ import com.vaadin.flow.component.notification.Notification;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Manages access to a UI from a different thread. This class is useful when you need to show notifications or other UI
+ * elements from a background thread or from a different UI than the one that is currently active. For example, you can
+ * use this class to show notifications on another users screen initiated by a click on a button on your screen.
+ * <p>
+ * This class supports convenience methods for showing notifications on the remote UI, since this is the most common use
+ * case. If you need to show other UI elements, you can use the {@link #execute(Runnable)} method to run code on the
+ * remote UI.
+ * <p>
+ * In a way, this class is a simple convenience wrapper around {@link UI#access(com.vaadin.flow.server.Command)} and
+ * {@link Notification}.
+ */
 public class RemoteUIManager extends Div {
 
     private static final int DEFAULT_DURATION = 5000;
@@ -14,18 +26,20 @@ public class RemoteUIManager extends Div {
 
     private UI ui;
 
+    /**
+     * Creates a new remote UI manager managing the current UI.
+     */
     public RemoteUIManager() {
-        setUI(UI.getCurrent());
-        System.out.println("Initialized with UI: " + ui.toString());
+        setUi(UI.getCurrent());
     }
 
     /**
-     * Sets the UI on which to show the notifications. By default, the UI that was active when the roll animator was
-     * created is used.
+     * Sets the remote UI managed by this object. This defaults to the UI that was active when this object was created.
+     * Notifications and other UI elements will be shown on this UI.
      *
      * @param ui the ui on which to show the notifications
      */
-    public void setUI(UI ui) {
+    public void setUi(UI ui) {
         this.ui = ui;
     }
 
@@ -78,6 +92,12 @@ public class RemoteUIManager extends Div {
         open(notification);
     }
 
+    /**
+     * Executes the given runnable on the remote UI. This is useful when you need to show other UI elements than
+     * notifications.
+     *
+     * @param runnable the runnable to execute on the remote UI
+     */
     public void execute(Runnable runnable) {
         ui.access(runnable::run);
     }

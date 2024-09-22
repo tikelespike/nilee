@@ -11,6 +11,9 @@ import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+/**
+ * A view for logging in users.
+ */
 @AnonymousAllowed
 @PageTitle("Login")
 @Route(value = "login")
@@ -18,6 +21,11 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     private final AuthenticatedUser authenticatedUser;
 
+    /**
+     * Creates a new login view (constructor for Spring injection).
+     *
+     * @param authenticatedUser the currently authenticated user (injected by Spring)
+     */
     public LoginView(AuthenticatedUser authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));

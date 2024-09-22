@@ -30,6 +30,10 @@ import jakarta.annotation.security.PermitAll;
 
 import java.util.Objects;
 
+/**
+ * A view that displays a list of the user's characters. The user can create new characters, open existing characters,
+ * and delete characters using this view.
+ */
 @Route(value = "characters", layout = MainLayout.class)
 @PermitAll
 public class CharacterListView extends VerticalLayout implements HasDynamicTitle {
@@ -46,6 +50,15 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     private User currentUser;
 
 
+    /**
+     * Creates a new CharacterListView (constructor for Spring injection).
+     *
+     * @param authenticatedUser the currently authenticated user (injected by Spring)
+     * @param playerCharacterService the service for managing database access to player characters (injected by
+     *         Spring)
+     * @param userService the service for managing database access to users (injected by Spring)
+     * @param i18nProvider the provider for translations (injected by Spring)
+     */
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
                              UserService userService, I18NProvider i18nProvider) {
         this.currentUser =
@@ -90,8 +103,8 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         button.addClickListener(e -> {
             PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
             savePC(newCharacter);
-            String name = Objects.equals(newCharacterNameTF.getValue(), "") ?
-                    newCharacter.getDefaultName().getTranslation(translationProvider) : newCharacterNameTF.getValue();
+            String name = Objects.equals(newCharacterNameTF.getValue(), "") ? newCharacter.getDefaultName()
+                    .getTranslation(translationProvider) : newCharacterNameTF.getValue();
             newCharacter.setName(name);
             savePC(newCharacter);
         });

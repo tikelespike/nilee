@@ -16,6 +16,7 @@ import com.vaadin.flow.component.progressbar.ProgressBarVariant;
  */
 public class HitPointsDisplay extends VerticalLayout {
 
+    private static final double HP_WARNING_PROPORTION = 0.25;
     private final HitPoints hitPoints;
 
     /**
@@ -57,13 +58,14 @@ public class HitPointsDisplay extends VerticalLayout {
         hitPointsBar.setMax(max);
         hitPointsBar.setValue(hp);
         hitPointsBar.getElement().getStyle().set("margin", "5px");
-        hitPointsBar.addThemeVariants(hp > max / 4 ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
+        hitPointsBar.addThemeVariants(
+                hp > max * HP_WARNING_PROPORTION ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
         hitPoints.registerCurrentHPChangeListener(e -> {
             hitPointsBar.setValue(e.getNewValue());
             hitPointsBar.removeThemeVariants(ProgressBarVariant.LUMO_SUCCESS, ProgressBarVariant.LUMO_ERROR);
             hitPointsBar.addThemeVariants(
-                    e.getNewValue() > hitPoints.getMaxHitPoints().getValue() / 4 ? ProgressBarVariant.LUMO_SUCCESS :
-                            ProgressBarVariant.LUMO_ERROR);
+                    e.getNewValue() > hitPoints.getMaxHitPoints().getValue() * HP_WARNING_PROPORTION
+                            ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
         });
         hitPoints.getMaxHitPoints().addValueChangeListener(e -> hitPointsBar.setMax(e.getNewValue()));
         return hitPointsBar;

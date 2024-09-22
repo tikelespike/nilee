@@ -27,6 +27,8 @@ public class AbilityScoreBox extends VerticalLayout {
      * @param abilityScore the ability score to base the box on
      * @param translationProvider the translation provider to use for displaying internalized
      *         (language-independent) strings
+     * @param rollBus the bus on which ability checks are rolled
+     * @param playerCharacter the player character whose ability scores are displayed
      */
     public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider, RollBus rollBus,
                            PlayerCharacter playerCharacter) {

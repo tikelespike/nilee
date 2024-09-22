@@ -6,6 +6,9 @@ package com.tikelespike.nilee.app.components;
  */
 public class FooterComponent extends BarComponent {
 
+    /**
+     * Creates a new footer component.
+     */
     public FooterComponent() {
         super();
         getStyle().set("background-color", "var(--lumo-base-color)");

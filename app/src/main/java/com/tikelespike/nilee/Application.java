@@ -33,10 +33,24 @@ import javax.sql.DataSource;
 @Push
 public class Application implements AppShellConfigurator {
 
+    /**
+     * Entry point for the application.
+     *
+     * @param args the command-line arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+    /**
+     * Initializes the database with the default data if no users exist.
+     *
+     * @param dataSource the data source to use
+     * @param properties the properties to use
+     * @param repository the repository to check for existing data
+     *
+     * @return the initializer bean
+     */
     @Bean
     SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
                                                                                SqlInitializationProperties properties,

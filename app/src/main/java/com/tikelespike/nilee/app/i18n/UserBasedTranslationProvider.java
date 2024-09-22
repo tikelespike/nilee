@@ -14,6 +14,12 @@ public class UserBasedTranslationProvider implements TranslationProvider {
     private final User user;
     private final I18NProvider i18nProvider;
 
+    /**
+     * Creates a new translation provider that uses the preferences of the given user to determine the target locale.
+     *
+     * @param user the user the preferences of which should be used for localization
+     * @param i18nProvider the actual provider that does the translation
+     */
     public UserBasedTranslationProvider(User user, I18NProvider i18nProvider) {
         this.user = user;
         this.i18nProvider = i18nProvider;

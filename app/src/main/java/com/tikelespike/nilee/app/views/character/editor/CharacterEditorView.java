@@ -18,6 +18,10 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
+/**
+ * A view for editing a {@link PlayerCharacter}. This view is only accessible to the user who owns the character. The
+ * owner of the character can edit the character's name, abilities, and other relevant information.
+ */
 @Route(value = "editor")
 @PermitAll
 public class CharacterEditorView extends VerticalLayout implements HasUrlParameter<Long>, HasDynamicTitle {
@@ -31,6 +35,13 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     private AbilitiesEditorView abilitiesEditorView;
 
 
+    /**
+     * Creates a new CharacterEditorView (constructor for Spring injection).
+     *
+     * @param characterService the service for managing database access to player characters (injected by
+     *         Spring)
+     * @param authenticatedUser the currently authenticated user (injected by Spring)
+     */
     public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
         this.characterService = characterService;
         this.currentUser =
@@ -45,21 +56,20 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
 
         add(new H1(getTranslation("character_editor.title")));
 
-        accordion = createAccordion();
+        createAccordion();
         add(accordion);
 
         Button saveButton = new Button(getTranslation("generic.save"), e -> save());
         add(saveButton);
     }
 
-    private Accordion createAccordion() {
-        Accordion accordion = new Accordion();
+    private void createAccordion() {
+        this.accordion = new Accordion();
         accordion.add("Description", new Span(pc.getName()));
         this.abilitiesEditorView = new AbilitiesEditorView(pc);
         accordion.add(getTranslation("character_editor.abilities.title"), abilitiesEditorView);
         accordion.addOpenedChangeListener(e -> abilitiesEditorView.update());
         accordion.add("Class", new Span("Class"));
-        return accordion;
     }
 
     @Override
@@ -70,6 +80,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     @Override
     public void setParameter(BeforeEvent event, Long parameter) {
         sanityChecker.ensureSanity(parameter);
+        //noinspection OptionalGetWithoutIsPresent
         this.pc = PlayerCharacter.createFromSnapshot(characterService.get(parameter).get());
         this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
         init();

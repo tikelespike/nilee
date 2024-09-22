@@ -23,6 +23,7 @@ public class HitPointsDialog extends Dialog {
 
     private static final String MAX_WIDTH = "700px";
     private static final String MIN_WIDTH_3COL = "400px";
+    private static final int COLUMNS = 3;
 
     private final HitPoints hitPoints;
     private final Set<Registration> registrations = new HashSet<>();
@@ -74,7 +75,7 @@ public class HitPointsDialog extends Dialog {
     private FormLayout createContent() {
         FormLayout content = new FormLayout();
         content.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep(MIN_WIDTH_3COL, 3));
+                new FormLayout.ResponsiveStep(MIN_WIDTH_3COL, COLUMNS));
 
         createAndAddHealDamageSection(content);
         createAndAddSetHPSection(content);
@@ -83,7 +84,7 @@ public class HitPointsDialog extends Dialog {
 
     private void createAndAddSetHPSection(FormLayout content) {
         H4 headingSetHP = new H4(getTranslation("character_sheet.hit_points.section.set_hp.heading"));
-        content.setColspan(headingSetHP, 3);
+        content.setColspan(headingSetHP, COLUMNS);
 
         IntegerField hitPointsField = createHitPointsField();
         IntegerField maxHPField = createMaxHPField(hitPointsField);
@@ -157,7 +158,7 @@ public class HitPointsDialog extends Dialog {
 
     private void createAndAddHealDamageSection(FormLayout content) {
         H4 headingDamageHeal = new H4(getTranslation("character_sheet.hit_points.section.heal_damage.heading"));
-        content.setColspan(headingDamageHeal, 3);
+        content.setColspan(headingDamageHeal, COLUMNS);
 
         IntegerField deltaField =
                 new IntegerField(getTranslation("character_sheet.hit_points.section.heal_damage.amount"));
