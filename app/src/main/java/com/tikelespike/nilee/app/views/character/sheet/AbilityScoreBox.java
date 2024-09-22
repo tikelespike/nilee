@@ -12,8 +12,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
- * A box containing relevant information to an {@link AbilityScore}, including the name and value of the score
- * as well as a button to roll a check with the score.
+ * A box containing relevant information to an {@link AbilityScore}, including the name and value of the score as well
+ * as a button to roll a check with the score.
  */
 public class AbilityScoreBox extends VerticalLayout {
 
@@ -24,9 +24,11 @@ public class AbilityScoreBox extends VerticalLayout {
     /**
      * Creates a new {@link AbilityScoreBox} based on a given ability.
      *
-     * @param abilityScore        the ability score to base the box on
+     * @param abilityScore the ability score to base the box on
      * @param translationProvider the translation provider to use for displaying internalized
-     *                            (language-independent) strings
+     *         (language-independent) strings
+     * @param rollBus the bus on which ability checks are rolled
+     * @param playerCharacter the player character whose ability scores are displayed
      */
     public AbilityScoreBox(AbilityScore abilityScore, TranslationProvider translationProvider, RollBus rollBus,
                            PlayerCharacter playerCharacter) {
@@ -65,8 +67,7 @@ public class AbilityScoreBox extends VerticalLayout {
     }
 
     private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider,
-                                            RollBus rollBus,
-                                            PlayerCharacter playerCharacter) {
+                                            RollBus rollBus, PlayerCharacter playerCharacter) {
         Button skillCheckButton = new RollButton(abilityScore.getCheckRoll(), translationProvider,
                 t -> t.translate("character_sheet.dice.check", abilityScore.getLongName().getTranslation(t)), rollBus,
                 playerCharacter);

@@ -11,9 +11,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * A helper class to check if a character is sane (not null, not deleted, and owned by the current user).
- * Use {@link #ensureSanity(Long)} or {@link #ensureSanity(PlayerCharacter)} to throw an exception
- * if the character is not sane.
+ * A helper class to check if a character is sane (not null, not deleted, and owned by the current user). Use
+ * {@link #ensureSanity(Long)} or {@link #ensureSanity(PlayerCharacter)} to throw an exception if the character is not
+ * sane.
  */
 public class CharacterSanityChecker extends Div {
 
@@ -32,9 +32,10 @@ public class CharacterSanityChecker extends Div {
     }
 
     /**
-     * Check if the character with the given id exists and its owner is equal to the current user
+     * Check if the character with the given id exists and its owner is equal to the current user.
      *
      * @param characterId the id of the character to check
+     *
      * @return true iff the character exists and its owner is equal to the current user
      */
     public boolean sanityCheck(Long characterId) {
@@ -46,16 +47,18 @@ public class CharacterSanityChecker extends Div {
             return false;
         }
         PlayerCharacter character = PlayerCharacter.createFromSnapshot(optPC.get());
-        return character.getOwner() != null
-                && character.getOwner().equals(currentUser)
-                && Objects.equals(character.getId(), characterId);
+        return character.getOwner() != null && character.getOwner().equals(currentUser) && Objects.equals(
+                character.getId(), characterId);
     }
 
     /**
-     * Checks if the given character is not null, its id exists in the database and its owner is equal to the current user.
+     * Checks if the given character is not null, its id exists in the database and its owner is equal to the current
+     * user.
      *
      * @param character the character to check
-     * @return true iff the character is not null, its id exists in the database and its owner is equal to the current user
+     *
+     * @return true iff the character is not null, its id exists in the database and its owner is equal to the current
+     *         user
      */
     public boolean sanityCheck(PlayerCharacter character) {
         if (character == null) {

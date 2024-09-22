@@ -15,11 +15,21 @@ import jakarta.annotation.security.PermitAll;
 
 import java.util.Locale;
 
+/**
+ * A view for editing user preferences like language.
+ */
 @Route(value = "preferences", layout = MainLayout.class)
 @PermitAll
 public class UserPreferencesView extends VerticalLayout implements HasDynamicTitle {
 
 
+    /**
+     * Creates a new user preferences view editing the preferences of the given user.
+     *
+     * @param i18NProvider the translation provider (injected by Spring)
+     * @param userService the user service (injected by Spring)
+     * @param authenticatedUser the authenticated user (injected by Spring)
+     */
     public UserPreferencesView(I18NProvider i18NProvider, UserService userService,
                                AuthenticatedUser authenticatedUser) {
         User user = authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not authenticated"));

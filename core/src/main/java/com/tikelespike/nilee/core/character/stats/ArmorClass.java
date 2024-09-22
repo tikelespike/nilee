@@ -6,8 +6,8 @@ import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
 
 /**
  * A property describing the armor class of a character. The armor class is the value that is used to determine whether
- * an attack on the character hits or misses. Will always provide at least the {@link DefaultAC default armor class}
- * as a base value.
+ * an attack on the character hits or misses. Will always provide at least the {@link DefaultAC default armor class} as
+ * a base value.
  */
 public class ArmorClass extends Property<Integer> {
 

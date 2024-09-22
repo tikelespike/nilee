@@ -5,7 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Resolves keys to localized string values given a target locale using {@link ResourceBundle ResourceBundles}.
@@ -24,8 +28,8 @@ public class ResourceBundleI18NProvider implements I18NProvider {
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
         if (key == null) {
-            LoggerFactory.getLogger(ResourceBundleI18NProvider.class.getName()).warn(
-                    "Got lang request for key with null value!");
+            LoggerFactory.getLogger(ResourceBundleI18NProvider.class.getName())
+                    .warn("Got lang request for key with null value!");
             return "";
         }
 

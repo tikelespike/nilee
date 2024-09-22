@@ -9,21 +9,22 @@ import com.vaadin.flow.component.progressbar.ProgressBarVariant;
 
 /**
  * A minimalistic display of a character's hit points. Consists of a button that displays the current hit points and
- * temporary hit points numerically, a progress bar for the current hit points and a progress bar for the temporary
- * hit points. Upon clicking the button, a dialog opens that allows the user to view and edit the hit points.
+ * temporary hit points numerically, a progress bar for the current hit points and a progress bar for the temporary hit
+ * points. Upon clicking the button, a dialog opens that allows the user to view and edit the hit points.
  *
  * @see HitPointsDialog
  */
 public class HitPointsDisplay extends VerticalLayout {
 
+    private static final double HP_WARNING_PROPORTION = 0.25;
     private final HitPoints hitPoints;
 
     /**
      * Creates a new display for the given hit points.
      *
-     * @param hitPoints      the hit points to display
-     * @param characterSaver used to save the corresponding character when editing hit points in the dialog opened by
-     *                       clicking the button
+     * @param hitPoints the hit points to display
+     * @param characterSaver used to save the corresponding character when editing hit points in the dialog
+     *         opened by clicking the button
      */
     public HitPointsDisplay(HitPoints hitPoints, CharacterSaver characterSaver) {
         this.hitPoints = hitPoints;
@@ -57,11 +58,14 @@ public class HitPointsDisplay extends VerticalLayout {
         hitPointsBar.setMax(max);
         hitPointsBar.setValue(hp);
         hitPointsBar.getElement().getStyle().set("margin", "5px");
-        hitPointsBar.addThemeVariants(hp > max / 4 ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
+        hitPointsBar.addThemeVariants(
+                hp > max * HP_WARNING_PROPORTION ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
         hitPoints.registerCurrentHPChangeListener(e -> {
             hitPointsBar.setValue(e.getNewValue());
             hitPointsBar.removeThemeVariants(ProgressBarVariant.LUMO_SUCCESS, ProgressBarVariant.LUMO_ERROR);
-            hitPointsBar.addThemeVariants(e.getNewValue() > hitPoints.getMaxHitPoints().getValue() / 4 ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
+            hitPointsBar.addThemeVariants(
+                    e.getNewValue() > hitPoints.getMaxHitPoints().getValue() * HP_WARNING_PROPORTION
+                            ? ProgressBarVariant.LUMO_SUCCESS : ProgressBarVariant.LUMO_ERROR);
         });
         hitPoints.getMaxHitPoints().addValueChangeListener(e -> hitPointsBar.setMax(e.getNewValue()));
         return hitPointsBar;
@@ -74,7 +78,8 @@ public class HitPointsDisplay extends VerticalLayout {
         tempHPBar.setValue(Math.min(hitPoints.getTemporaryHitPoints(), hitPoints.getMaxHitPoints().getValue()));
         tempHPBar.getElement().getStyle().set("margin", "5px");
         tempHPBar.addThemeVariants(ProgressBarVariant.LUMO_CONTRAST);
-        hitPoints.registerTempHPChangeListener(e -> tempHPBar.setValue(Math.min(e.getNewValue(), hitPoints.getMaxHitPoints().getValue())));
+        hitPoints.registerTempHPChangeListener(
+                e -> tempHPBar.setValue(Math.min(e.getNewValue(), hitPoints.getMaxHitPoints().getValue())));
         hitPoints.getMaxHitPoints().addValueChangeListener(e -> tempHPBar.setMax(e.getNewValue()));
         return tempHPBar;
     }

@@ -6,14 +6,14 @@ import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.dom.Element;
+
 import java.util.Optional;
 
 /**
  * A navigation menu with support for hierarchical and flat menus.
  * <p>
- * Items can be added using {@link #addItem(AppNavItem...)} and hierarchy can be
- * created by adding {@link AppNavItem} instances to other {@link AppNavItem}
- * instances.
+ * Items can be added using {@link #addItem(AppNavItem...)} and hierarchy can be created by adding {@link AppNavItem}
+ * instances to other {@link AppNavItem} instances.
  */
 @JsModule("@vaadin-component-factory/vcf-nav")
 @Tag("vcf-nav")
@@ -28,8 +28,7 @@ public class AppNav extends Component implements HasSize, HasStyle {
     /**
      * Creates a new menu with the given label.
      *
-     * @param label
-     *            the label to use
+     * @param label the label to use
      */
     public AppNav(String label) {
         setLabel(label);
@@ -38,8 +37,8 @@ public class AppNav extends Component implements HasSize, HasStyle {
     /**
      * Adds menu item(s) to the menu.
      *
-     * @param appNavItems
-     *            the menu item(s) to add
+     * @param appNavItems the menu item(s) to add
+     *
      * @return the menu for chaining
      */
     public AppNav addItem(AppNavItem... appNavItems) {
@@ -55,8 +54,8 @@ public class AppNav extends Component implements HasSize, HasStyle {
      * <p>
      * If the given menu item is not a child of this menu, does nothing.
      *
-     * @param appNavItem
-     *            the menu item to remove
+     * @param appNavItem the menu item to remove
+     *
      * @return the menu for chaining
      */
     public AppNav removeItem(AppNavItem appNavItem) {
@@ -90,11 +89,11 @@ public class AppNav extends Component implements HasSize, HasStyle {
     /**
      * Set a textual label for the navigation.
      * <p>
-     * This can help the end user to distinguish groups of navigation items. The
-     * label is also available for screen reader users.
+     * This can help the end user to distinguish groups of navigation items. The label is also available for screen
+     * reader users.
      *
-     * @param label
-     *            the label to set
+     * @param label the label to set
+     *
      * @return this instance for chaining
      */
     public AppNav setLabel(String label) {
@@ -116,8 +115,7 @@ public class AppNav extends Component implements HasSize, HasStyle {
     }
 
     /**
-     * Check if the end user is allowed to collapse/hide and expand/show the
-     * navigation items.
+     * Check if the end user is allowed to collapse/hide and expand/show the navigation items.
      * <p>
      * NOTE: The navigation has to have a label for it to be collapsible.
      *
@@ -132,9 +130,8 @@ public class AppNav extends Component implements HasSize, HasStyle {
      * <p>
      * NOTE: The navigation has to have a label for it to be collapsible.
      *
-     * @param collapsible
-     *            true to make the whole navigation component collapsible, false
-     *            otherwise
+     * @param collapsible true to make the whole navigation component collapsible, false otherwise
+     *
      * @return this instance for chaining
      */
     public AppNav setCollapsible(boolean collapsible) {

@@ -18,7 +18,8 @@ public class HitPointMax extends OverridableProperty<Integer> {
     /**
      * Creates a new hit point max property based on the given constitution score.
      *
-     * @param constitution the CON modifier of this property is used to calculate the default base value of this property
+     * @param constitution the CON modifier of this property is used to calculate the default base value of this
+     *         property
      */
     public HitPointMax(@NotNull AbilityScore constitution) {
         Objects.requireNonNull(constitution);

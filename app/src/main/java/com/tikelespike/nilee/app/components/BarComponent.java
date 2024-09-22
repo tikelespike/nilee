@@ -4,8 +4,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 /**
- * A component that can be used to display a sticky bar. The bar is
- * divided into three sections: left, center and right. Components can be added to these sections individually.
+ * A component that can be used to display a sticky bar. The bar is divided into three sections: left, center and right.
+ * Components can be added to these sections individually.
  */
 public class BarComponent extends HorizontalLayout {
 
@@ -43,8 +43,8 @@ public class BarComponent extends HorizontalLayout {
     }
 
     /**
-     * Adds one or more components to the left-aligned section of the header. The components will be added from
-     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
+     * Adds one or more components to the left-aligned section of the header. The components will be added from left to
+     * right and can be removed using {@link #remove(Component)}. The components will be added to a
      * {@link HorizontalLayout} that is part of the header.
      *
      * @param components the components to add
@@ -54,13 +54,12 @@ public class BarComponent extends HorizontalLayout {
     }
 
     /**
-     * Adds one or more components to the centered section of the header. The centered section is placed such that
-     * its center aligns horizontally with the center of the page. As this will result in overlapping components
-     * if the page is not wide enough, it is recommended to use this section only if there is enough space.
+     * Adds one or more components to the centered section of the header. The centered section is placed such that its
+     * center aligns horizontally with the center of the page. As this will result in overlapping components if the page
+     * is not wide enough, it is recommended to use this section only if there is enough space.
      * <p>
-     * The components will be added from
-     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
-     * {@link HorizontalLayout} that is part of the header.
+     * The components will be added from left to right and can be removed using {@link #remove(Component)}. The
+     * components will be added to a {@link HorizontalLayout} that is part of the header.
      *
      * @param components the components to add
      */
@@ -69,8 +68,8 @@ public class BarComponent extends HorizontalLayout {
     }
 
     /**
-     * Adds one or more components to the right-aligned section of the header. The components will be added from
-     * left to right and can be removed using {@link #remove(Component)}. The components will be added to a
+     * Adds one or more components to the right-aligned section of the header. The components will be added from left to
+     * right and can be removed using {@link #remove(Component)}. The components will be added to a
      * {@link HorizontalLayout} that is part of the header.
      *
      * @param components the components to add
@@ -81,10 +80,11 @@ public class BarComponent extends HorizontalLayout {
 
     /**
      * Removes a component from the header. The component must have been added to the header using one of the
-     * {@code add} methods. If the component is not a child of the header, an {@link IllegalArgumentException}
-     * will be thrown.
+     * {@code add} methods. If the component is not a child of the header, an {@link IllegalArgumentException} will be
+     * thrown.
      *
      * @param component the component to remove
+     *
      * @throws IllegalArgumentException if the component has not been added to the header previously
      */
     public void remove(Component component) {

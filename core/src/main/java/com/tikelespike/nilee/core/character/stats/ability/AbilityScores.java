@@ -6,11 +6,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Groups the specific six {@link AbilityScore}s used in the 5th edition of Dungeons & Dragons, namely
- * Strength, Dexterity, Constitution, Intelligence, Wisdom and Charisma, into one entity.
- * These scores provide a quick description of every creature's physical and mental characteristics.
+ * Groups the specific six {@link AbilityScore}s used in the 5th edition of Dungeons & Dragons, namely Strength,
+ * Dexterity, Constitution, Intelligence, Wisdom and Charisma, into one entity. These scores provide a quick description
+ * of every creature's physical and mental characteristics.
  *
- * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#UsingAbilityScores">Ability Scores on D&D Beyond</a>
+ * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#UsingAbilityScores">Ability
+ *         Scores on D&D Beyond</a>
  */
 public class AbilityScores extends AbstractEntity {
 
@@ -43,8 +44,8 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the strength score of this ability score group.
-     * Strength measures bodily power, athletic training, and the extent to which a creature can exert raw physical force.
+     * Returns the strength score of this ability score group. Strength measures bodily power, athletic training, and
+     * the extent to which a creature can exert raw physical force.
      *
      * @return the strength score of this ability score group
      */
@@ -53,8 +54,7 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the dexterity score of this ability score group.
-     * Dexterity measures agility, reflexes, and balance.
+     * Returns the dexterity score of this ability score group. Dexterity measures agility, reflexes, and balance.
      *
      * @return the dexterity score of this ability score group
      */
@@ -63,8 +63,8 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the constitution score of this ability score group.
-     * Constitution measures health, stamina, and vital force.
+     * Returns the constitution score of this ability score group. Constitution measures health, stamina, and vital
+     * force.
      *
      * @return the constitution score of this ability score group
      */
@@ -73,8 +73,8 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the intelligence score of this ability score group.
-     * Intelligence measures mental acuity, accuracy of recall, and the ability to reason.
+     * Returns the intelligence score of this ability score group. Intelligence measures mental acuity, accuracy of
+     * recall, and the ability to reason.
      *
      * @return the intelligence score of this ability score group
      */
@@ -83,8 +83,8 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the wisdom score of this ability score group.
-     * Wisdom reflects how attuned you are to the world around you and represents perceptiveness and intuition.
+     * Returns the wisdom score of this ability score group. Wisdom reflects how attuned you are to the world around you
+     * and represents perceptiveness and intuition.
      *
      * @return the wisdom score of this ability score group
      */
@@ -93,9 +93,9 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns the charisma score of this ability score group.
-     * Charisma measures a character's ability to interact effectively with others.
-     * It includes such factors as confidence and eloquence, and it can represent a charming or commanding personality.
+     * Returns the charisma score of this ability score group. Charisma measures a character's ability to interact
+     * effectively with others. It includes such factors as confidence and eloquence, and it can represent a charming or
+     * commanding personality.
      *
      * @return the charisma score of this ability score group
      */
@@ -104,8 +104,8 @@ public class AbilityScores extends AbstractEntity {
     }
 
     /**
-     * Returns an unmodifiable collection of all ability scores (strength, dexterity, constitution, intelligence,
-     * wisdom and charisma) grouped in this entity.
+     * Returns an unmodifiable collection of all ability scores (strength, dexterity, constitution, intelligence, wisdom
+     * and charisma) grouped in this entity.
      *
      * @return an unmodifiable collection of all ability scores
      */

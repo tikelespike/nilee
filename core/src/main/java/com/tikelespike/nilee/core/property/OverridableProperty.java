@@ -5,15 +5,16 @@ import jakarta.validation.constraints.NotNull;
 
 /**
  * A {@link Property} that can be overridden (usually by the user) with a fixed value. This is done by adding a
- * {@link ManualOverrideModifier} to the property. When other modifiers are added while the property is overridden,
- * they are added <i>before</i> the override modifier, so that the override modifier is always the last modifier in the
- * list (and therefore has the highest priority).
+ * {@link ManualOverrideModifier} to the property. When other modifiers are added while the property is overridden, they
+ * are added <i>before</i> the override modifier, so that the override modifier is always the last modifier in the list
+ * (and therefore has the highest priority).
  *
  * @param <T> the type of the property
  */
 public class OverridableProperty<T> extends Property<T> {
 
-    // invariant: overrideValue of overrideModifier is null iff. overrideModifier is not in this property's list of modifiers
+    // invariant: overrideValue of overrideModifier is null iff. overrideModifier is not in this property's list of
+    // modifiers
     private final ManualOverrideModifier<T> overrideModifier = new ManualOverrideModifier<>(null);
 
     /**
@@ -84,6 +85,8 @@ public class OverridableProperty<T> extends Property<T> {
 
         if (!getModifiers().isEmpty() && getModifiers().get(getModifiers().size() - 1).equals(overrideModifier)) {
             super.addModifier(getModifiers().size() - 1, modifier);
-        } else super.addModifier(modifier);
+        } else {
+            super.addModifier(modifier);
+        }
     }
 }

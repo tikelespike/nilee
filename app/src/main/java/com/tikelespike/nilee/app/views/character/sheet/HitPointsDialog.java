@@ -16,13 +16,14 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * Dialog for editing hit points. Consists of a form for editing the hit points as well as taking damage and healing,
- * a save button and a discard button.
+ * Dialog for editing hit points. Consists of a form for editing the hit points as well as taking damage and healing, a
+ * save button and a discard button.
  */
 public class HitPointsDialog extends Dialog {
 
     private static final String MAX_WIDTH = "700px";
     private static final String MIN_WIDTH_3COL = "400px";
+    private static final int COLUMNS = 3;
 
     private final HitPoints hitPoints;
     private final Set<Registration> registrations = new HashSet<>();
@@ -33,7 +34,8 @@ public class HitPointsDialog extends Dialog {
      * Creates a new dialog for editing hit points.
      *
      * @param hitPoints the hit points to edit
-     * @param characterSaver used to save the corresponding character upon clicking the save button of this dialog
+     * @param characterSaver used to save the corresponding character upon clicking the save button of this
+     *         dialog
      */
     public HitPointsDialog(HitPoints hitPoints, CharacterSaver characterSaver) {
         this.hitPoints = hitPoints;
@@ -72,9 +74,8 @@ public class HitPointsDialog extends Dialog {
 
     private FormLayout createContent() {
         FormLayout content = new FormLayout();
-        content.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep(MIN_WIDTH_3COL, 3));
+        content.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1),
+                new FormLayout.ResponsiveStep(MIN_WIDTH_3COL, COLUMNS));
 
         createAndAddHealDamageSection(content);
         createAndAddSetHPSection(content);
@@ -83,7 +84,7 @@ public class HitPointsDialog extends Dialog {
 
     private void createAndAddSetHPSection(FormLayout content) {
         H4 headingSetHP = new H4(getTranslation("character_sheet.hit_points.section.set_hp.heading"));
-        content.setColspan(headingSetHP, 3);
+        content.setColspan(headingSetHP, COLUMNS);
 
         IntegerField hitPointsField = createHitPointsField();
         IntegerField maxHPField = createMaxHPField(hitPointsField);
@@ -98,13 +99,15 @@ public class HitPointsDialog extends Dialog {
         tempHPField.setStepButtonsVisible(true);
         tempHPField.setMin(0);
         tempHPField.setValue(hitPoints.getTemporaryHitPoints());
-        tempHPField.addValueChangeListener(e -> hitPoints.setTemporaryHitPoints(e.getValue() == null ? 0 : e.getValue()));
+        tempHPField.addValueChangeListener(
+                e -> hitPoints.setTemporaryHitPoints(e.getValue() == null ? 0 : e.getValue()));
         registrations.add(hitPoints.registerTempHPChangeListener(e -> tempHPField.setValue(e.getNewValue())));
         return tempHPField;
     }
 
     private Checkbox createMaxHPOverrideCheckbox(IntegerField maxHPField) {
-        Checkbox maxHPOverrideCheckbox = new Checkbox(getTranslation("character_sheet.hit_points.section.set_hp.override_max"));
+        Checkbox maxHPOverrideCheckbox =
+                new Checkbox(getTranslation("character_sheet.hit_points.section.set_hp.override_max"));
         maxHPOverrideCheckbox.setValue(hitPoints.getMaxHitPoints().isOverridden());
         maxHPOverrideCheckbox.addValueChangeListener(e -> {
             maxHPField.setReadOnly(!e.getValue());
@@ -127,37 +130,45 @@ public class HitPointsDialog extends Dialog {
         maxHPField.setRequiredIndicatorVisible(true);
         maxHPField.setErrorMessage(getTranslation("error.empty_field"));
         maxHPField.addValueChangeListener(e -> {
-            if (e.getValue() == null) return;
+            if (e.getValue() == null) {
+                return;
+            }
             hitPointsField.setMax(e.getValue());
             if (!maxHPField.isReadOnly()) {
                 hitPoints.getMaxHitPoints().setOverride(e.getValue());
             }
         });
-        registrations.add(hitPoints.getMaxHitPoints().addValueChangeListener(e -> maxHPField.setValue(e.getNewValue())));
+        registrations.add(
+                hitPoints.getMaxHitPoints().addValueChangeListener(e -> maxHPField.setValue(e.getNewValue())));
         return maxHPField;
     }
 
     private IntegerField createHitPointsField() {
-        IntegerField hitPointsField = new IntegerField(getTranslation("character_sheet.hit_points.section.set_hp.current"));
+        IntegerField hitPointsField =
+                new IntegerField(getTranslation("character_sheet.hit_points.section.set_hp.current"));
         hitPointsField.setStepButtonsVisible(true);
         hitPointsField.setMin(0);
         hitPointsField.setMax(hitPoints.getMaxHitPoints().getValue());
         hitPointsField.setValue(hitPoints.getCurrentHitPoints());
-        hitPointsField.addValueChangeListener(e -> hitPoints.setCurrentHitPoints(e.getValue() == null ? 0 : e.getValue()));
+        hitPointsField.addValueChangeListener(
+                e -> hitPoints.setCurrentHitPoints(e.getValue() == null ? 0 : e.getValue()));
         registrations.add(hitPoints.registerCurrentHPChangeListener(e -> hitPointsField.setValue(e.getNewValue())));
         return hitPointsField;
     }
 
     private void createAndAddHealDamageSection(FormLayout content) {
         H4 headingDamageHeal = new H4(getTranslation("character_sheet.hit_points.section.heal_damage.heading"));
-        content.setColspan(headingDamageHeal, 3);
+        content.setColspan(headingDamageHeal, COLUMNS);
 
-        IntegerField deltaField = new IntegerField(getTranslation("character_sheet.hit_points.section.heal_damage.amount"));
+        IntegerField deltaField =
+                new IntegerField(getTranslation("character_sheet.hit_points.section.heal_damage.amount"));
         deltaField.setStepButtonsVisible(true);
         deltaField.setMin(0);
         deltaField.setValue(1);
         deltaField.addValueChangeListener(e -> {
-            if (e.getValue() == null) deltaField.setValue(1);
+            if (e.getValue() == null) {
+                deltaField.setValue(1);
+            }
         });
 
         Button damageButton = new Button(getTranslation("character_sheet.hit_points.section.heal_damage.damage"));

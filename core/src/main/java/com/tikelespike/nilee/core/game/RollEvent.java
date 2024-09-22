@@ -22,12 +22,12 @@ public class RollEvent extends Event {
 
 
     /**
-     * @param description      a localized string describing what type of roll was made
+     * @param description a localized string describing what type of roll was made
      * @param characterRolling if the roll is made by a player character, the character rolling. May be null.
-     * @param userRolling      user that initiated the roll
-     * @param computationSteps all steps from the initial roll to the final result, including the original roll expression,
-     *                         intermediate results (if any) and the final result (in that order). May not be empty.
-     *                         If the length is 1, the result is assumed to be the original roll expression.
+     * @param userRolling user that initiated the roll
+     * @param computationSteps all steps from the initial roll to the final result, including the original roll
+     *         expression, intermediate results (if any) and the final result (in that order). May not be empty. If the
+     *         length is 1, the result is assumed to be the original roll expression.
      */
     public RollEvent(LocalizedString description, PlayerCharacter characterRolling, User userRolling,
                      @NotNull DiceExpression... computationSteps) {
@@ -51,6 +51,13 @@ public class RollEvent extends Event {
         return this.computationSteps[0];
     }
 
+    /**
+     * Returns the initial roll, the final result, and all available intermediary results in between as an array.
+     *
+     * @return all steps from the initial roll to the final result, including the original roll expression, intermediate
+     *         results (if any) and the final result (in that order). May not be empty. If the length is 1, the result
+     *         is assumed to be the original roll expression.
+     */
     public DiceExpression[] getComputationSteps() {
         return this.computationSteps.clone();
     }

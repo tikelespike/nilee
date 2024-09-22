@@ -8,19 +8,25 @@ import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
- * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values
- * provided by a set of base value suppliers using a selection strategy (like the first value or the maximum). The
- * modifiers are applied in the order they are added.
+ * Describes a value constructed from a base value and modifiers. The base value is chosen from all base values provided
+ * by a set of base value suppliers using a selection strategy (like the first value or the maximum). The modifiers are
+ * applied in the order they are added.
  * <p>
- * For example, a property could represent a character's armor class. The base value could be the standard AC
- * calculated as {@code 10 + DEX}.
- * Another way to calculate the base value could be given by armor worn, which may calculate the base AC as something
- * like {@code 12 + DEX}. The modifiers represent a number of temporary bonuses and penalties, such as a +2 bonus from a
- * shield, or a -1 penalty from a spell. The final value is automatically calculated from the selected base value
- * (default is the first one added) and the application of all modifiers.
+ * For example, a property could represent a character's armor class. The base value could be the standard AC calculated
+ * as {@code 10 + DEX}. Another way to calculate the base value could be given by armor worn, which may calculate the
+ * base AC as something like {@code 12 + DEX}. The modifiers represent a number of temporary bonuses and penalties, such
+ * as a +2 bonus from a shield, or a -1 penalty from a spell. The final value is automatically calculated from the
+ * selected base value (default is the first one added) and the application of all modifiers.
  *
  * @param <T> the type of the value (typically, an integer or a dice roll like 3d4)
  */
@@ -30,7 +36,7 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
     private final List<PropertyModifier<T>> modifiers = new ArrayList<>();
 
-    protected ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
+    private ValueSelector<T> baseValueSelector = new FirstValueSelector<>();
 
     private final Map<PropertyModifier<T>, Registration> modifierRegistrations = new HashMap<>();
 
@@ -43,8 +49,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
     private T lastKnownValue;
 
     /**
-     * Creates a new property with no base value suppliers or modifiers.
-     * You must add at least one base value supplier before calling {@link #getValue()} or {@link #getBaseValue()} by using
+     * Creates a new property with no base value suppliers or modifiers. You must add at least one base value supplier
+     * before calling {@link #getValue()} or {@link #getBaseValue()} by using
      * {@link #addBaseValueSupplier(PropertyBaseSupplier)}.
      */
     protected Property() {
@@ -62,18 +68,14 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
 
     /**
-     * Calculates the value of this property by selecting a base value and applying all modifiers.
-     * There has to be at least one base value supplier added before calling this method.
+     * Calculates the value of this property by selecting a base value and applying all modifiers. There has to be at
+     * least one base value supplier added before calling this method.
      *
      * @return the effective value of this property
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getValue() {
-        return getValueOnBase(getBaseValue());
-    }
-
-    public T getValueOnBase(T base) {
-        T value = base;
+        T value = getBaseValue();
         for (PropertyModifier<T> modifier : getModifiers()) {
             value = modifier.apply(value);
         }
@@ -83,20 +85,19 @@ public class Property<T> implements EventListener<UpdateEvent> {
     /**
      * Calculates the base value of this property by selecting from the base value suppliers using the base value
      * selection strategy. Base value suppliers are added using {@link #addBaseValueSupplier(PropertyBaseSupplier)}.
-     * There has to be at least
-     * one base value supplier added before calling this method.
-     * The selection strategy can be set using {@link #setBaseValueSelector(ValueSelector)}.
-     * This corresponds to the value of the property without any modifiers applied.
+     * There has to be at least one base value supplier added before calling this method. The selection strategy can be
+     * set using {@link #setBaseValueSelector(ValueSelector)}. This corresponds to the value of the property without any
+     * modifiers applied.
      *
      * @return the base value of this property, as selected by the base value selector
      * @throws IllegalStateException if no base value suppliers have been added before calling this method
      */
     public T getBaseValue() {
-        if (getBaseValueSuppliers().isEmpty())
+        if (getBaseValueSuppliers().isEmpty()) {
             throw new IllegalStateException("No base value suppliers has been defined for this property");
-        Optional<T> opt =
-                baseValueSelector.select(
-                        getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
+        }
+        Optional<T> opt = baseValueSelector.select(
+                getBaseValueSuppliers().stream().map(PropertyBaseSupplier::getBaseValue).toList());
         //noinspection OptionalGetWithoutIsPresent - optional may only be empty if the list is empty
         return opt.get();
     }
@@ -127,13 +128,14 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
     /**
      * Adds a modifier to this property. The modifier will be applied after the base value is calculated, and will
-     * affect the end result retrieved by {@link #getValue()}. The modifier will be applied at the given index, so
-     * all modifiers with an index greater than or equal to the given index will be applied after the new modifier.
+     * affect the end result retrieved by {@link #getValue()}. The modifier will be applied at the given index, so all
+     * modifiers with an index greater than or equal to the given index will be applied after the new modifier.
      * <p>
      * Calling this method will trigger a value change event, as will any update events sent by the modifier.
      *
      * @param modifier the modifier to add to this property
-     * @param index    the index at which to add the modifier. Has to be between 0 and the number of modifiers already added
+     * @param index the index at which to add the modifier. Has to be between 0 and the number of modifiers
+     *         already added
      */
     public void addModifier(int index, @NotNull PropertyModifier<T> modifier) {
         Objects.requireNonNull(modifier);
@@ -153,7 +155,9 @@ public class Property<T> implements EventListener<UpdateEvent> {
      */
     public void removeModifier(@NotNull PropertyModifier<T> modifier) {
         Objects.requireNonNull(modifier);
-        if (!modifiers.contains(modifier)) return;
+        if (!modifiers.contains(modifier)) {
+            return;
+        }
         modifiers.remove(modifier);
         modifierRegistrations.get(modifier).unregisterAll();
         modifierRegistrations.remove(modifier);
@@ -161,8 +165,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
     }
 
     /**
-     * Removes all modifiers from this property. The property will no longer be affected by any modifiers.
-     * Calling this method will trigger a value change event.
+     * Removes all modifiers from this property. The property will no longer be affected by any modifiers. Calling this
+     * method will trigger a value change event.
      */
     public void clearModifiers() {
         modifiers.clear();
@@ -173,10 +177,10 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
 
     /**
-     * Retrieves the set of base value suppliers used by this property. The base value suppliers are used to
-     * calculate the base value of this property, which is then modified by the modifiers. The returned set is a copy
-     * of the internal set, so any changes to the returned set will not affect the property. The base value is selected
-     * using the base value selector, which can be set using {@link #setBaseValueSelector(ValueSelector)}.
+     * Retrieves the set of base value suppliers used by this property. The base value suppliers are used to calculate
+     * the base value of this property, which is then modified by the modifiers. The returned set is a copy of the
+     * internal set, so any changes to the returned set will not affect the property. The base value is selected using
+     * the base value selector, which can be set using {@link #setBaseValueSelector(ValueSelector)}.
      *
      * @return a copy of the set of base value suppliers used by this property
      */
@@ -186,10 +190,10 @@ public class Property<T> implements EventListener<UpdateEvent> {
 
     /**
      * Adds a base value supplier to this property. The added supplier will provide a base value for the selection
-     * strategy to choose from. The selection strategy can be set using
-     * {@link #setBaseValueSelector(ValueSelector)}.
+     * strategy to choose from. The selection strategy can be set using {@link #setBaseValueSelector(ValueSelector)}.
      * <p>
-     * Calling this method will trigger a value change event, as will any update events sent by the base value supplier.
+     * Calling this method will trigger a value change event, as will any update events sent by the base value
+     * supplier.
      *
      * @param baseValueSupplier the base value supplier to add to this property
      */
@@ -225,8 +229,8 @@ public class Property<T> implements EventListener<UpdateEvent> {
      * <p>
      * Calling this method will trigger a value change event, as will any update events sent by the value selector.
      *
-     * @param baseValueSelector the strategy selecting the base value from all base values provided by the base value
-     *                          suppliers
+     * @param baseValueSelector the strategy selecting the base value from all base values provided by the base
+     *         value suppliers
      */
     public void setBaseValueSelector(@NotNull ValueSelector<T> baseValueSelector) {
         Objects.requireNonNull(baseValueSelector);
@@ -246,16 +250,17 @@ public class Property<T> implements EventListener<UpdateEvent> {
     }
 
     /**
-     * Registers a listener to be notified when the way this property is calculated changes. Specifically,
-     * the listener will be notified when the base value changes, when a modifier is added or removed, or when the
-     * base value selector changes. If the implementation of the modifiers and base value providers of this property
-     * notify this property when they change, the listener will also be called on those changes. However, it is not
-     * guaranteed that the listener will be called on every change, as the implementation of the modifiers and base
-     * value providers may not notify this property of every change. It is also not guaranteed that the new value
-     * will be different from the old value, since changes to the property may not affect the end result (for example,
-     * changes to a base value supplier that is not selected by the selection strategy).
+     * Registers a listener to be notified when the way this property is calculated changes. Specifically, the listener
+     * will be notified when the base value changes, when a modifier is added or removed, or when the base value
+     * selector changes. If the implementation of the modifiers and base value providers of this property notify this
+     * property when they change, the listener will also be called on those changes. However, it is not guaranteed that
+     * the listener will be called on every change, as the implementation of the modifiers and base value providers may
+     * not notify this property of every change. It is also not guaranteed that the new value will be different from the
+     * old value, since changes to the property may not affect the end result (for example, changes to a base value
+     * supplier that is not selected by the selection strategy).
      *
      * @param listener the listener to register
+     *
      * @return a registration object that can be used to unregister the listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})

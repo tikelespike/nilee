@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @param <S> the type of the first object
  * @param <T> the type of the second object
- *           
+ *
  * @author Timo Weberruß
  */
 public class Pair<S, T> {
@@ -18,7 +18,7 @@ public class Pair<S, T> {
     /**
      * Creates a new pair of two objects.
      *
-     * @param first  the first object
+     * @param first the first object
      * @param second the second object
      */
     public Pair(S first, T second) {
@@ -46,16 +46,17 @@ public class Pair<S, T> {
 
     @Override
     public String toString() {
-        return "Pair{" +
-            "first=" + first +
-            ", second=" + second +
-            '}';
+        return "Pair{" + "first=" + first + ", second=" + second + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Pair<?, ?> pair = (Pair<?, ?>) o;
         return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
     }
