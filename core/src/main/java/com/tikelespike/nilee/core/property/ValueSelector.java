@@ -13,11 +13,25 @@ import java.util.Optional;
  * returned value should only depend on the input.
  * <p>
  * If the result for a given list of input values does change, the implementing class should notify its observers by
- * calling {@link #update()} on a change.
+ * calling {@link #update()} on a change. Alternatively, if the result depends on the value of a {@link Property}, that
+ * property should be added as a dependency using {@link #addDependency(UpdateSubject)} or by passing it to the
+ * constructor. This will ensure the update method is called appropriately.
  *
  * @param <T> the type of the values to select from
  */
 public abstract class ValueSelector<T> extends UpdateSubject {
+
+    /**
+     * Initializes the value selector with the given property dependencies. The selector will notify its observers when
+     * any of the dependencies change. If the selector's selection depends on any non-constant state, that state should
+     * either be added to these dependencies if it is described by a property, or the implementing subclass should call
+     * {@link #update()} when the value changes.
+     *
+     * @param dependencies the properties this selector depends on
+     */
+    protected ValueSelector(Property<?>... dependencies) {
+        super(dependencies);
+    }
 
     /**
      * Chooses a value from the given list of values and returns it. The value in the returned optional must be one of
@@ -27,7 +41,9 @@ public abstract class ValueSelector<T> extends UpdateSubject {
      * the returned value should only depend on the input.
      * <p>
      * If the result for a given list of input values does change, the implementing class should notify its observers by
-     * calling {@link #update()} on a change.
+     * calling {@link #update()} on a change. Alternatively, if the result depends on the value of a {@link Property},
+     * that property should be added as a dependency using {@link #addDependency(UpdateSubject)}. This will ensure the
+     * update method is called appropriately.
      *
      * @param values the list of values to select from. The returned value must be one of these values.
      *
