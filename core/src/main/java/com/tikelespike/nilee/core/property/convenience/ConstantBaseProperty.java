@@ -7,10 +7,12 @@ import com.tikelespike.nilee.core.property.Property;
  * A {@link Property} that has a standard/default base value that can be set and retrieved. For example, a character's
  * strength score has a standard value set during character creation, which represents the "canonical" base value of the
  * property.
+ *
+ * @param <T> the type of the property
  */
-public class ConstantBaseProperty extends Property<Integer> {
+public class ConstantBaseProperty<T> extends Property<T> {
 
-    private final ConstantBaseValue constantBaseValue;
+    private final ConstantBaseValue<T> constantBaseValue;
 
     /**
      * Creates a new {@link ConstantBaseProperty} with the given default base value and description.
@@ -19,8 +21,8 @@ public class ConstantBaseProperty extends Property<Integer> {
      *         character set during character creation)
      * @param description a short description of the source of the default value, e.g. "Base score"
      */
-    public ConstantBaseProperty(int defaultBase, LocalizedString description) {
-        constantBaseValue = new ConstantBaseValue(defaultBase, description);
+    public ConstantBaseProperty(T defaultBase, LocalizedString description) {
+        constantBaseValue = new ConstantBaseValue<>(defaultBase, description);
         addBaseValueSupplier(constantBaseValue);
     }
 
@@ -30,7 +32,7 @@ public class ConstantBaseProperty extends Property<Integer> {
      *
      * @param baseValue the new default base value of the property
      */
-    public void setDefaultBaseValue(int baseValue) {
+    public void setDefaultBaseValue(T baseValue) {
         constantBaseValue.setBaseValue(baseValue);
     }
 
@@ -40,7 +42,7 @@ public class ConstantBaseProperty extends Property<Integer> {
      *
      * @return baseValue the new default base value of the property
      */
-    public int getDefaultBaseValue() {
+    public T getDefaultBaseValue() {
         return constantBaseValue.getBaseValue();
     }
 }

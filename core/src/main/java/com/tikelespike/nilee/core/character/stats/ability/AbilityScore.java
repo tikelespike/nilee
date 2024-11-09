@@ -1,12 +1,12 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
 import com.tikelespike.nilee.core.dice.DiceExpression;
-import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
+import com.tikelespike.nilee.core.property.PropertyModifier;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
+import com.tikelespike.nilee.core.property.convenience.ConstantBaseValue;
+import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.Objects;
 
 /**
  * One of the six {@link AbilityScores} (namely strength, dexterity, constitution, intelligence, wisdom, and charisma)
@@ -21,29 +21,42 @@ import java.util.Objects;
  * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#UsingAbilityScores">Ability
  *         Scores on D&D Beyond</a>
  */
-public class AbilityScore extends ConstantBaseProperty {
+public class AbilityScore extends ConstantBaseProperty<Integer> {
 
     private static final int NEUTRAL_SCORE_VALUE = 10;
-    private final LocalizedString longName;
-    private final LocalizedString shortName;
 
-    private final Property<DiceExpression> checkRoll = new Property<>(new DefaultAbilityCheckRoll(this));
+    private final Ability ability;
+
+    private final Property<DiceExpression> checkRoll = new Property<>(new DefaultAbilityRoll(this));
+    private final Property<ProficiencyLevel> savingThrowProficiency = new Property<>(
+            new ConstantBaseValue<>(ProficiencyLevel.NOT_PROFICIENT,
+                    t -> t.translate("core.character.ability.default_proficiency_description")),
+            new MaxValueSelector<>());
+    private final Property<DiceExpression> savingThrow = new Property<>(new DefaultAbilityRoll(this));
+
+    private PropertyModifier<DiceExpression> savingThrowBonus;
 
     /**
-     * Creates a new ability score with the given default base value, long name, and short name.
+     * Creates a new score for the given ability with the given default base value.
      *
      * @param defaultBase the initial, unmodified value of this ability score (usually rolled or assigned using
      *         a point-buy system upon character creation)
-     * @param longName the name of this ability score (e.g. "Strength")
-     * @param shortName the abbreviated name of this ability score (e.g. "STR", usually referring to the
-     *         modifier)
+     * @param ability the ability type this score quantifies
+     * @param proficiencyBonus the proficiency bonus of the character (used for saving throws if proficient).
      */
-    public AbilityScore(int defaultBase, @NotNull LocalizedString longName, @NotNull LocalizedString shortName) {
-        super(defaultBase, longName);
-        Objects.requireNonNull(longName);
-        Objects.requireNonNull(shortName);
-        this.longName = longName;
-        this.shortName = shortName;
+    public AbilityScore(int defaultBase, @NotNull Ability ability, @NotNull Property<Integer> proficiencyBonus) {
+        super(defaultBase, ability.getLongName());
+        this.ability = ability;
+        savingThrowProficiency.addValueChangeListener(e -> {
+            if (savingThrowBonus != null) {
+                savingThrow.removeModifier(savingThrowBonus);
+                savingThrowBonus = null;
+            }
+            if (e.getNewValue() != ProficiencyLevel.NOT_PROFICIENT) {
+                savingThrowBonus = e.getNewValue().getBonusModifier(proficiencyBonus);
+                savingThrow.addModifier(savingThrowBonus);
+            }
+        });
     }
 
     /**
@@ -69,20 +82,32 @@ public class AbilityScore extends ConstantBaseProperty {
     }
 
     /**
-     * Returns an abbreviation for the name of this ability score. For example, "Strength" is abbreviated as "STR".
+     * Returns the ability type this score quantifies.
      *
-     * @return the abbreviated name of this ability score (e.g. "STR", usually referring to the modifier)
+     * @return the ability type this score quantifies
      */
-    public LocalizedString getShortName() {
-        return shortName;
+    public Ability getAbility() {
+        return ability;
     }
 
     /**
-     * Returns the full name of this ability score (for example, "Strength").
+     * Returns the property describing the proficiency level present in this ability score for saving throws. Can be
+     * modified to reflect the proficiency level of the character.
      *
-     * @return the name of this ability score
+     * @return the property describing the proficiency level present in this ability score for saving throws
      */
-    public LocalizedString getLongName() {
-        return longName;
+    public Property<ProficiencyLevel> getSavingThrowProficiency() {
+        return savingThrowProficiency;
+    }
+
+    /**
+     * Returns the property describing the dice expression used to calculate the result of a saving throw using this
+     * ability score.
+     *
+     * @return the property describing the dice expression used to calculate the result of a saving throw using this
+     *         ability score
+     */
+    public Property<DiceExpression> getSavingThrow() {
+        return savingThrow;
     }
 }

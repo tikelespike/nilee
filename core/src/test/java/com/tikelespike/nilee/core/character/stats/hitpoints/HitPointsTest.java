@@ -1,7 +1,9 @@
 package com.tikelespike.nilee.core.character.stats.hitpoints;
 
+import com.tikelespike.nilee.core.character.stats.ability.Ability;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScore;
 import com.tikelespike.nilee.core.events.SimpleListener;
+import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HitPointsTest {
+    //CHECKSTYLE.OFF: MagicNumber
 
     private static final int TEST_CONSTITUTION = 16;
 
@@ -22,7 +25,8 @@ class HitPointsTest {
 
     @BeforeEach
     void setUp() {
-        hitPoints = new HitPoints(new AbilityScore(TEST_CONSTITUTION, t -> "Constitution", t -> "CON"));
+        hitPoints = new HitPoints(
+                new AbilityScore(TEST_CONSTITUTION, Ability.CONSTITUTION, new ConstantBaseProperty<>(0, null)));
         hitPoints.setCurrentHitPoints(0);
         maxHitPoints = hitPoints.getMaxHitPoints().getValue();
         hpListener = new SimpleListener();
@@ -32,26 +36,26 @@ class HitPointsTest {
     }
 
     @Test
-    void test_getMaxHitPoints() {
+    void testGetMaxHitPoints() {
         assertEquals((TEST_CONSTITUTION - 10) / 2, maxHitPoints);
     }
 
     @Test
-    void test_getSetCurrentHitPoints() {
+    void testGetSetCurrentHitPoints() {
         hitPoints.setCurrentHitPoints(maxHitPoints);
         assertEquals(maxHitPoints, hitPoints.getCurrentHitPoints());
         assertTrue(hpListener.wasCalled());
     }
 
     @Test
-    void test_getSetTemporaryHitPoints() {
+    void testGetSetTemporaryHitPoints() {
         hitPoints.setTemporaryHitPoints(5);
         assertEquals(5, hitPoints.getTemporaryHitPoints());
         assertTrue(tempHpListener.wasCalled());
     }
 
     @Test
-    void test_takeDamage() {
+    void testTakeDamage() {
         hitPoints.setCurrentHitPoints(maxHitPoints);
         hitPoints.setTemporaryHitPoints(5);
         hpListener.reset();
@@ -66,7 +70,7 @@ class HitPointsTest {
     }
 
     @Test
-    void test_heal() {
+    void testHeal() {
         hitPoints.setCurrentHitPoints(maxHitPoints - 2);
         hpListener.reset();
         hitPoints.heal(1);
@@ -79,4 +83,5 @@ class HitPointsTest {
         assertEquals(maxHitPoints, hitPoints.getCurrentHitPoints());
     }
 
+    //CHECKSTYLE.ON: MagicNumber
 }

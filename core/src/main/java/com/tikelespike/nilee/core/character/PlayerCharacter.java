@@ -1,11 +1,17 @@
 package com.tikelespike.nilee.core.character;
 
+import com.tikelespike.nilee.core.character.classes.CharacterClass;
+import com.tikelespike.nilee.core.character.stats.ProficiencyBonus;
+import com.tikelespike.nilee.core.character.stats.TotalCharacterLevel;
+import com.tikelespike.nilee.core.character.stats.ability.Ability;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -34,6 +40,8 @@ public class PlayerCharacter {
 
     private final AbilityScores abilityScores;
     private final HitPoints hitPoints;
+    private final List<CharacterClass> classes; // TODO: Persistency
+    private final ProficiencyBonus proficiencyBonus;
 
     // unique identifier for corresponding database snapshots
     private Long id;
@@ -48,8 +56,10 @@ public class PlayerCharacter {
      * Creates a new player character with uninitialized values. Should only be used for loading from snapshots.
      */
     protected PlayerCharacter() {
-        abilityScores = new AbilityScores();
-        hitPoints = new HitPoints(abilityScores.getConstitution());
+        classes = new ArrayList<>();
+        proficiencyBonus = new ProficiencyBonus(new TotalCharacterLevel(classes));
+        abilityScores = new AbilityScores(proficiencyBonus);
+        hitPoints = new HitPoints(abilityScores.get(Ability.CONSTITUTION));
     }
 
     /**
@@ -102,12 +112,12 @@ public class PlayerCharacter {
         snapshot.setId(this.getId());
         snapshot.setOwner(this.getOwner());
         snapshot.setName(this.getName());
-        snapshot.setStrength(this.getAbilityScores().getStrength().getDefaultBaseValue());
-        snapshot.setDexterity(this.getAbilityScores().getDexterity().getDefaultBaseValue());
-        snapshot.setConstitution(this.getAbilityScores().getConstitution().getDefaultBaseValue());
-        snapshot.setIntelligence(this.getAbilityScores().getIntelligence().getDefaultBaseValue());
-        snapshot.setWisdom(this.getAbilityScores().getWisdom().getDefaultBaseValue());
-        snapshot.setCharisma(this.getAbilityScores().getCharisma().getDefaultBaseValue());
+        snapshot.setStrength(this.getAbilityScores().get(Ability.STRENGTH).getDefaultBaseValue());
+        snapshot.setDexterity(this.getAbilityScores().get(Ability.DEXTERITY).getDefaultBaseValue());
+        snapshot.setConstitution(this.getAbilityScores().get(Ability.CONSTITUTION).getDefaultBaseValue());
+        snapshot.setIntelligence(this.getAbilityScores().get(Ability.INTELLIGENCE).getDefaultBaseValue());
+        snapshot.setWisdom(this.getAbilityScores().get(Ability.WISDOM).getDefaultBaseValue());
+        snapshot.setCharisma(this.getAbilityScores().get(Ability.CHARISMA).getDefaultBaseValue());
         snapshot.setHitPoints(this.getHitPoints().getCurrentHitPoints());
         snapshot.setTemporaryHitPoints(this.getHitPoints().getTemporaryHitPoints());
         snapshot.setHitPointMaxOverride(this.getHitPoints().getMaxHitPoints().getOverride());
@@ -126,12 +136,12 @@ public class PlayerCharacter {
         id = snapshot.getId();
         owner = snapshot.getOwner();
         name = snapshot.getName();
-        abilityScores.getStrength().setDefaultBaseValue(snapshot.getStrength());
-        abilityScores.getDexterity().setDefaultBaseValue(snapshot.getDexterity());
-        abilityScores.getConstitution().setDefaultBaseValue(snapshot.getConstitution());
-        abilityScores.getIntelligence().setDefaultBaseValue(snapshot.getIntelligence());
-        abilityScores.getWisdom().setDefaultBaseValue(snapshot.getWisdom());
-        abilityScores.getCharisma().setDefaultBaseValue(snapshot.getCharisma());
+        abilityScores.get(Ability.STRENGTH).setDefaultBaseValue(snapshot.getStrength());
+        abilityScores.get(Ability.DEXTERITY).setDefaultBaseValue(snapshot.getDexterity());
+        abilityScores.get(Ability.CONSTITUTION).setDefaultBaseValue(snapshot.getConstitution());
+        abilityScores.get(Ability.INTELLIGENCE).setDefaultBaseValue(snapshot.getIntelligence());
+        abilityScores.get(Ability.WISDOM).setDefaultBaseValue(snapshot.getWisdom());
+        abilityScores.get(Ability.CHARISMA).setDefaultBaseValue(snapshot.getCharisma());
         hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
         hitPoints.setCurrentHitPoints(snapshot.getHitPoints());
         hitPoints.setTemporaryHitPoints(snapshot.getTemporaryHitPoints());
@@ -160,6 +170,40 @@ public class PlayerCharacter {
      */
     public AbilityScores getAbilityScores() {
         return abilityScores;
+    }
+
+    /**
+     * Returns the list of different classes this character has levels in. If a character does not use the
+     * multi-classing rules, this list will contain only one class.
+     * <p>
+     * To mutate the classes of this character, use {@link #addClass(CharacterClass)} and
+     * {@link #removeClass(CharacterClass)}.
+     *
+     * @return the list of classes this character has levels in
+     */
+    public List<CharacterClass> getClasses() {
+        return new ArrayList<>(classes);
+    }
+
+    /**
+     * Adds a new class to this character (using the multiclassing rules if the class is not the first one of this
+     * character).
+     *
+     * @param characterClass the class to add to this character
+     */
+    public void addClass(CharacterClass characterClass) {
+        classes.add(characterClass);
+        abilityScores.updateClassBasedSavingThrowProficiencies(classes);
+    }
+
+    /**
+     * Removes a class from this character.
+     *
+     * @param characterClass the class to remove from this character
+     */
+    public void removeClass(CharacterClass characterClass) {
+        classes.remove(characterClass);
+        abilityScores.updateClassBasedSavingThrowProficiencies(classes);
     }
 
     /**

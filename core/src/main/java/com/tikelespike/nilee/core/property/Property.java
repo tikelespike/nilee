@@ -51,11 +51,23 @@ public class Property<T> extends UpdateSubject implements EventListener<UpdateEv
     /**
      * Creates a property with the given default base value supplier.
      *
-     * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}.
+     * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}
      */
     public Property(@NotNull PropertyBaseSupplier<T> baseValueSupplier) {
         this();
         addBaseValueSupplier(Objects.requireNonNull(baseValueSupplier));
+    }
+
+    /**
+     * Creates a property with the given default base value supplier and selection strategy.
+     *
+     * @param baseValueSupplier supplies the default value returned when calling {@link #getBaseValue()}
+     * @param valueSelector the strategy selecting the base value from all base values provided by the base
+     *         value suppliers
+     */
+    public Property(@NotNull PropertyBaseSupplier<T> baseValueSupplier, @NotNull ValueSelector<T> valueSelector) {
+        this(baseValueSupplier);
+        setBaseValueSelector(valueSelector);
     }
 
 
@@ -193,8 +205,9 @@ public class Property<T> extends UpdateSubject implements EventListener<UpdateEv
      */
     public void setBaseValueSelector(@NotNull ValueSelector<T> baseValueSelector) {
         Objects.requireNonNull(baseValueSelector);
+        ValueSelector<T> old = this.baseValueSelector;
         this.baseValueSelector = baseValueSelector;
-        removeDependency(this.baseValueSelector);
+        removeDependency(old);
         addDependency(baseValueSelector);
     }
 
@@ -228,8 +241,8 @@ public class Property<T> extends UpdateSubject implements EventListener<UpdateEv
     }
 
     /**
-     * Checks if the value of this property has changed since the last time {@link #notifyListeners()} was called and
-     * notifies listeners if necessary.
+     * Checks if the value of this property has changed since the last time this method was called and notifies
+     * listeners if necessary.
      */
     private void notifyListeners() {
         T newValue = baseValueSuppliers.isEmpty() ? null : getValue();

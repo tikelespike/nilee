@@ -4,8 +4,6 @@ import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Objects;
-
 /**
  * A specific {@link PropertyBaseSupplier} that provides the modifier value of a given {@link AbilityScore} as its base
  * value.
@@ -21,9 +19,8 @@ public final class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer
      *         this supplier
      */
     public AbilityScoreBaseSupplier(@NotNull AbilityScore abilityScore) {
-        Objects.requireNonNull(abilityScore);
+        super(abilityScore);
         this.abilityScore = abilityScore;
-        abilityScore.addValueChangeListener(event -> update());
     }
 
     @Override
@@ -33,12 +30,12 @@ public final class AbilityScoreBaseSupplier extends PropertyBaseSupplier<Integer
 
     @Override
     public LocalizedString getAbstractDescription() {
-        return abilityScore.getShortName();
+        return abilityScore.getAbility().getShortName();
     }
 
     @Override
     public LocalizedString getSourceName() {
-        return abilityScore.getLongName();
+        return abilityScore.getAbility().getLongName();
     }
 
     /**

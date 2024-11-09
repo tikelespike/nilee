@@ -11,7 +11,8 @@ import jakarta.validation.constraints.NotNull;
 
 /**
  * A memento class of a {@link PlayerCharacter} that can stored in the database. Player character snapshots can be used
- * to save a characters state, optionally store it to the database and restore it later.
+ * to save a characters state, optionally store it to the database and restore it later. It can also be understood as a
+ * "data transfer object" (DTO) for a player character.
  * <p>
  * This class is not intended to be used directly. Instead, use {@link PlayerCharacter#createSnapshot()} to create a
  * snapshot of the current character state. To restore a character from a snapshot, use

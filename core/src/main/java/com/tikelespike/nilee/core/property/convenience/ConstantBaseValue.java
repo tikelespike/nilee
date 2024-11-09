@@ -5,10 +5,12 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 
 /**
  * A {@link PropertyBaseSupplier} that wraps a constant value that can be accessed with getters and setters.
+ *
+ * @param <T> the type of the base value
  */
-public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
+public class ConstantBaseValue<T> extends PropertyBaseSupplier<T> {
 
-    private Integer baseValue;
+    private T baseValue;
     private LocalizedString sourceName;
 
     /**
@@ -19,13 +21,13 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      * @param sourceName a short name describing the semantics of where the base value comes from (e.g. "Base
      *         Strength")
      */
-    public ConstantBaseValue(int baseValue, LocalizedString sourceName) {
+    public ConstantBaseValue(T baseValue, LocalizedString sourceName) {
         this.baseValue = baseValue;
         this.sourceName = sourceName;
     }
 
     @Override
-    public Integer getBaseValue() {
+    public T getBaseValue() {
         return baseValue;
     }
 
@@ -34,7 +36,7 @@ public class ConstantBaseValue extends PropertyBaseSupplier<Integer> {
      *
      * @param baseValue the new base value
      */
-    public void setBaseValue(int baseValue) {
+    public void setBaseValue(T baseValue) {
         this.baseValue = baseValue;
         update();
     }

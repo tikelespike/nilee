@@ -19,6 +19,7 @@ public class DefaultAC extends PropertyBaseSupplier<Integer> {
      *         character whose armor class this is
      */
     public DefaultAC(AbilityScore dex) {
+        super(dex);
         this.dex = dex;
     }
 
