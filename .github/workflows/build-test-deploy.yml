@@ -63,7 +63,19 @@ jobs:
           cache: maven
 
       - name: Run JUnit Tests
-        run: mvn test
+        run: mvn -B test
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/target/surefire-reports/*.xml'   # Uploads all JUnit XML reports for later download
+
+      - name: Publish Test Results
+        if: always()                                 # Always publish results even if tests fail
+        uses: actions/upload-test-results@v2         # Publishes results in GitHub UI
+        with:
+          files: '**/target/surefire-reports/*.xml'  # Path to the XML test report files
 
   push-docker:
     needs: test # Push only if tests successful
