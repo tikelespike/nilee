@@ -39,4 +39,9 @@ public abstract class AbstractClass implements CharacterClass {
     public final Map<Ability, ProficiencyLevel> getSavingThrowProficiencies() {
         return classType.getSavingThrowProficiencies();
     }
+
+    @Override
+    public CharacterClassArchetype getArchetype() {
+        return classType;
+    }
 }

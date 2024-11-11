@@ -45,4 +45,13 @@ public interface CharacterClass {
      * @return the proficiency levels for saving throws provided by this class
      */
     Map<Ability, ProficiencyLevel> getSavingThrowProficiencies();
+
+    /**
+     * Returns the class archetype this instance is based on. The archetype defines the type of class (e.g. fighter,
+     * wizard, rogue, ...) and the general ruleset for that class (while this instance represents the dynamic,
+     * character-dependent state of that class).
+     *
+     * @return the general type of class this instance models the dynamic state of
+     */
+    CharacterClassArchetype getArchetype();
 }

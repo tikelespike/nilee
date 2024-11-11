@@ -28,7 +28,7 @@ public class TotalCharacterLevel extends Property<Integer> {
             public LocalizedString getAbstractDescription() {
                 return t -> classes.stream()
                         .map(c -> t.translate("core.character.classes.total_level_calculation_step", c.getLevel(),
-                                c.getName().getTranslation(t)))
+                                c.getArchetype().getName().getTranslation(t)))
                         .collect(Collectors.joining(" " + t.translate("generic.sum.operator") + " "));
             }
 

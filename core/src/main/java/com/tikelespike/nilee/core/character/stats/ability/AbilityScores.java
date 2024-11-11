@@ -1,4 +1,4 @@
-﻿package com.tikelespike.nilee.core.character.stats.ability;
+package com.tikelespike.nilee.core.character.stats.ability;
 
 import com.tikelespike.nilee.core.character.classes.CharacterClass;
 import com.tikelespike.nilee.core.character.stats.ProficiencyBonus;
@@ -74,7 +74,7 @@ public class AbilityScores extends AbstractEntity {
                     get(ability).getSavingThrowProficiency().removeBaseValueSupplier(oldSupplier);
                 }
                 ConstantBaseValue<ProficiencyLevel> supplier =
-                        new ConstantBaseValue<>(proficiency, firstClass.getName());
+                        new ConstantBaseValue<>(proficiency, firstClass.getArchetype().getName());
                 get(ability).getSavingThrowProficiency().addBaseValueSupplier(supplier);
                 savingThrowProficiencies.put(ability, supplier);
             }
