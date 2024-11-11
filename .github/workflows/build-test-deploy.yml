@@ -1,4 +1,4 @@
-name: Docker
+name: Build, Test and Deploy
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,9 +7,9 @@ name: Docker
 
 on:
   push:
-    branches: [ "main" ]
-    # Publish server tags as releases.
-    tags: [ 'v*.*.*' ]
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -23,24 +23,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+          
       - name: Build with Maven
         run: mvn -B clean package --file pom.xml -Pproduction
-      - name: Upload JAR
+        
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: app
-          path: app/target/*.jar
+          name: build-artifacts
+          path: '**/target'
 
   push-docker:
     needs: build-maven
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
@@ -88,8 +93,8 @@ jobs:
       - name: Download JAR
         uses: actions/download-artifact@v3
         with:
-          name: app
-          path: app/target
+          name: build-artifacts
+          path: .
 
 
       # Build and push Docker image with Buildx (don't push on PR)
@@ -124,6 +129,7 @@ jobs:
   deploy-docker-dev:
     needs: push-docker
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
