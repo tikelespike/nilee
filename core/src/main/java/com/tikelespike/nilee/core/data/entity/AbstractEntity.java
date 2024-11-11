@@ -52,7 +52,7 @@ public abstract class AbstractEntity {
     /**
      * @param version the new version of this entity
      */
-    public final void setVersion(int version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 
