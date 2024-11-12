@@ -6,23 +6,22 @@ import com.tikelespike.nilee.core.i18n.LocalizedString;
 /**
  * Example 5e class.
  */
-public class ExampleClassArchetype extends AbstractClassType {
+public class OtherExampleClassArchetype extends AbstractClassType {
 
     /**
      * Creates a new example class archetype.
      */
-    public ExampleClassArchetype() {
-        setSavingThrowProficiency(Ability.DEXTERITY);
-        setSavingThrowProficiency(Ability.WISDOM);
+    public OtherExampleClassArchetype() {
+        setSavingThrowProficiency(Ability.CONSTITUTION);
     }
 
     @Override
     public LocalizedString getName() {
-        return t -> "Test Class (dex, wis)";
+        return t -> "Other test class (con)";
     }
 
     @Override
     public CharacterClass getNewInstance() {
-        return new ExampleClass(this);
+        return new OtherExampleClass(this);
     }
 }
