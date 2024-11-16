@@ -50,7 +50,7 @@ public class AbilityScoreBox extends VerticalLayout {
     }
 
     private static Component createScoreLabel(AbilityScore abilityScore, TranslationProvider translationProvider) {
-        Text text = new Text(abilityScore.getLongName().getTranslation(translationProvider).toUpperCase());
+        Text text = new Text(abilityScore.getAbility().getLongName().getTranslation(translationProvider).toUpperCase());
         Div label = new Div(text);
         label.getStyle().set("font-size", "0.8em");
         return label;
@@ -69,8 +69,8 @@ public class AbilityScoreBox extends VerticalLayout {
     private static Button createCheckButton(AbilityScore abilityScore, TranslationProvider translationProvider,
                                             RollBus rollBus, PlayerCharacter playerCharacter) {
         Button skillCheckButton = new RollButton(abilityScore.getCheckRoll(), translationProvider,
-                t -> t.translate("character_sheet.dice.check", abilityScore.getLongName().getTranslation(t)), rollBus,
-                playerCharacter);
+                t -> t.translate("character_sheet.dice.check",
+                        abilityScore.getAbility().getLongName().getTranslation(t)), rollBus, playerCharacter);
         skillCheckButton.setText(
                 (abilityScore.getModifier() >= 0 ? "+ " : "- ") + Math.abs(abilityScore.getModifier()));
         skillCheckButton.addThemeVariants(ButtonVariant.LUMO_LARGE);

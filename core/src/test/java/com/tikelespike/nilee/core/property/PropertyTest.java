@@ -1,52 +1,67 @@
 package com.tikelespike.nilee.core.property;
 
 import com.tikelespike.nilee.core.events.EventStoreListener;
-import com.tikelespike.nilee.core.property.convenience.*;
+import com.tikelespike.nilee.core.property.convenience.AdditiveModifier;
+import com.tikelespike.nilee.core.property.convenience.ConstantBaseProperty;
+import com.tikelespike.nilee.core.property.convenience.ConstantBaseValue;
+import com.tikelespike.nilee.core.property.convenience.FirstValueSelector;
+import com.tikelespike.nilee.core.property.convenience.ManualOverrideModifier;
+import com.tikelespike.nilee.core.property.convenience.MaxValueSelector;
+import com.tikelespike.nilee.core.property.convenience.MultiplicativeModifier;
+import com.tikelespike.nilee.core.property.events.UpdateEvent;
 import com.tikelespike.nilee.core.property.events.ValueChangeEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 class PropertyTest {
+
+    //CHECKSTYLE.OFF: MagicNumber
 
     private static final int TEST_VALUE = 42;
 
     // CUT
-    private ConstantBaseProperty property;
+    private ConstantBaseProperty<Integer> property;
 
-    private EventStoreListener<ValueChangeEvent<Integer>> listener;
+    private EventStoreListener<ValueChangeEvent<Integer>> valueListener;
+    private EventStoreListener<UpdateEvent> updateListener;
 
     @BeforeEach
     void setUp() {
-        property = new ConstantBaseProperty(TEST_VALUE, t -> "Test property");
+        property = new ConstantBaseProperty<>(TEST_VALUE, t -> "Test property");
         property.setBaseValueSelector(new MaxValueSelector<>());
 
-        listener = new EventStoreListener<>();
+        valueListener = new EventStoreListener<>();
+        updateListener = new EventStoreListener<>();
     }
 
     @Test
-    void test_singleBase_noModifiers() {
+    void testSingleBaseNoModifiers() {
         assertEquals(TEST_VALUE, property.getValue());
         assertEquals(TEST_VALUE, property.getBaseValue());
     }
 
     @Test
-    void test_multipleBase_noModifiers() {
-        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2"));
+    void testMultipleBaseNoModifiers() {
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2"));
         assertEquals(TEST_VALUE + 1, property.getValue());
         assertEquals(TEST_VALUE + 1, property.getBaseValue());
     }
 
     @Test
-    void test_singleBase_singleModifier() {
+    void testSingleBaseSingleModifier() {
         property.addModifier(new AdditiveModifier(1, t -> "Test modifier"));
         assertEquals(TEST_VALUE + 1, property.getValue());
         assertEquals(TEST_VALUE, property.getBaseValue());
     }
 
     @Test
-    void test_singleBase_multipleModifiers() {
+    void testSingleBaseMultipleModifiers() {
         property.addModifier(new AdditiveModifier(1, t -> "Add 1 mod"));
         property.addModifier(new MultiplicativeModifier(2, t -> "x2 mod"));
         assertEquals((TEST_VALUE + 1) * 2, property.getValue());
@@ -54,8 +69,8 @@ class PropertyTest {
     }
 
     @Test
-    void test_multipleBase_multipleModifiers() {
-        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2"));
+    void testMultipleBaseMultipleModifiers() {
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2"));
         property.addModifier(new AdditiveModifier(1, t -> "Add 1 mod"));
         property.addModifier(new MultiplicativeModifier(2, t -> "x2 mod"));
         assertEquals((TEST_VALUE + 1 + 1) * 2, property.getValue());
@@ -63,8 +78,8 @@ class PropertyTest {
     }
 
     @Test
-    void test_changeSelector() {
-        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2"));
+    void testChangeSelector() {
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2"));
         property.addModifier(new AdditiveModifier(1, t -> "Add 1 mod"));
         assertEquals(TEST_VALUE + 2, property.getValue());
         assertEquals(TEST_VALUE + 1, property.getBaseValue());
@@ -75,8 +90,8 @@ class PropertyTest {
     }
 
     @Test
-    void test_removeBaseValueSupplier() {
-        ConstantBaseValue base = new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2");
+    void testRemoveBaseValueSupplier() {
+        ConstantBaseValue<Integer> base = new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2");
         property.addBaseValueSupplier(base);
         property.addModifier(new MultiplicativeModifier(2, t -> "x2 mod"));
         assertEquals((TEST_VALUE + 1) * 2, property.getValue());
@@ -88,7 +103,7 @@ class PropertyTest {
     }
 
     @Test
-    void test_removeModifier() {
+    void testRemoveModifier() {
         AdditiveModifier modifier = new AdditiveModifier(1, t -> "Add 1 mod");
         property.addModifier(modifier);
         property.addModifier(new MultiplicativeModifier(2, t -> "x2 mod"));
@@ -98,88 +113,132 @@ class PropertyTest {
         assertEquals(TEST_VALUE * 2, property.getValue());
 
         property.addModifier(modifier);
-        assertEquals(TEST_VALUE * 2 + 1, property.getValue(), "Order of modifiers should correspond to order of addition");
+        assertEquals(TEST_VALUE * 2 + 1, property.getValue(),
+                "Order of modifiers should correspond to order of addition");
     }
 
     @Test
-    void test_selectorChangeEvent() {
-        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2"));
-        property.addValueChangeListener(listener);
+    void testSelectorChangeEvent() {
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2"));
+        property.addValueChangeListener(valueListener);
         property.setBaseValueSelector(new FirstValueSelector<>());
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
-        assertNotNull(event, "Event should be fired when selector is changed");
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
+        assertNotNull(event, "Event should be fired when value has changed because of new selector");
         assertEquals(TEST_VALUE + 1, event.getOldValue(), "Old value should be the value before the selector change");
         assertEquals(TEST_VALUE, event.getNewValue(), "New value should be the value after the selector change");
     }
 
     @Test
-    void test_newBaseSupplierEvent() {
-        property.addValueChangeListener(listener);
-        property.addBaseValueSupplier(new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2"));
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
-        assertNotNull(event, "Event should be fired when base supplier is added");
-        assertEquals(TEST_VALUE, event.getOldValue(), "Old value should be the value before the base supplier addition");
-        assertEquals(TEST_VALUE + 1, event.getNewValue(), "New value should be the value after the base supplier addition");
+    void testNewBaseSupplierEvent() {
+        property.addValueChangeListener(valueListener);
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2"));
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
+        assertNotNull(event, "Event should be fired when value changes due to new base supplier");
+        assertEquals(TEST_VALUE, event.getOldValue(),
+                "Old value should be the value before the base supplier addition");
+        assertEquals(TEST_VALUE + 1, event.getNewValue(),
+                "New value should be the value after the base supplier addition");
     }
 
     @Test
-    void test_removeBaseSupplierEvent() {
-        PropertyBaseSupplier<Integer> base = new ConstantBaseValue(TEST_VALUE + 1, t -> "Test base 2");
+    void testRemoveBaseSupplierEvent() {
+        PropertyBaseSupplier<Integer> base = new ConstantBaseValue<>(TEST_VALUE + 1, t -> "Test base 2");
         property.addBaseValueSupplier(base);
-        property.addValueChangeListener(listener);
+        property.addValueChangeListener(valueListener);
         property.removeBaseValueSupplier(base);
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
-        assertNotNull(event, "Event should be fired when base supplier is removed");
-        assertEquals(TEST_VALUE + 1, event.getOldValue(), "Old value should be the value before the base supplier removal");
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
+        assertNotNull(event, "Event should be fired when value changes due to removed base supplier");
+        assertEquals(TEST_VALUE + 1, event.getOldValue(),
+                "Old value should be the value before the base supplier removal");
         assertEquals(TEST_VALUE, event.getNewValue(), "New value should be the value after the base supplier removal");
     }
 
     @Test
-    void test_baseValueChangeEvent() {
-        property.addValueChangeListener(listener);
+    void testBaseValueChangeEvent() {
+        property.addValueChangeListener(valueListener);
         property.setDefaultBaseValue(TEST_VALUE + 1);
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
         assertNotNull(event, "Event should be fired when base value is changed");
         assertEquals(TEST_VALUE, event.getOldValue(), "Old value should be the value before the base value change");
         assertEquals(TEST_VALUE + 1, event.getNewValue(), "New value should be the value after the base value change");
     }
 
     @Test
-    void test_newModifierEvent() {
-        property.addValueChangeListener(listener);
+    void testNewModifierEvent() {
+        property.addValueChangeListener(valueListener);
         property.addModifier(new AdditiveModifier(1, t -> "Test modifier"));
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
-        assertNotNull(event, "Event should be fired when modifier is added");
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
+        assertNotNull(event, "Event should be fired when value changes due to new modifier");
         assertEquals(TEST_VALUE, event.getOldValue(), "Old value should be the value before the modifier addition");
         assertEquals(TEST_VALUE + 1, event.getNewValue(), "New value should be the value after the modifier addition");
     }
 
     @Test
-    void test_removeModifierEvent() {
+    void testRemoveModifierEvent() {
         PropertyModifier<Integer> modifier = new AdditiveModifier(1, t -> "Test modifier");
         property.addModifier(modifier);
-        property.addValueChangeListener(listener);
+        property.addValueChangeListener(valueListener);
         property.removeModifier(modifier);
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
-        assertNotNull(event, "Event should be fired when modifier is removed");
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
+        assertNotNull(event, "Event should be fired when value changes because modifier is removed");
         assertEquals(TEST_VALUE + 1, event.getOldValue(), "Old value should be the value before the modifier removal");
         assertEquals(TEST_VALUE, event.getNewValue(), "New value should be the value after the modifier removal");
     }
 
     @Test
-    void test_modifierChangeEvent() {
+    void testModifierChangeEvent() {
         AdditiveModifier modifier = new AdditiveModifier(1, t -> "Test modifier");
         property.addModifier(modifier);
-        property.addValueChangeListener(listener);
+        property.addValueChangeListener(valueListener);
         modifier.setBonus(2);
-        ValueChangeEvent<Integer> event = listener.getLatestEvent();
+        ValueChangeEvent<Integer> event = valueListener.getLatestEvent();
         assertNotNull(event, "Event should be fired when modifier value is changed");
-        assertEquals(TEST_VALUE + 1, event.getOldValue(), "Old value should be the value before the modifier value change");
-        assertEquals(TEST_VALUE + 2, event.getNewValue(), "New value should be the value after the modifier value change");
+        assertEquals(TEST_VALUE + 1, event.getOldValue(),
+                "Old value should be the value before the modifier value change");
+        assertEquals(TEST_VALUE + 2, event.getNewValue(),
+                "New value should be the value after the modifier value change");
     }
 
     @Test
-    void test_nullParameters() {
+    void testNoValueChangeEventsWithoutValueChangeNewModifier() {
+        property.addValueChangeListener(valueListener);
+        property.addModifier(new AdditiveModifier(0, t -> "Test modifier"));
+        assertNull(valueListener.getLatestEvent(), "No value change event should be fired when value does not change");
+    }
+
+    @Test
+    void testNoValueChangeEventsWithoutValueChangeNewBase() {
+        property.addValueChangeListener(valueListener);
+        property.addBaseValueSupplier(new ConstantBaseValue<>(TEST_VALUE - 5, t -> "Test base 2"));
+        assertNull(valueListener.getLatestEvent(), "No value event should be fired when value does not change");
+    }
+
+    @Test
+    void testNoValueChangeEventsWithoutValueChangeBaseValueChanged() {
+        property.addModifier(new ManualOverrideModifier<>(0));
+        property.addValueChangeListener(valueListener);
+        property.setDefaultBaseValue(TEST_VALUE + 5);
+        assertNull(valueListener.getLatestEvent(), "No value event should be fired when value does not change");
+    }
+
+    @Test
+    void testUpdateEventWhenModifierAdded() {
+        property.addUpdateListener(updateListener);
+        property.addModifier(new AdditiveModifier(0, t -> "Test modifier"));
+        assertNotNull(updateListener.getLatestEvent(), "Update event should be fired when modifier is added");
+    }
+
+    @Test
+    void testUpdateEventWhenModifierTextChanges() {
+        AdditiveModifier modifier = new AdditiveModifier(0, t -> "Test modifier");
+        property.addModifier(modifier);
+        property.addUpdateListener(updateListener);
+        modifier.setSource(t -> "New source");
+        assertNotNull(updateListener.getLatestEvent(), "Update event should be fired when modifier is added");
+    }
+
+    @Test
+    void testNullParameters() {
         assertThrows(NullPointerException.class, () -> property.addBaseValueSupplier(null));
         assertThrows(NullPointerException.class, () -> property.removeBaseValueSupplier(null));
         assertThrows(NullPointerException.class, () -> property.addModifier(null));
@@ -187,4 +246,6 @@ class PropertyTest {
         assertThrows(NullPointerException.class, () -> property.setBaseValueSelector(null));
         assertThrows(NullPointerException.class, () -> property.addValueChangeListener(null));
     }
+
+    //CHECKSTYLE.ON: MagicNumber
 }

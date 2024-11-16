@@ -1,17 +1,23 @@
 package com.tikelespike.nilee.core.character;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tikelespike.nilee.core.character.classes.ClassInstanceEntity;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.data.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 /**
  * A memento class of a {@link PlayerCharacter} that can stored in the database. Player character snapshots can be used
- * to save a characters state, optionally store it to the database and restore it later.
+ * to save a characters state, optionally store it to the database and restore it later. It can also be understood as a
+ * "data transfer object" (DTO) for a player character.
  * <p>
  * This class is not intended to be used directly. Instead, use {@link PlayerCharacter#createSnapshot()} to create a
  * snapshot of the current character state. To restore a character from a snapshot, use
@@ -46,6 +52,9 @@ public final class PlayerCharacterSnapshot extends AbstractEntity {
     private int temporaryHitPoints;
     private Integer hitPointMaxOverride;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ClassInstanceEntity> classes;
+
     /**
      * Creates a new player character snapshot with uninitialized values. A snapshot should only be created by
      * {@link PlayerCharacter#createSnapshot()}.
@@ -54,91 +63,105 @@ public final class PlayerCharacterSnapshot extends AbstractEntity {
         // Constructor should only be used by database framework or the PlayerCharacter class
     }
 
-    User getOwner() {
+    // Getter and setter methods are required for JPA. Documentation is omitted for brevity. See the business object for
+    // more information.
+    //CHECKSTYLE.OFF: JavadocMethod
+
+    public User getOwner() {
         return owner;
     }
 
-    void setOwner(User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    int getStrength() {
+    public int getStrength() {
         return strength;
     }
 
-    void setStrength(int strength) {
+    public void setStrength(int strength) {
         this.strength = strength;
     }
 
-    int getDexterity() {
+    public int getDexterity() {
         return dexterity;
     }
 
-    void setDexterity(int dexterity) {
+    public void setDexterity(int dexterity) {
         this.dexterity = dexterity;
     }
 
-    int getConstitution() {
+    public int getConstitution() {
         return constitution;
     }
 
-    void setConstitution(int constitution) {
+    public void setConstitution(int constitution) {
         this.constitution = constitution;
     }
 
-    int getIntelligence() {
+    public int getIntelligence() {
         return intelligence;
     }
 
-    void setIntelligence(int intelligence) {
+    public void setIntelligence(int intelligence) {
         this.intelligence = intelligence;
     }
 
-    int getWisdom() {
+    public int getWisdom() {
         return wisdom;
     }
 
-    void setWisdom(int wisdom) {
+    public void setWisdom(int wisdom) {
         this.wisdom = wisdom;
     }
 
-    int getCharisma() {
+    public int getCharisma() {
         return charisma;
     }
 
-    void setCharisma(int charisma) {
+    public void setCharisma(int charisma) {
         this.charisma = charisma;
     }
 
-    int getHitPoints() {
+    public int getHitPoints() {
         return hitPoints;
     }
 
-    void setHitPoints(int hitPoints) {
+    public void setHitPoints(int hitPoints) {
         this.hitPoints = hitPoints;
     }
 
-    int getTemporaryHitPoints() {
+    public int getTemporaryHitPoints() {
         return temporaryHitPoints;
     }
 
-    void setTemporaryHitPoints(int temporaryHitPoints) {
+    public void setTemporaryHitPoints(int temporaryHitPoints) {
         this.temporaryHitPoints = temporaryHitPoints;
     }
 
-    Integer getHitPointMaxOverride() {
+    public Integer getHitPointMaxOverride() {
         return hitPointMaxOverride;
     }
 
-    void setHitPointMaxOverride(Integer hitPointMaxOverride) {
+    public void setHitPointMaxOverride(Integer hitPointMaxOverride) {
         this.hitPointMaxOverride = hitPointMaxOverride;
     }
+
+    public List<ClassInstanceEntity> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<ClassInstanceEntity> classes) {
+        this.classes = classes;
+    }
+
+    //CHECKSTYLE.ON: JavadocMethod
 }

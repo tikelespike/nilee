@@ -5,8 +5,6 @@ import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Objects;
-
 /**
  * A base value supplier for the hit point max property, whose base value provided is described by its own property.
  * This allows modelling modifiers of the "base hit point maximum" (like CON and rolled hit dice values) separately from
@@ -25,9 +23,8 @@ public class HPMaxBaseSupplier extends PropertyBaseSupplier<Integer> {
      *         supplier
      */
     public HPMaxBaseSupplier(@NotNull Property<Integer> hpMaxBaseProperty) {
-        Objects.requireNonNull(hpMaxBaseProperty);
+        super(hpMaxBaseProperty);
         this.hpMaxBaseProperty = hpMaxBaseProperty;
-        this.hpMaxBaseProperty.addValueChangeListener(event -> update());
     }
 
     @Override

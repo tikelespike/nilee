@@ -43,6 +43,8 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
+import java.util.stream.Collectors;
+
 /**
  * A view that displays a character sheet for a {@link PlayerCharacter} for use during play. The user can view the
  * character's abilities, hit points, and other relevant information, and interact with the character by initiating
@@ -54,22 +56,22 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
 
     private static final int SESSION_NOTIFICATION_DURATION = 3000;
     private static final int PLACEHOLDER_TEXT_REPETITIONS = 20;
-    private final PlayerCharacterService characterService;
+    private final transient PlayerCharacterService characterService;
 
     private final CharacterSanityChecker sanityChecker;
-    private final TranslationProvider translationProvider;
+    private final transient TranslationProvider translationProvider;
 
-    private final User currentUser;
+    private final transient User currentUser;
     private final RemoteUIManager uiManager = new RemoteUIManager();
     private final RollAnimator rollAnimator;
 
-    private PlayerCharacter pc;
+    private transient PlayerCharacter pc;
     private CharacterSaver characterSaver;
 
     private Icon sessionIcon;
 
-    private Registration userJoinedRegistration;
-    private Registration userLeftRegistration;
+    private transient Registration userJoinedRegistration;
+    private transient Registration userLeftRegistration;
     private SessionDialog sessionDialog;
 
     /**
@@ -105,7 +107,7 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
     public void setParameter(BeforeEvent event, @OptionalParameter Long parameter) {
         sanityChecker.ensureSanity(parameter);
         //noinspection OptionalGetWithoutIsPresent
-        update(PlayerCharacter.createFromSnapshot(characterService.get(parameter).get()));
+        update(characterService.getCharacter(parameter).get());
     }
 
     private void update(PlayerCharacter playerCharacter) {
@@ -293,7 +295,9 @@ public class CharacterSheetView extends VerticalLayout implements HasUrlParamete
         Button editButton = new Button(getTranslation("character_sheet.header.edit"));
         editButton.addClickListener(e -> editPC());
 
-        H3 nameTitle = new H3(pc.getName());
+        H3 nameTitle = new H3(pc.getName() + pc.getClasses().stream()
+                .map(c -> c.getArchetype().getName().getTranslation(translationProvider))
+                .collect(Collectors.joining(", ", " (", ")")));
         nameTitle.getElement().getStyle().set("margin-top", "0.5em");
 
         HitPointsDisplay hpDisplay = new HitPointsDisplay(pc.getHitPoints(), characterSaver);

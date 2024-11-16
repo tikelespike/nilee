@@ -11,6 +11,9 @@ public interface LocalizedString {
     /**
      * Translates this abstract/locale-independent string into a specific locale given a translation provider that
      * resolves the locale-specific parts of this string.
+     * <p>
+     * This function must be pure, that is, it must not have side effects and must always return the same result for the
+     * same input.
      *
      * @param translationProvider a translation provider translating locale-specific strings
      *

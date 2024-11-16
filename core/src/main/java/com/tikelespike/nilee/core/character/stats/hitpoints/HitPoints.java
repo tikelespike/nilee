@@ -84,8 +84,7 @@ public class HitPoints extends AbstractEntity {
      *
      * @return the temporary hit points of this character
      * @see <a href="https://www.dndbeyond.com/sources/basic-rules/combat#TemporaryHitPoints">Temporary Hit Points
-     *         on
-     *         D&D Beyond</a>
+     *         on D&D Beyond</a>
      */
     public int getTemporaryHitPoints() {
         return temporaryHitPoints;
@@ -100,8 +99,7 @@ public class HitPoints extends AbstractEntity {
      *
      * @throws IllegalArgumentException if the given value is less than 0
      * @see <a href="https://www.dndbeyond.com/sources/basic-rules/combat#TemporaryHitPoints">Temporary Hit Points
-     *         on
-     *         D&D Beyond</a>
+     *         on D&D Beyond</a>
      */
     public void setTemporaryHitPoints(int temporaryHitPoints) {
         if (temporaryHitPoints < 0) {

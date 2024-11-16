@@ -95,7 +95,7 @@ public class CharacterSaver extends Div {
 
         sanityChecker.ensureSanity(playerCharacter.getId());
         try {
-            characterService.update(playerCharacter.createSnapshot());
+            characterService.update(playerCharacter);
         } catch (OptimisticLockingFailureException e) {
             showSaveWarningDialog(nullSafeAndThen);
             return;
@@ -117,7 +117,7 @@ public class CharacterSaver extends Div {
         dialog.setCancelText(getTranslation("generic.cancel"));
         dialog.addCancelListener(event -> andThen.accept(SaveResult.CANCELLED));
         dialog.addConfirmListener(event -> {
-            characterService.update(playerCharacter.createSnapshot(), true);
+            characterService.update(playerCharacter, true);
             playerCharacter.restoreSnapshot(characterService.get(playerCharacter.getId()).get());
             andThen.accept(SaveResult.SAVED);
         });

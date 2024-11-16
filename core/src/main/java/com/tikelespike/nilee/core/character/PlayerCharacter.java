@@ -1,11 +1,19 @@
 package com.tikelespike.nilee.core.character;
 
+import com.tikelespike.nilee.core.character.classes.ClassInstance;
+import com.tikelespike.nilee.core.character.classes.ClassInstanceEntity;
+import com.tikelespike.nilee.core.character.classes.UnifiedClassInstanceMapper;
+import com.tikelespike.nilee.core.character.stats.ProficiencyBonus;
+import com.tikelespike.nilee.core.character.stats.TotalCharacterLevel;
+import com.tikelespike.nilee.core.character.stats.ability.Ability;
 import com.tikelespike.nilee.core.character.stats.ability.AbilityScores;
 import com.tikelespike.nilee.core.character.stats.hitpoints.HitPoints;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,8 +32,8 @@ import java.util.Objects;
  * <p>
  * This class implements the Memento design pattern to allow for saving and loading of so-called
  * {@link PlayerCharacterSnapshot snapshots}. These can be persisted to a database. A player character can be created
- * from a snapshot using {@link #createFromSnapshot(PlayerCharacterSnapshot)}, or an existing character can load a
- * snapshot using {@link #restoreSnapshot(PlayerCharacterSnapshot)}.
+ * from a snapshot using {@link #createFromSnapshot(PlayerCharacterSnapshot, UnifiedClassInstanceMapper)}, or an
+ * existing character can load a snapshot using {@link #restoreSnapshot(PlayerCharacterSnapshot)}.
  *
  * @see <a href="https://www.dndbeyond.com/sources/basic-rules/step-by-step-characters">Creating a Character (D&D
  *         Beyond)</a>
@@ -34,6 +42,9 @@ public class PlayerCharacter {
 
     private final AbilityScores abilityScores;
     private final HitPoints hitPoints;
+    private final List<ClassInstance> classes;
+    private final ProficiencyBonus proficiencyBonus;
+    private final UnifiedClassInstanceMapper classMapper;
 
     // unique identifier for corresponding database snapshots
     private Long id;
@@ -46,19 +57,27 @@ public class PlayerCharacter {
 
     /**
      * Creates a new player character with uninitialized values. Should only be used for loading from snapshots.
+     *
+     * @param classMapper when creating snapshots or loading from snapshots, this mapper is needed to convert
+     *         the {@link ClassInstance classes} of this character to and from database objects
      */
-    protected PlayerCharacter() {
-        abilityScores = new AbilityScores();
-        hitPoints = new HitPoints(abilityScores.getConstitution());
+    PlayerCharacter(UnifiedClassInstanceMapper classMapper) {
+        classes = new ArrayList<>();
+        proficiencyBonus = new ProficiencyBonus(new TotalCharacterLevel(classes));
+        abilityScores = new AbilityScores(proficiencyBonus);
+        hitPoints = new HitPoints(abilityScores.get(Ability.CONSTITUTION));
+        this.classMapper = classMapper;
     }
 
     /**
      * Creates a new player character with the given owner and a generated default name.
      *
      * @param owner the user who can control this character
+     * @param classMapper when creating snapshots or loading from snapshots, this mapper is needed to convert
+     *         the {@link ClassInstance classes} of this character to and from database objects
      */
-    public PlayerCharacter(@NotNull User owner) {
-        this();
+    public PlayerCharacter(@NotNull User owner, UnifiedClassInstanceMapper classMapper) {
+        this(classMapper);
         Objects.requireNonNull(owner);
         this.owner = owner;
     }
@@ -68,9 +87,11 @@ public class PlayerCharacter {
      *
      * @param name the name of the character
      * @param owner the user who can control this character
+     * @param classMapper when creating snapshots or loading from snapshots, this mapper is needed to convert
+     *         the {@link ClassInstance classes} of this character to and from database objects
      */
-    public PlayerCharacter(@NotNull String name, @NotNull User owner) {
-        this(owner);
+    public PlayerCharacter(@NotNull String name, @NotNull User owner, UnifiedClassInstanceMapper classMapper) {
+        this(owner, classMapper);
         Objects.requireNonNull(name);
         this.name = name;
     }
@@ -79,12 +100,15 @@ public class PlayerCharacter {
      * Creates a new player character object from the given snapshot.
      *
      * @param snapshot the snapshot containing stored data with which to initialize the new character
+     * @param classMapper when creating snapshots or loading from snapshots, this mapper is needed to convert
+     *         the {@link ClassInstance classes} of this character to and from database objects
      *
      * @return a new player character object initialized with the data from the given snapshot
      */
-    public static PlayerCharacter createFromSnapshot(@NotNull PlayerCharacterSnapshot snapshot) {
+    public static PlayerCharacter createFromSnapshot(@NotNull PlayerCharacterSnapshot snapshot,
+                                                     UnifiedClassInstanceMapper classMapper) {
         Objects.requireNonNull(snapshot);
-        PlayerCharacter bo = new PlayerCharacter();
+        PlayerCharacter bo = new PlayerCharacter(classMapper);
         bo.restoreSnapshot(snapshot);
         return bo;
     }
@@ -102,15 +126,16 @@ public class PlayerCharacter {
         snapshot.setId(this.getId());
         snapshot.setOwner(this.getOwner());
         snapshot.setName(this.getName());
-        snapshot.setStrength(this.getAbilityScores().getStrength().getDefaultBaseValue());
-        snapshot.setDexterity(this.getAbilityScores().getDexterity().getDefaultBaseValue());
-        snapshot.setConstitution(this.getAbilityScores().getConstitution().getDefaultBaseValue());
-        snapshot.setIntelligence(this.getAbilityScores().getIntelligence().getDefaultBaseValue());
-        snapshot.setWisdom(this.getAbilityScores().getWisdom().getDefaultBaseValue());
-        snapshot.setCharisma(this.getAbilityScores().getCharisma().getDefaultBaseValue());
+        snapshot.setStrength(this.getAbilityScores().get(Ability.STRENGTH).getDefaultBaseValue());
+        snapshot.setDexterity(this.getAbilityScores().get(Ability.DEXTERITY).getDefaultBaseValue());
+        snapshot.setConstitution(this.getAbilityScores().get(Ability.CONSTITUTION).getDefaultBaseValue());
+        snapshot.setIntelligence(this.getAbilityScores().get(Ability.INTELLIGENCE).getDefaultBaseValue());
+        snapshot.setWisdom(this.getAbilityScores().get(Ability.WISDOM).getDefaultBaseValue());
+        snapshot.setCharisma(this.getAbilityScores().get(Ability.CHARISMA).getDefaultBaseValue());
         snapshot.setHitPoints(this.getHitPoints().getCurrentHitPoints());
         snapshot.setTemporaryHitPoints(this.getHitPoints().getTemporaryHitPoints());
         snapshot.setHitPointMaxOverride(this.getHitPoints().getMaxHitPoints().getOverride());
+        snapshot.setClasses(classes.stream().map(classMapper::toEntity).toList());
         return snapshot;
     }
 
@@ -126,15 +151,19 @@ public class PlayerCharacter {
         id = snapshot.getId();
         owner = snapshot.getOwner();
         name = snapshot.getName();
-        abilityScores.getStrength().setDefaultBaseValue(snapshot.getStrength());
-        abilityScores.getDexterity().setDefaultBaseValue(snapshot.getDexterity());
-        abilityScores.getConstitution().setDefaultBaseValue(snapshot.getConstitution());
-        abilityScores.getIntelligence().setDefaultBaseValue(snapshot.getIntelligence());
-        abilityScores.getWisdom().setDefaultBaseValue(snapshot.getWisdom());
-        abilityScores.getCharisma().setDefaultBaseValue(snapshot.getCharisma());
+        abilityScores.get(Ability.STRENGTH).setDefaultBaseValue(snapshot.getStrength());
+        abilityScores.get(Ability.DEXTERITY).setDefaultBaseValue(snapshot.getDexterity());
+        abilityScores.get(Ability.CONSTITUTION).setDefaultBaseValue(snapshot.getConstitution());
+        abilityScores.get(Ability.INTELLIGENCE).setDefaultBaseValue(snapshot.getIntelligence());
+        abilityScores.get(Ability.WISDOM).setDefaultBaseValue(snapshot.getWisdom());
+        abilityScores.get(Ability.CHARISMA).setDefaultBaseValue(snapshot.getCharisma());
         hitPoints.getMaxHitPoints().setOverride(snapshot.getHitPointMaxOverride());
         hitPoints.setCurrentHitPoints(snapshot.getHitPoints());
         hitPoints.setTemporaryHitPoints(snapshot.getTemporaryHitPoints());
+        this.classes.clear();
+        for (ClassInstanceEntity entity : snapshot.getClasses()) {
+            addClass(classMapper.toBusinessObject(entity));
+        }
     }
 
     /**
@@ -160,6 +189,40 @@ public class PlayerCharacter {
      */
     public AbilityScores getAbilityScores() {
         return abilityScores;
+    }
+
+    /**
+     * Returns the list of different classes this character has levels in. If a character does not use the
+     * multi-classing rules, this list will contain only one class.
+     * <p>
+     * To mutate the classes of this character, use {@link #addClass(ClassInstance)} and
+     * {@link #removeClass(ClassInstance)}.
+     *
+     * @return the list of classes this character has levels in
+     */
+    public List<ClassInstance> getClasses() {
+        return new ArrayList<>(classes);
+    }
+
+    /**
+     * Adds a new class to this character (using the multiclassing rules if the class is not the first one of this
+     * character).
+     *
+     * @param classInstance the class to add to this character
+     */
+    public void addClass(ClassInstance classInstance) {
+        classes.add(classInstance);
+        abilityScores.updateClassBasedSavingThrowProficiencies(classes);
+    }
+
+    /**
+     * Removes a class from this character.
+     *
+     * @param classInstance the class to remove from this character
+     */
+    public void removeClass(ClassInstance classInstance) {
+        classes.remove(classInstance);
+        abilityScores.updateClassBasedSavingThrowProficiencies(classes);
     }
 
     /**

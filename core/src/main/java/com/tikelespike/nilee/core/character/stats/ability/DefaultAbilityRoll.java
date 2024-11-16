@@ -13,7 +13,7 @@ import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
  * @see <a href="https://www.dndbeyond.com/sources/basic-rules/using-ability-scores#AbilityChecks">Ability
  *         Checks</a>
  */
-public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression> {
+public class DefaultAbilityRoll extends PropertyBaseSupplier<DiceExpression> {
 
     private final AbilityScore abilityScore;
 
@@ -22,7 +22,7 @@ public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression
      *
      * @param abilityScore the ability score to use when calculating the check roll
      */
-    public DefaultAbilityCheckRoll(AbilityScore abilityScore) {
+    public DefaultAbilityRoll(AbilityScore abilityScore) {
         this.abilityScore = abilityScore;
     }
 
@@ -34,7 +34,7 @@ public class DefaultAbilityCheckRoll extends PropertyBaseSupplier<DiceExpression
     @Override
     public LocalizedString getAbstractDescription() {
         return t -> Dice.D20.toLocalizedString().getTranslation(t) + " " + t.translate("dice.sum.operator") + " "
-                + abilityScore.getShortName().getTranslation(t);
+                + abilityScore.getAbility().getShortName().getTranslation(t);
     }
 
     @Override

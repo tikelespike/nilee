@@ -1,7 +1,7 @@
 package com.tikelespike.nilee.app.security;
 
 import com.tikelespike.nilee.core.data.entity.User;
-import com.tikelespike.nilee.core.data.service.UserRepository;
+import com.tikelespike.nilee.core.data.service.UserService;
 import com.tikelespike.nilee.core.game.GameSessionManager;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Component
 public class AuthenticatedUser {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final AuthenticationContext authenticationContext;
     private final GameSessionManager gameSessionManager;
 
@@ -24,12 +24,12 @@ public class AuthenticatedUser {
      * Creates a new AuthenticatedUser. Should be created by Spring and injected where needed.
      *
      * @param authenticationContext the authentication context (injected by Spring)
-     * @param userRepository the user repository (injected by Spring)
+     * @param userService the user service (injected by Spring)
      * @param gameSessionManager the game session manager (injected by Spring)
      */
-    public AuthenticatedUser(AuthenticationContext authenticationContext, UserRepository userRepository,
+    public AuthenticatedUser(AuthenticationContext authenticationContext, UserService userService,
                              GameSessionManager gameSessionManager) {
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.authenticationContext = authenticationContext;
         this.gameSessionManager = gameSessionManager;
     }
@@ -42,7 +42,7 @@ public class AuthenticatedUser {
     @Transactional
     public Optional<User> get() {
         Optional<User> userOpt = authenticationContext.getAuthenticatedUser(UserDetails.class)
-                .map(userDetails -> userRepository.findByUsername(userDetails.getUsername()));
+                .flatMap(userDetails -> userService.get(userDetails.getUsername()));
         userOpt.ifPresent(user -> user.setGameSessionManager(gameSessionManager));
         return userOpt;
     }

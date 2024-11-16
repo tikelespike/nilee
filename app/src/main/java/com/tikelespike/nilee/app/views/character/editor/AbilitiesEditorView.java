@@ -1,6 +1,7 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.character.stats.ability.Ability;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.Binder;
@@ -37,18 +38,18 @@ public class AbilitiesEditorView extends FormLayout {
 
         // maps the UI fields to the attributes object
         binder = new Binder<>(PlayerCharacter.class);
-        binder.forField(strField).bind(c -> c.getAbilityScores().getStrength().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getStrength().setDefaultBaseValue(v));
-        binder.forField(dexField).bind(c -> c.getAbilityScores().getDexterity().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getDexterity().setDefaultBaseValue(v));
-        binder.forField(conField).bind(c -> c.getAbilityScores().getConstitution().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getConstitution().setDefaultBaseValue(v));
-        binder.forField(intField).bind(c -> c.getAbilityScores().getIntelligence().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getIntelligence().setDefaultBaseValue(v));
-        binder.forField(wisField).bind(c -> c.getAbilityScores().getWisdom().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getWisdom().setDefaultBaseValue(v));
-        binder.forField(chaField).bind(c -> c.getAbilityScores().getCharisma().getDefaultBaseValue(),
-                (c, v) -> pc.getAbilityScores().getCharisma().setDefaultBaseValue(v));
+        binder.forField(strField).bind(c -> c.getAbilityScores().get(Ability.STRENGTH).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.STRENGTH).setDefaultBaseValue(v));
+        binder.forField(dexField).bind(c -> c.getAbilityScores().get(Ability.DEXTERITY).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.DEXTERITY).setDefaultBaseValue(v));
+        binder.forField(conField).bind(c -> c.getAbilityScores().get(Ability.CONSTITUTION).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.CONSTITUTION).setDefaultBaseValue(v));
+        binder.forField(intField).bind(c -> c.getAbilityScores().get(Ability.INTELLIGENCE).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.INTELLIGENCE).setDefaultBaseValue(v));
+        binder.forField(wisField).bind(c -> c.getAbilityScores().get(Ability.WISDOM).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.WISDOM).setDefaultBaseValue(v));
+        binder.forField(chaField).bind(c -> c.getAbilityScores().get(Ability.CHARISMA).getDefaultBaseValue(),
+                (c, v) -> pc.getAbilityScores().get(Ability.CHARISMA).setDefaultBaseValue(v));
 
         binder.readBean(pc);
     }
