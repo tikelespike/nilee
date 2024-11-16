@@ -10,12 +10,14 @@ import com.tikelespike.nilee.core.i18n.LocalizedString;
  * combat, exploration, and interaction. A character can have different levels in a class, and will usually gain new
  * features as they level up.
  * <p>
- * A character class archetype specifies the "blueprint" and ruleset of a specific class, while a {@link CharacterClass}
+ * A character class archetype specifies the "blueprint" and ruleset of a specific class, while a {@link ClassInstance}
  * instance represents a specific incarnation of this class containing state adapted to a single player character.
  * <p>
  * The state of these archetypes should be immutable after construction.
+ *
+ * @param <ClassType> the type of class instances this archetype creates for storing character-specific state
  */
-public interface CharacterClassArchetype {
+public interface ClassArchetype<ClassType extends ClassInstance> {
 
     /**
      * Returns the display name of the class.
@@ -30,5 +32,5 @@ public interface CharacterClassArchetype {
      *
      * @return a new character class instance of the class archetype
      */
-    CharacterClass getNewInstance();
+    ClassType getNewInstance();
 }

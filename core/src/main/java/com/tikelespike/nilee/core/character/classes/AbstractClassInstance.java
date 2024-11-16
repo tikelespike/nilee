@@ -6,14 +6,14 @@ import com.tikelespike.nilee.core.character.stats.ability.ProficiencyLevel;
 import java.util.Map;
 
 /**
- * A convention-based abstract implementation of a CharacterClass which already implements some common logic for
+ * A convention-based abstract implementation of a ClassInstance which already implements some common logic for
  * convenience while leaving space for actual game design of the class. This class acts as an adapter between the
- * CharacterClass interface and an interface more convenient to use by content implementations.
+ * ClassInstance interface and an interface more convenient to use by content implementations.
  */
-public abstract class AbstractClass implements CharacterClass {
+public abstract class AbstractClassInstance implements ClassInstance {
 
     private int level = 1;
-    private final AbstractClassType classType;
+    private final AbstractClassArchetype<? extends AbstractClassInstance> classType;
 
     /**
      * Creates a new class instance.
@@ -21,7 +21,7 @@ public abstract class AbstractClass implements CharacterClass {
      * @param classType the archetype of this class specifying its rules and abilities that are not
      *         character-specific
      */
-    protected AbstractClass(AbstractClassType classType) {
+    protected AbstractClassInstance(AbstractClassArchetype<? extends AbstractClassInstance> classType) {
         this.classType = classType;
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractClass implements CharacterClass {
     }
 
     @Override
-    public CharacterClassArchetype getArchetype() {
+    public ClassArchetype<? extends AbstractClassInstance> getArchetype() {
         return classType;
     }
 }

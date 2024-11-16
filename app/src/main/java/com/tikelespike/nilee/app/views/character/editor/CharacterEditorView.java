@@ -1,17 +1,23 @@
 package com.tikelespike.nilee.app.views.character.editor;
 
+import com.tikelespike.nilee.app.ClassManagerWrapper;
+import com.tikelespike.nilee.app.i18n.UserBasedTranslationProvider;
 import com.tikelespike.nilee.app.security.AuthenticatedUser;
 import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.CharacterSaver;
 import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
+import com.tikelespike.nilee.core.character.classes.ClassArchetype;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
+import com.tikelespike.nilee.core.i18n.TranslationProvider;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.i18n.I18NProvider;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -26,12 +32,14 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 public class CharacterEditorView extends VerticalLayout implements HasUrlParameter<Long>, HasDynamicTitle {
 
-    private final PlayerCharacterService characterService;
+    private final transient PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
-    private final User currentUser;
+    private final transient ClassManagerWrapper classManager;
+    private final transient User currentUser;
+    private final transient TranslationProvider translationProvider;
     private CharacterSaver characterSaver;
     private Accordion accordion;
-    private PlayerCharacter pc;
+    private transient PlayerCharacter pc;
     private AbilitiesEditorView abilitiesEditorView;
 
 
@@ -41,12 +49,17 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
      * @param characterService the service for managing database access to player characters (injected by
      *         Spring)
      * @param authenticatedUser the currently authenticated user (injected by Spring)
+     * @param classManager the class manager keeping track of all available classes (injected by Spring)
+     * @param i18nProvider the provider for internationalization (injected by Spring)
      */
-    public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser) {
+    public CharacterEditorView(PlayerCharacterService characterService, AuthenticatedUser authenticatedUser,
+                               ClassManagerWrapper classManager, I18NProvider i18nProvider) {
         this.characterService = characterService;
         this.currentUser =
                 authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " + "authenticated"));
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
+        this.classManager = classManager;
+        this.translationProvider = new UserBasedTranslationProvider(currentUser, i18nProvider);
         add(getTranslation("error.character_not_found"));
     }
 
@@ -69,7 +82,16 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
         this.abilitiesEditorView = new AbilitiesEditorView(pc);
         accordion.add(getTranslation("character_editor.abilities.title"), abilitiesEditorView);
         accordion.addOpenedChangeListener(e -> abilitiesEditorView.update());
-        accordion.add("Class", new Span("Class"));
+        HorizontalLayout classLayout = new HorizontalLayout();
+        for (ClassArchetype<?> archetype : classManager.getRegisteredClasses()) {
+            Button classButton = new Button(archetype.getName().getTranslation(translationProvider));
+            classButton.addClickListener(e -> {
+                pc.getClasses().forEach(pc::removeClass);
+                pc.addClass(archetype.getNewInstance());
+            });
+            classLayout.add(classButton);
+        }
+        accordion.add("Class", classLayout);
     }
 
     @Override
@@ -81,7 +103,7 @@ public class CharacterEditorView extends VerticalLayout implements HasUrlParamet
     public void setParameter(BeforeEvent event, Long parameter) {
         sanityChecker.ensureSanity(parameter);
         //noinspection OptionalGetWithoutIsPresent
-        this.pc = PlayerCharacter.createFromSnapshot(characterService.get(parameter).get());
+        this.pc = characterService.getCharacter(parameter).get();
         this.characterSaver = new CharacterSaver(pc, characterService, sanityChecker);
         init();
     }

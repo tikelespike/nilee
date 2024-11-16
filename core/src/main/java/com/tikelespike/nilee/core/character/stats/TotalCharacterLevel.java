@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.character.stats;
 
-import com.tikelespike.nilee.core.character.classes.CharacterClass;
+import com.tikelespike.nilee.core.character.classes.ClassInstance;
 import com.tikelespike.nilee.core.i18n.LocalizedString;
 import com.tikelespike.nilee.core.property.Property;
 import com.tikelespike.nilee.core.property.PropertyBaseSupplier;
@@ -17,11 +17,11 @@ public class TotalCharacterLevel extends Property<Integer> {
      *
      * @param classes the classes of the character
      */
-    public TotalCharacterLevel(List<CharacterClass> classes) {
+    public TotalCharacterLevel(List<ClassInstance> classes) {
         super(new PropertyBaseSupplier<>() {
             @Override
             public Integer getBaseValue() {
-                return classes.stream().mapToInt(CharacterClass::getLevel).sum();
+                return classes.stream().mapToInt(ClassInstance::getLevel).sum();
             }
 
             @Override

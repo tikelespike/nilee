@@ -7,13 +7,15 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * A convention-based abstract implementation of a CharacterClassArchetype which already implements some common logic
- * for convenience while leaving space for actual game design of the class. This class acts as an adapter between the
- * CharacterClassArchetype interface and an interface more convenient to use by content implementations.
+ * A convention-based abstract implementation of a ClassArchetype which already implements some common logic for
+ * convenience while leaving space for actual game design of the class. This class acts as an adapter between the
+ * ClassArchetype interface and an interface more convenient to use by content implementations.
  * <p>
  * Please note that the state of instances of this class should be immutable after construction.
+ *
+ * @param <ClassType> the type of class instances this archetype creates for storing character-specific state
  */
-public abstract class AbstractClassType implements CharacterClassArchetype {
+public abstract class AbstractClassArchetype<ClassType extends ClassInstance> implements ClassArchetype<ClassType> {
     private final Map<Ability, ProficiencyLevel> savingThrowProficiencies = new EnumMap<>(Ability.class);
 
     /**

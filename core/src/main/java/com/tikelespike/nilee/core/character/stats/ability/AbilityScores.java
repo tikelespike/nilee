@@ -1,6 +1,6 @@
 package com.tikelespike.nilee.core.character.stats.ability;
 
-import com.tikelespike.nilee.core.character.classes.CharacterClass;
+import com.tikelespike.nilee.core.character.classes.ClassInstance;
 import com.tikelespike.nilee.core.character.stats.ProficiencyBonus;
 import com.tikelespike.nilee.core.data.entity.AbstractEntity;
 import com.tikelespike.nilee.core.property.convenience.ConstantBaseValue;
@@ -64,20 +64,24 @@ public class AbilityScores extends AbstractEntity {
      *
      * @param classes the current classes of the character
      */
-    public void updateClassBasedSavingThrowProficiencies(List<CharacterClass> classes) {
-        if (!classes.isEmpty()) {
-            CharacterClass firstClass = classes.getFirst();
-            for (Ability ability : firstClass.getSavingThrowProficiencies().keySet()) {
-                ProficiencyLevel proficiency = firstClass.getSavingThrowProficiencies().get(ability);
-                ConstantBaseValue<ProficiencyLevel> oldSupplier = savingThrowProficiencies.get(ability);
-                if (oldSupplier != null) {
-                    get(ability).getSavingThrowProficiency().removeBaseValueSupplier(oldSupplier);
-                }
-                ConstantBaseValue<ProficiencyLevel> supplier =
-                        new ConstantBaseValue<>(proficiency, firstClass.getArchetype().getName());
-                get(ability).getSavingThrowProficiency().addBaseValueSupplier(supplier);
-                savingThrowProficiencies.put(ability, supplier);
+    public void updateClassBasedSavingThrowProficiencies(List<ClassInstance> classes) {
+        for (Ability ability : Ability.values()) {
+            ConstantBaseValue<ProficiencyLevel> oldSupplier = savingThrowProficiencies.get(ability);
+            if (oldSupplier != null) {
+                get(ability).getSavingThrowProficiency().removeBaseValueSupplier(oldSupplier);
+                savingThrowProficiencies.remove(ability);
             }
+        }
+        if (classes.isEmpty()) {
+            return;
+        }
+        ClassInstance firstClass = classes.getFirst();
+        for (Ability ability : firstClass.getSavingThrowProficiencies().keySet()) {
+            ProficiencyLevel proficiency = firstClass.getSavingThrowProficiencies().get(ability);
+            ConstantBaseValue<ProficiencyLevel> supplier =
+                    new ConstantBaseValue<>(proficiency, firstClass.getArchetype().getName());
+            get(ability).getSavingThrowProficiency().addBaseValueSupplier(supplier);
+            savingThrowProficiencies.put(ability, supplier);
         }
     }
 }

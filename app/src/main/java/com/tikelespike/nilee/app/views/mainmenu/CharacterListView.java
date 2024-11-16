@@ -6,6 +6,7 @@ import com.tikelespike.nilee.app.views.character.CharacterSanityChecker;
 import com.tikelespike.nilee.app.views.character.sheet.CharacterSheetView;
 import com.tikelespike.nilee.core.character.PlayerCharacter;
 import com.tikelespike.nilee.core.character.PlayerCharacterSnapshot;
+import com.tikelespike.nilee.core.character.classes.UnifiedClassInstanceMapper;
 import com.tikelespike.nilee.core.data.entity.User;
 import com.tikelespike.nilee.core.data.service.PlayerCharacterService;
 import com.tikelespike.nilee.core.data.service.UserService;
@@ -42,12 +43,13 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
 
     private final Grid<PlayerCharacter> characterGrid;
 
-    private final UserService userService;
-    private final PlayerCharacterService characterService;
+    private final transient UserService userService;
+    private final transient PlayerCharacterService characterService;
     private final CharacterSanityChecker sanityChecker;
-    private final TranslationProvider translationProvider;
+    private final transient TranslationProvider translationProvider;
+    private final transient UnifiedClassInstanceMapper classMapper;
 
-    private User currentUser;
+    private transient User currentUser;
 
 
     /**
@@ -58,13 +60,17 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
      *         Spring)
      * @param userService the service for managing database access to users (injected by Spring)
      * @param i18nProvider the provider for translations (injected by Spring)
+     * @param classMapper the mapper for converting class instances to database entities and vice versa
+     *         (injected by Spring)
      */
     public CharacterListView(AuthenticatedUser authenticatedUser, PlayerCharacterService playerCharacterService,
-                             UserService userService, I18NProvider i18nProvider) {
+                             UserService userService, I18NProvider i18nProvider,
+                             UnifiedClassInstanceMapper classMapper) {
+        this.userService = userService;
         this.currentUser =
                 authenticatedUser.get().orElseThrow(() -> new IllegalStateException("User not " + "authenticated"));
-        this.userService = userService;
         this.characterService = playerCharacterService;
+        this.classMapper = classMapper;
         this.sanityChecker = new CharacterSanityChecker(characterService, currentUser);
         this.translationProvider = new UserBasedTranslationProvider(currentUser, i18nProvider);
 
@@ -101,7 +107,7 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
         Button button = new Button(getTranslation("character_list.new_character.button.label"));
         button.addClickShortcut(Key.ENTER);
         button.addClickListener(e -> {
-            PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser);
+            PlayerCharacter newCharacter = new PlayerCharacter(newCharacterNameTF.getValue(), currentUser, classMapper);
             savePC(newCharacter);
             String name = Objects.equals(newCharacterNameTF.getValue(), "") ? newCharacter.getDefaultName()
                     .getTranslation(translationProvider) : newCharacterNameTF.getValue();
@@ -162,7 +168,9 @@ public class CharacterListView extends VerticalLayout implements HasDynamicTitle
     }
 
     private void updateCharacterGrid() {
-        characterGrid.setItems(currentUser.getCharacters().stream().map(PlayerCharacter::createFromSnapshot).toList());
+        characterGrid.setItems(
+                currentUser.getCharacters().stream().map(s -> PlayerCharacter.createFromSnapshot(s, classMapper))
+                        .toList());
     }
 
 
